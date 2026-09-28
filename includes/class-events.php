@@ -61,23 +61,36 @@ class Events {
 
 	private static $rev = null;
 
-	/** Translated string → original English msgid (identity when unknown). */
+	/**
+	 * Translated string → original English msgid (identity when unknown).
+	 * The map is built from every Nightward .mo file on disk, not only the
+	 * current locale, so text recorded under any language maps back.
+	 */
 	public static function english( $s ) {
 		if ( ! is_string( $s ) || '' === $s ) {
 			return $s;
 		}
 		if ( null === self::$rev ) {
 			self::$rev = array();
-			$locale    = function_exists( 'determine_locale' ) ? determine_locale() : 'en_US';
-			if ( 0 !== strpos( $locale, 'en' ) && function_exists( 'get_translations_for_domain' ) ) {
-				$tr = get_translations_for_domain( 'nightward' );
-				$entries = isset( $tr->entries ) ? $tr->entries : array();
-				foreach ( (array) $entries as $entry ) {
-					if ( ! empty( $entry->translations ) ) {
-						foreach ( $entry->translations as $i => $t ) {
-							if ( '' !== $t ) {
-								self::$rev[ $t ] = 0 === $i || null === $entry->plural ? $entry->singular : $entry->plural;
-							}
+			if ( ! class_exists( '\MO' ) && defined( 'ABSPATH' ) && defined( 'WPINC' ) ) {
+				require_once ABSPATH . WPINC . '/pomo/mo.php';
+			}
+			$files = array_merge(
+				(array) glob( NIGHTWARD_DIR . 'languages/nightward-*.mo' ),
+				defined( 'WP_LANG_DIR' ) ? (array) glob( WP_LANG_DIR . '/plugins/nightward-*.mo' ) : array()
+			);
+			foreach ( array_filter( $files ) as $file ) {
+				if ( ! class_exists( '\MO' ) ) {
+					break;
+				}
+				$mo = new \MO();
+				if ( ! $mo->import_from_file( $file ) ) {
+					continue;
+				}
+				foreach ( $mo->entries as $entry ) {
+					foreach ( (array) $entry->translations as $i => $t ) {
+						if ( '' !== $t && ! isset( self::$rev[ $t ] ) ) {
+							self::$rev[ $t ] = ( 0 === $i || null === $entry->plural ) ? $entry->singular : $entry->plural;
 						}
 					}
 				}
@@ -89,7 +102,7 @@ class Events {
 	/** Stored English string → current language. */
 	public static function tr( $s ) {
 		// phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
-		return is_string( $s ) && '' !== $s && strlen( $s ) < 600 ? __( $s, 'nightward' ) : $s;
+		return is_string( $s ) && '' !== $s && strlen( $s ) < 600 ? __( self::english( $s ), 'nightward' ) : $s;
 	}
 
 	/** Stored string or array( format, ...args ) → current language. */

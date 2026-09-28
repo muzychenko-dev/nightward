@@ -9,6 +9,7 @@ use Nightward\Attribution;
 use Nightward\Cron;
 use Nightward\DB;
 use Nightward\Events;
+use Nightward\Export;
 use Nightward\Installer;
 use Nightward\Plugin;
 use Nightward\Reports;
@@ -33,7 +34,8 @@ class Admin {
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'assets' ) );
 		add_action( 'admin_post_nightward_save', array( __CLASS__, 'save_settings' ) );
 		add_action( 'admin_post_nightward_preview', array( __CLASS__, 'preview_report' ) );
-		foreach ( array( 'status', 'integrity', 'hardening', 'test_email', 'trust_host', 'accept' ) as $a ) {
+		add_action( 'admin_post_nightward_export', array( __CLASS__, 'download_export' ) );
+		foreach ( array( 'status', 'integrity', 'hardening', 'test_email', 'trust_host', 'accept', 'export_text' ) as $a ) {
 			add_action( 'wp_ajax_nightward_' . $a, array( __CLASS__, 'ajax_' . $a ) );
 		}
 		add_filter( 'plugin_action_links_' . plugin_basename( NIGHTWARD_FILE ), array( __CLASS__, 'action_links' ) );
@@ -71,6 +73,9 @@ class Admin {
 			'ajax'  => admin_url( 'admin-ajax.php' ),
 			'nonce' => wp_create_nonce( 'nightward' ),
 			'i18n'  => array(
+				'copied'     => __( 'Copied. Paste it into ChatGPT, Claude, Gemini or another assistant.', 'nightward' ),
+				'copyFailed' => __( 'The browser blocked copying. The text is selected below: press Ctrl+C.', 'nightward' ),
+				'preparing'  => __( 'Preparing…', 'nightward' ),
 				'scanning'   => __( 'Scanning…', 'nightward' ),
 				'scanDone'   => __( 'Scan finished.', 'nightward' ),
 				/* translators: 1: done, 2: total, 3: files */
@@ -110,6 +115,7 @@ class Admin {
 			'hooks'     => __( 'Hooks & Cron', 'nightward' ),
 			'integrity' => __( 'Integrity', 'nightward' ),
 			'hardening' => __( 'Hardening', 'nightward' ),
+			'export'    => __( 'AI export', 'nightward' ),
 			'settings'  => __( 'Settings', 'nightward' ),
 		);
 	}
@@ -213,7 +219,7 @@ class Admin {
 				echo '<li>' . self::pill( $r->severity ) . ' <a href="' . esc_url( self::url( 'events', array( 'event' => $r->id ) ) ) . '">' . esc_html( Events::title( $r ) ) . '</a>'; // phpcs:ignore
 				echo '<div class="nw-meta">' . esc_html( Events::module_label( $r->module ) ) . ' · ' . esc_html( Util::ago( $r->last_seen ) ) . ' ' . self::where( $r ) . '</div></li>'; // phpcs:ignore
 			}
-			echo '</ul><p><a class="button" href="' . esc_url( self::url( 'events', array( 'status' => 'open' ) ) ) . '">' . esc_html__( 'All open events', 'nightward' ) . '</a></p>';
+			echo '</ul><p class="nw-actions"><a class="button" href="' . esc_url( self::url( 'events', array( 'status' => 'open' ) ) ) . '">' . esc_html__( 'All open events', 'nightward' ) . '</a> <a class="button-link" href="' . esc_url( self::url( 'export' ) ) . '">' . esc_html__( 'Ask an AI assistant about these findings', 'nightward' ) . '</a></p>';
 		}
 		echo '</section>';
 
@@ -359,6 +365,7 @@ class Admin {
 		if ( $event || array_filter( $f ) ) {
 			echo ' <a class="button-link" href="' . esc_url( self::url( 'events' ) ) . '">' . esc_html__( 'Reset', 'nightward' ) . '</a>';
 		}
+		echo '<a class="button-link nw-push" href="' . esc_url( self::url( 'export' ) ) . '">' . esc_html__( 'Export for AI analysis', 'nightward' ) . '</a>';
 		echo '</form>';
 
 		if ( ! $rows ) {
@@ -589,6 +596,76 @@ class Admin {
 
 	private static function field_check( $key, $label, $desc = '' ) {
 		printf( '<label class="nw-switch"><input type="checkbox" name="nw[%1$s]" value="1" %2$s><span class="nw-switch-ui"></span><span class="nw-switch-text"><b>%3$s</b>%4$s</span></label>', esc_attr( $key ), checked( (int) Settings::get( $key ), 1, false ), esc_html( $label ), $desc ? '<small>' . esc_html( $desc ) . '</small>' : '' );
+	}
+
+	/* ================================================================== */
+	/* AI export                                                          */
+	/* ================================================================== */
+
+	private static function tab_export() {
+		$d = Export::defaults();
+		echo '<section class="nw-card nw-export"><h2>' . esc_html__( 'Export for AI analysis', 'nightward' ) . '</h2>';
+		echo '<p class="nw-lead">' . esc_html__( 'One file with everything an AI assistant needs to review this site: instructions for the assistant, site context, findings with file and line, installed plugins and themes, outbound hosts, sensitive hooks, scheduled tasks, hardening and integrity results. Download it or copy it, paste it into ChatGPT, Claude, Gemini or another assistant, and ask your question. No need to explain what the file is.', 'nightward' ) . '</p>';
+		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" data-nw-export>';
+		wp_nonce_field( 'nightward_export' );
+		echo '<input type="hidden" name="action" value="nightward_export">';
+		echo '<div class="nw-row2">';
+		echo '<label><span>' . esc_html__( 'Format', 'nightward' ) . '</span><select name="format" id="nw-export-format"><option value="md">' . esc_html__( 'Markdown (.md) - best for chat', 'nightward' ) . '</option><option value="json">' . esc_html__( 'JSON (.json) - structured', 'nightward' ) . '</option></select></label>';
+		echo '<label><span>' . esc_html__( 'Period', 'nightward' ) . '</span><select name="days" id="nw-export-days">';
+		foreach ( array( 7 => __( 'Last 7 days', 'nightward' ), 30 => __( 'Last 30 days', 'nightward' ), 90 => __( 'Last 90 days', 'nightward' ), 0 => __( 'All time', 'nightward' ) ) as $v => $l ) {
+			printf( '<option value="%d" %s>%s</option>', (int) $v, selected( $d['days'], $v, false ), esc_html( $l ) );
+		}
+		echo '</select></label>';
+		echo '<label><span>' . esc_html__( 'Findings', 'nightward' ) . '</span><select name="status" id="nw-export-status"><option value="active">' . esc_html__( 'Open and acknowledged', 'nightward' ) . '</option><option value="all">' . esc_html__( 'All, including resolved and ignored', 'nightward' ) . '</option></select></label>';
+		echo '<label><span>' . esc_html__( 'Minimum severity', 'nightward' ) . '</span><select name="min_severity" id="nw-export-sev">';
+		foreach ( Events::SEVERITIES as $sev ) {
+			printf( '<option value="%s" %s>%s</option>', esc_attr( $sev ), selected( $d['min_severity'], $sev, false ), esc_html( Events::severity_label( $sev ) ) );
+		}
+		echo '</select></label></div>';
+		echo '<label class="nw-switch"><input type="checkbox" name="inventory" value="1" checked><span class="nw-switch-ui"></span><span class="nw-switch-text"><b>' . esc_html__( 'Include site inventory', 'nightward' ) . '</b><small>' . esc_html__( 'Installed plugins and themes, outbound hosts, sensitive hooks and scheduled tasks. Lets the assistant confirm or dismiss findings.', 'nightward' ) . '</small></span></label>';
+		echo '<label class="nw-switch"><input type="checkbox" name="redact" value="1" checked><span class="nw-switch-ui"></span><span class="nw-switch-text"><b>' . esc_html__( 'Hide the site address, e-mail and IP addresses', 'nightward' ) . '</b><small>' . esc_html__( 'Recommended before pasting into an online service. User logins, plugin names and file paths stay, because the analysis needs them.', 'nightward' ) . '</small></span></label>';
+		echo '<p class="nw-actions"><button class="button button-primary">' . esc_html__( 'Download file', 'nightward' ) . '</button> <button type="button" class="button" data-nw-export-copy>' . esc_html__( 'Copy to clipboard', 'nightward' ) . '</button> <span class="nw-inline-status" data-nw-status></span></p>';
+		echo '</form><textarea class="nw-export-text" readonly hidden aria-label="' . esc_attr__( 'Export text', 'nightward' ) . '"></textarea></section>';
+
+		echo '<section class="nw-card"><h2>' . esc_html__( 'What the assistant is told', 'nightward' ) . '</h2>';
+		echo '<p class="nw-muted">' . esc_html__( 'The file starts with these instructions, in English, so any assistant understands them. It is asked to answer in your WordPress language.', 'nightward' ) . '</p>';
+		echo '<pre class="nw-pre">' . esc_html( Export::instructions() ) . '</pre>';
+		echo '<p class="nw-muted">' . esc_html__( 'From the command line: wp nightward export > nightward.md', 'nightward' ) . '</p></section>';
+	}
+
+	private static function export_options_from_request() {
+		// phpcs:disable WordPress.Security.NonceVerification -- verified by the callers
+		$in = array(
+			'format'       => isset( $_REQUEST['format'] ) ? sanitize_key( $_REQUEST['format'] ) : 'md',
+			'days'         => isset( $_REQUEST['days'] ) ? (int) $_REQUEST['days'] : 30,
+			'status'       => isset( $_REQUEST['status'] ) ? sanitize_key( $_REQUEST['status'] ) : 'active',
+			'min_severity' => isset( $_REQUEST['min_severity'] ) ? sanitize_key( $_REQUEST['min_severity'] ) : 'low',
+			'inventory'    => ! empty( $_REQUEST['inventory'] ),
+			'redact'       => ! empty( $_REQUEST['redact'] ),
+		);
+		// phpcs:enable
+		return Export::sanitize( $in );
+	}
+
+	public static function download_export() {
+		if ( ! current_user_can( self::CAP ) ) {
+			wp_die( '', 403 );
+		}
+		check_admin_referer( 'nightward_export' );
+		$opt  = self::export_options_from_request();
+		$text = Export::render( Export::build( $opt ), $opt['format'] );
+		nocache_headers();
+		header( 'Content-Type: ' . ( 'json' === $opt['format'] ? 'application/json' : 'text/markdown' ) . '; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="' . Export::filename( $opt ) . '"' );
+		header( 'Content-Length: ' . strlen( $text ) );
+		echo $text; // phpcs:ignore WordPress.Security.EscapeOutput -- file download
+		exit;
+	}
+
+	public static function ajax_export_text() {
+		self::guard();
+		$opt = self::export_options_from_request();
+		wp_send_json_success( array( 'text' => Export::render( Export::build( $opt ), $opt['format'] ) ) );
 	}
 
 	private static function tab_settings() {

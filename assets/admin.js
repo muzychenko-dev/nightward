@@ -75,6 +75,49 @@
 			return;
 		}
 
+		// AI export: copy to clipboard
+		if ( ( b = e.target.closest( '[data-nw-export-copy]' ) ) ) {
+			var form = b.closest( 'form' );
+			var st2 = statusEl( b );
+			var area = document.querySelector( '.nw-export-text' );
+			var fd = new FormData( form );
+			var data = {};
+			fd.forEach( function ( v, k ) {
+				if ( k !== 'action' && k !== '_wpnonce' && k !== '_wp_http_referer' ) {
+					data[ k ] = v;
+				}
+			} );
+			b.disabled = true;
+			setStatus( st2, t.preparing );
+			post( 'export_text', data ).then( function ( r ) {
+				b.disabled = false;
+				if ( ! r.success ) {
+					setStatus( st2, t.failed, 'is-err' );
+					return;
+				}
+				var text = r.data.text;
+				var fallback = function () {
+					area.hidden = false;
+					area.value = text;
+					area.focus();
+					area.select();
+					setStatus( st2, t.copyFailed, 'is-err' );
+				};
+				if ( navigator.clipboard && navigator.clipboard.writeText ) {
+					navigator.clipboard.writeText( text ).then( function () {
+						area.hidden = true;
+						setStatus( st2, t.copied, 'is-ok' );
+					}, fallback );
+				} else {
+					fallback();
+				}
+			} ).catch( function () {
+				b.disabled = false;
+				setStatus( st2, t.failed, 'is-err' );
+			} );
+			return;
+		}
+
 		// Trust host
 		if ( ( b = e.target.closest( '[data-nw-trust]' ) ) ) {
 			b.disabled = true;

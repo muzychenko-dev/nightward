@@ -2,7 +2,7 @@
 
 Runtime security monitor for WordPress. Most security plugins look at files and requests from the outside. Nightward watches what installed plugins and themes actually **do** inside the site, names the file and line that did it, and e-mails you a daily report. Critical findings are e-mailed the moment they happen.
 
-- Version: 1.0.2
+- Version: 1.1.0
 - Requires: WordPress 6.2+, PHP 7.4+
 - Languages: English, Ukrainian
 - Website: https://nightward.muzychenko.dev
@@ -27,6 +27,24 @@ Runtime security monitor for WordPress. Most security plugins look at files and 
 - **Daily report** at a configurable local time (default 20:00, site timezone). "All clear" is sent too by default: if the e-mail stops arriving, the site, WP-Cron or Nightward stopped working.
 - **Instant alerts** for critical (optionally also high) findings, at the moment of detection, rate-limited per hour; the rest is combined into one message.
 - Rendered in the recipient's language when the recipient is a user of the site. Events are stored language-independently and translated when displayed.
+
+## Export for AI analysis
+
+**Nightward → AI export** builds one file you can paste into ChatGPT, Claude, Gemini or any other assistant:
+
+- instructions for the assistant (what Nightward is, how to read the file, how to triage, which language to answer in), so you only ask your question;
+- site context, findings with severity, file and line, and all recorded details;
+- optional inventory: installed plugins and themes, outbound hosts, callbacks on sensitive hooks, scheduled tasks;
+- hardening and file integrity results.
+
+Markdown (best for chat) or JSON. Filters for period, status and minimum severity. The site address, e-mail and IP addresses are masked by default. Download the file or copy it to the clipboard.
+
+From the command line:
+
+```
+wp nightward export > nightward.md
+wp nightward export --format=json --days=7 --min-severity=high --file=report.json
+```
 
 ## How it starts early
 

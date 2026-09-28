@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( ! defined( 'NIGHTWARD_VERSION' ) ) {
-	define( 'NIGHTWARD_VERSION', '1.0.2' );
+	define( 'NIGHTWARD_VERSION', '1.1.0' );
 }
 if ( ! defined( 'NIGHTWARD_FILE' ) ) {
 	define( 'NIGHTWARD_FILE', dirname( __DIR__ ) . '/nightward.php' );
@@ -27,6 +27,7 @@ $nightward_files = array(
 	'class-installer.php',
 	'class-cron.php',
 	'class-reports.php',
+	'class-export.php',
 	'monitor/class-outbound.php',
 	'monitor/class-hooks-watch.php',
 	'monitor/class-privilege-guard.php',

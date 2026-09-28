@@ -188,6 +188,14 @@
 .nw-check-fix { margin-top: 4px; font-size: 13px; color: var(--nw-ink-2); }
 .nw-fix { display: inline-block; margin-top: 6px; font-size: 12px; background: var(--nw-line-2); border-radius: 6px; padding: 3px 8px; }
 
+/* AI export */
+.nw-push { margin-left: auto; }
+.nw-lead { color: var(--nw-ink-2); max-width: 860px; line-height: 1.6; margin: 0 0 16px; }
+.nw-export .nw-row2 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.nw-export .nw-actions { margin-top: 14px; }
+.nw-pre { white-space: pre-wrap; background: var(--nw-line-2); border-radius: 10px; padding: 14px 16px; font-size: 12.5px; line-height: 1.6; max-height: 420px; overflow: auto; margin: 0 0 12px; }
+.nw-export-text { width: 100%; min-height: 220px; margin-top: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+
 /* Settings */
 .nw-settings .nw-card { max-width: 900px; }
 .nw-switch { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; padding: 8px 0; }
@@ -212,7 +220,7 @@
 }
 @media (max-width: 782px) {
 	.nw { margin-right: 10px; }
-	.nw-grid, .nw-modules, .nw-row2, .nw-switches { grid-template-columns: 1fr; }
+	.nw-grid, .nw-modules, .nw-row2, .nw-switches, .nw-export .nw-row2 { grid-template-columns: 1fr; }
 	.nw-span-2 { grid-column: auto; }
 	.nw-counters { flex-wrap: wrap; }
 	.nw-kv { grid-template-columns: 1fr; }

@@ -61,6 +61,10 @@ final class Plugin {
 			require_once NIGHTWARD_DIR . 'admin/class-admin.php';
 			Admin\Admin::init();
 		}
+		if ( defined( 'WP_CLI' ) && WP_CLI && class_exists( '\WP_CLI' ) ) {
+			require_once NIGHTWARD_DIR . 'includes/class-cli.php';
+			\WP_CLI::add_command( 'nightward', 'Nightward\\CLI' );
+		}
 	}
 
 	public function load_textdomain() {
