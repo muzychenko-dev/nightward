@@ -1,0 +1,2402 @@
+# Copyright (C) 2026 Ihor Muzychenko
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Nightward 1.0.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/nightward\n"
+"POT-Creation-Date: 2026-09-28T18:11:54+00:00\n"
+"PO-Revision-Date: 2026-09-28 18:11+0000\n"
+"Last-Translator: Ihor Muzychenko\n"
+"Language-Team: Ukrainian\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Domain: nightward\n"
+"X-Generator: WP-CLI 2.11.0\n"
+
+#. Plugin Name of the plugin
+#: nightward.php includes/class-events.php:48
+msgid "Nightward"
+msgstr "Nightward"
+
+#. Plugin URI of the plugin
+#: nightward.php
+msgid "https://nightward.muzychenko.dev"
+msgstr "https://nightward.muzychenko.dev"
+
+#. Description of the plugin
+#: nightward.php
+msgid ""
+"Runtime security monitor: sees what plugins and themes actually do — "
+"outbound requests, faked HTTP responses, new hooks on login and capability "
+"checks, administrators created from code, file changes in premium plugins — "
+"and emails you a daily report."
+msgstr ""
+"Монітор безпеки під час роботи сайту: бачить, що плагіни й теми роблять "
+"насправді - вихідні запити, підроблені HTTP-відповіді, нові хуки на вході та"
+" перевірці прав, адміністраторів, створених кодом, зміни файлів преміум-"
+"плагінів - і щодня надсилає звіт на пошту."
+
+#. Author of the plugin
+#: nightward.php
+msgid "Ihor Muzychenko"
+msgstr "Ігор Музиченко"
+
+#. Author URI of the plugin
+#: nightward.php
+msgid "https://muzychenko.dev"
+msgstr "https://muzychenko.dev"
+
+#: admin/class-admin.php:56 admin/class-admin.php:113
+msgid "Settings"
+msgstr "Налаштування"
+
+#: admin/class-admin.php:74
+msgid "Scanning…"
+msgstr "Сканування…"
+
+#: admin/class-admin.php:75
+msgid "Scan finished."
+msgstr "Сканування завершено."
+
+#. translators: 1: done, 2: total, 3: files
+#: admin/class-admin.php:77
+msgid "%1$s of %2$s packages · %3$s files"
+msgstr "%1$s з %2$s пакетів · %3$s файлів"
+
+#: admin/class-admin.php:78
+msgid "Running checks…"
+msgstr "Перевірка…"
+
+#: admin/class-admin.php:79
+msgid "Sending…"
+msgstr "Надсилання…"
+
+#: admin/class-admin.php:80
+msgid "Sent. Check the inbox (and spam folder)."
+msgstr "Надіслано. Перевірте вхідні (і папку «Спам»)."
+
+#: admin/class-admin.php:81
+msgid "Failed"
+msgstr "Помилка"
+
+#: admin/class-admin.php:82
+msgid ""
+"Accept the current files of this package as the new reference? Do this only "
+"after you verified the changes."
+msgstr ""
+"Прийняти поточні файли цього пакета як новий еталон? Робіть це лише після "
+"того, як перевірили зміни."
+
+#: admin/class-admin.php:83 admin/class-admin.php:470
+msgid "Trusted"
+msgstr "Довірений"
+
+#: admin/class-admin.php:84 admin/class-admin.php:385
+msgid "Details"
+msgstr "Деталі"
+
+#: admin/class-admin.php:85 admin/class-admin.php:385
+msgid "Hide"
+msgstr "Сховати"
+
+#: admin/class-admin.php:97
+msgid ""
+"WP-Cron does not seem to run, so scheduled scans and the daily report can be"
+" late or missing. Configure a real cron job that requests wp-cron.php every "
+"5 minutes."
+msgstr ""
+"Схоже, WP-Cron не запускається, тому планові перевірки та щоденний звіт "
+"можуть запізнюватися або не надходити. Налаштуйте справжнє cron-завдання, "
+"яке викликає wp-cron.php кожні 5 хвилин."
+
+#: admin/class-admin.php:107
+msgid "Overview"
+msgstr "Огляд"
+
+#: admin/class-admin.php:108
+msgid "Events"
+msgstr "Події"
+
+#: admin/class-admin.php:109 includes/class-reports.php:235
+msgid "Network"
+msgstr "Мережа"
+
+#: admin/class-admin.php:110
+msgid "Hooks & Cron"
+msgstr "Хуки й Cron"
+
+#: admin/class-admin.php:111
+msgid "Integrity"
+msgstr "Цілісність"
+
+#: admin/class-admin.php:112 admin/class-admin.php:293
+#: admin/class-admin.php:559 includes/class-events.php:47
+msgid "Hardening"
+msgstr "Захищеність"
+
+#: admin/class-admin.php:139
+msgid "Settings saved."
+msgstr "Налаштування збережено."
+
+#: admin/class-admin.php:151
+msgid "Open"
+msgstr "Відкрита"
+
+#: admin/class-admin.php:152
+msgid "Acknowledged"
+msgstr "Переглянута"
+
+#: admin/class-admin.php:153
+msgid "Resolved"
+msgstr "Вирішена"
+
+#: admin/class-admin.php:154
+msgid "Ignored"
+msgstr "Ігнорується"
+
+#: admin/class-admin.php:178 includes/class-reports.php:321
+msgid "Action required"
+msgstr "Потрібна дія"
+
+#: admin/class-admin.php:179 includes/class-reports.php:321
+msgid "Needs your attention"
+msgstr "Потребує вашої уваги"
+
+#: admin/class-admin.php:180
+msgid "A few things are worth a look"
+msgstr "Є кілька речей, на які варто глянути"
+
+#: admin/class-admin.php:181 includes/class-reports.php:318
+msgid "All clear"
+msgstr "Усе чисто"
+
+#: admin/class-admin.php:184
+msgid ""
+"Nightward found signs of compromise or dangerous changes. Start with the "
+"items below."
+msgstr ""
+"Nightward знайшов ознаки зламу або небезпечні зміни. Почніть із пунктів "
+"нижче."
+
+#: admin/class-admin.php:185
+msgid ""
+"There are findings that can mean a problem. Review them and mark what is "
+"expected."
+msgstr ""
+"Є знахідки, які можуть означати проблему. Перегляньте їх і позначте "
+"очікувані."
+
+#: admin/class-admin.php:186
+msgid ""
+"Nothing urgent. Some findings are worth reviewing when you have a minute."
+msgstr ""
+"Нічого термінового. Деякі знахідки варто переглянути, коли буде хвилина."
+
+#: admin/class-admin.php:187
+msgid "No open critical, high or medium findings. Monitors are running."
+msgstr ""
+"Немає відкритих критичних, високих чи середніх знахідок. Монітори працюють."
+
+#: admin/class-admin.php:191
+msgid "Site status"
+msgstr "Стан сайту"
+
+#. translators: %s: time left
+#: admin/class-admin.php:197
+msgid ""
+"Learning mode: for the next %s Nightward records the normal behaviour of "
+"this site (hosts, hooks, scheduled tasks) without reporting it. Critical "
+"findings are still reported."
+msgstr ""
+"Режим навчання: протягом наступних %s Nightward запам'ятовує нормальну "
+"поведінку сайту (хости, хуки, заплановані завдання) і не повідомляє про неї."
+" Критичні знахідки все одно надходять."
+
+#: admin/class-admin.php:207 includes/class-reports.php:359
+msgid "Needs attention"
+msgstr "Потребує уваги"
+
+#: admin/class-admin.php:209
+msgid "Nothing critical or high is open."
+msgstr "Немає відкритих критичних чи високих подій."
+
+#: admin/class-admin.php:216
+msgid "All open events"
+msgstr "Усі відкриті події"
+
+#: admin/class-admin.php:222
+msgid "E-mail reports"
+msgstr "Звіти на пошту"
+
+#: admin/class-admin.php:223 admin/class-admin.php:600
+msgid "Daily report"
+msgstr "Щоденний звіт"
+
+#. translators: %s: time
+#: admin/class-admin.php:223
+msgid "every day at %s"
+msgstr "щодня о %s"
+
+#. translators: %s: time
+#: admin/class-admin.php:223 admin/class-admin.php:226
+msgid "off"
+msgstr "вимкнено"
+
+#. translators: %s: time
+#: admin/class-admin.php:224
+msgid "Next report"
+msgstr "Наступний звіт"
+
+#: admin/class-admin.php:225
+msgid "Last sent"
+msgstr "Останній надіслано"
+
+#: admin/class-admin.php:225 admin/class-admin.php:267
+#: admin/class-admin.php:289
+msgid "not yet"
+msgstr "ще ні"
+
+#: admin/class-admin.php:226 admin/class-admin.php:609
+msgid "Instant alerts"
+msgstr "Миттєві сповіщення"
+
+#: admin/class-admin.php:226
+msgid "critical only"
+msgstr "лише критичні"
+
+#: admin/class-admin.php:226
+msgid "critical and high"
+msgstr "критичні й високі"
+
+#: admin/class-admin.php:227
+msgid "Recipient"
+msgstr "Отримувач"
+
+#: admin/class-admin.php:229
+msgid "Last error"
+msgstr "Остання помилка"
+
+#: admin/class-admin.php:229
+msgid "wp_mail() returned false"
+msgstr "wp_mail() повернула false"
+
+#: admin/class-admin.php:231 admin/class-admin.php:613
+msgid "Send test report"
+msgstr "Надіслати тестовий звіт"
+
+#: admin/class-admin.php:232
+msgid "Preview"
+msgstr "Попередній перегляд"
+
+#: admin/class-admin.php:236 admin/class-admin.php:616
+msgid "Monitors"
+msgstr "Монітори"
+
+#. translators: 1: files, 2: time ago, 3: problems
+#. translators: %s: human time difference, e.g. "5 mins"
+#: admin/class-admin.php:267 admin/class-admin.php:519
+#: includes/class-reports.php:407 includes/class-util.php:133
+msgid "%s ago"
+msgstr "%s тому"
+
+#: admin/class-admin.php:270 includes/class-events.php:38
+#: includes/class-reports.php:411
+msgid "Outbound requests"
+msgstr "Вихідні запити"
+
+#: admin/class-admin.php:270
+msgid ""
+"Every HTTP request of the site, attributed to the plugin file and line that "
+"made it. Faked responses are traced to the exact callback."
+msgstr ""
+"Кожен HTTP-запит сайту з прив'язкою до файлу й рядка плагіна, який його "
+"зробив. Підроблені відповіді відстежуються до конкретного callback."
+
+#. translators: 1: hosts, 2: faked
+#: admin/class-admin.php:272
+msgid "24 h: %1$d hosts · %2$d faked"
+msgstr "24 год: %1$d хостів · %2$d підроблено"
+
+#: admin/class-admin.php:273 admin/class-admin.php:618
+#: includes/class-events.php:40
+msgid "Sensitive hooks"
+msgstr "Чутливі хуки"
+
+#: admin/class-admin.php:273
+msgid ""
+"Who can influence login, permissions, the users/plugins lists and the update"
+" channel. New callbacks and eval()-made code are reported."
+msgstr ""
+"Хто може впливати на вхід, права, списки користувачів і плагінів та канал "
+"оновлень. Нові callback і код, створений через eval(), потрапляють у звіт."
+
+#. translators: %d: count
+#: admin/class-admin.php:275
+msgid "%d third-party callbacks watched"
+msgstr "Під наглядом сторонніх callback: %d"
+
+#: admin/class-admin.php:276 admin/class-admin.php:619
+#: includes/class-events.php:41
+msgid "Users & privileges"
+msgstr "Користувачі та права"
+
+#: admin/class-admin.php:276
+msgid ""
+"Administrators created by code, via direct SQL or hidden from the Users "
+"list; credential changes, application passwords, logins from new networks."
+msgstr ""
+"Адміністратори, створені кодом, прямим SQL або приховані зі списку "
+"користувачів; зміна облікових даних, паролі застосунків, входи з нових "
+"мереж."
+
+#. translators: %d: count
+#: admin/class-admin.php:278
+msgid "%d administrator"
+msgid_plural "%d administrators"
+msgstr[0] "%d адміністратор"
+msgstr[1] "%d адміністратори"
+msgstr[2] "%d адміністраторів"
+
+#: admin/class-admin.php:279 admin/class-admin.php:620
+#: includes/class-events.php:42
+msgid "Options"
+msgstr "Опції"
+
+#: admin/class-admin.php:279
+msgid ""
+"Site URL, admin e-mail, default role, role capabilities, plugin activation "
+"by code; options written on every page view; autoload weight."
+msgstr ""
+"URL сайту, e-mail адміністратора, роль за замовчуванням, права ролей, "
+"активація плагінів кодом; опції, що записуються на кожному перегляді; вага "
+"autoload."
+
+#. translators: %s: size
+#: admin/class-admin.php:281
+msgid "autoload %s"
+msgstr "autoload %s"
+
+#: admin/class-admin.php:282 admin/class-admin.php:497
+#: admin/class-admin.php:621 includes/class-events.php:43
+#: includes/class-reports.php:418
+msgid "Scheduled tasks"
+msgstr "Заплановані завдання"
+
+#: admin/class-admin.php:282
+msgid ""
+"New WP-Cron tasks, random names, code in arguments, tasks without a handler."
+msgstr ""
+"Нові завдання WP-Cron, випадкові імена, код в аргументах, завдання без "
+"обробника."
+
+#. translators: 1: tasks, 2: overdue
+#: admin/class-admin.php:284
+msgid "%1$d tasks · %2$d overdue"
+msgstr "%1$d завдань · %2$d прострочено"
+
+#: admin/class-admin.php:285 admin/class-admin.php:516
+#: admin/class-admin.php:622 includes/class-events.php:44
+#: includes/class-reports.php:404
+msgid "File integrity"
+msgstr "Цілісність файлів"
+
+#: admin/class-admin.php:285
+msgid ""
+"Core and WordPress.org plugins against official checksums; premium plugins "
+"and themes against their own first snapshot."
+msgstr ""
+"Ядро і плагіни з WordPress.org - за офіційними контрольними сумами; преміум-"
+"плагіни й теми - за їхнім першим знімком."
+
+#. translators: 1: files, 2: time
+#: admin/class-admin.php:287
+msgid "%1$s files · %2$s"
+msgstr "%1$s файлів · %2$s"
+
+#. translators: 1: files, 2: time
+#: admin/class-admin.php:287 includes/class-reports.php:408
+msgid "first scan pending"
+msgstr "очікує першого сканування"
+
+#: admin/class-admin.php:288 admin/class-admin.php:623
+#: includes/class-events.php:45
+msgid "Executable files"
+msgstr "Виконувані файли"
+
+#: admin/class-admin.php:288
+msgid ""
+"Scripts in uploads, PHP hidden in images, .htaccess tricks, unknown files in"
+" wp-content and mu-plugins."
+msgstr ""
+"Скрипти в uploads, PHP у зображеннях, трюки з .htaccess, невідомі файли в "
+"wp-content і mu-plugins."
+
+#: admin/class-admin.php:290 admin/class-admin.php:624
+#: includes/class-events.php:46
+msgid "Update channel"
+msgstr "Канал оновлень"
+
+#: admin/class-admin.php:290
+msgid ""
+"Where updates are downloaded from. Hijacked WordPress.org updates and "
+"packages from unrelated hosts are flagged or blocked."
+msgstr ""
+"Звідки завантажуються оновлення. Перехоплені оновлення з WordPress.org і "
+"пакети з невідповідних хостів позначаються або блокуються."
+
+#. translators: %d: count
+#: admin/class-admin.php:292
+msgid "%d update pending"
+msgid_plural "%d updates pending"
+msgstr[0] "%d оновлення очікує"
+msgstr[1] "%d оновлення очікують"
+msgstr[2] "%d оновлень очікують"
+
+#: admin/class-admin.php:293
+msgid ""
+"Verified from outside: exposed backups and logs, PHP execution in uploads, "
+"XML-RPC, user enumeration, headers."
+msgstr ""
+"Перевіряється ззовні: відкриті бекапи й логи, виконання PHP в uploads, XML-"
+"RPC, перелік користувачів, заголовки."
+
+#. translators: %d: score
+#: admin/class-admin.php:295
+msgid "score %d / 100"
+msgstr "оцінка %d / 100"
+
+#: admin/class-admin.php:300
+msgid "What Nightward cannot see"
+msgstr "Чого Nightward не бачить"
+
+#: admin/class-admin.php:302
+msgid ""
+"Requests made with raw cURL, sockets or file_get_contents() bypass the "
+"WordPress HTTP API and are not logged."
+msgstr ""
+"Запити через «сирий» cURL, сокети чи file_get_contents() оминають HTTP API "
+"WordPress і не записуються."
+
+#: admin/class-admin.php:303
+msgid ""
+"Code that runs before Nightward starts: wp-config.php, drop-ins (db.php, "
+"advanced-cache.php, object-cache.php) and must-use plugins loaded before "
+"\"0-nightward-early.php\"."
+msgstr ""
+"Код, що виконується до старту Nightward: wp-config.php, drop-in файли "
+"(db.php, advanced-cache.php, object-cache.php) і must-use плагіни, які "
+"завантажуються раніше за «0-nightward-early.php»."
+
+#: admin/class-admin.php:304
+msgid ""
+"Direct database edits are found by the hourly audit, not at the moment they "
+"happen, and without the file that did it."
+msgstr ""
+"Прямі зміни в базі даних знаходить щогодинний аудит - не в момент зміни і "
+"без файлу, який її зробив."
+
+#: admin/class-admin.php:305
+msgid ""
+"Premium plugins and themes are trusted as they are at the first scan. If "
+"they were already modified, only later changes are detected."
+msgstr ""
+"Преміум-плагіни й теми вважаються довіреними в тому стані, в якому вони були"
+" під час першого сканування. Якщо їх уже змінили, виявляються лише наступні "
+"зміни."
+
+#: admin/class-admin.php:306
+msgid ""
+"Nightward detects and reports; it is not a firewall. Someone with access to "
+"the server can disable any plugin, including this one — if the daily e-mail "
+"stops arriving, treat the silence as an alarm."
+msgstr ""
+"Nightward виявляє і повідомляє, це не файрвол. Той, хто має доступ до "
+"сервера, може вимкнути будь-який плагін, зокрема цей - якщо щоденний лист "
+"перестав приходити, вважайте тишу тривогою."
+
+#. translators: %d: count
+#: admin/class-admin.php:334
+msgid "%d event updated."
+msgid_plural "%d events updated."
+msgstr[0] "Оновлено %d подію."
+msgstr[1] "Оновлено %d події."
+msgstr[2] "Оновлено %d подій."
+
+#: admin/class-admin.php:346
+msgid "All severities"
+msgstr "Усі рівні"
+
+#: admin/class-admin.php:350
+msgid "All areas"
+msgstr "Усі розділи"
+
+#: admin/class-admin.php:354
+msgid "Open & acknowledged"
+msgstr "Відкриті й переглянуті"
+
+#: admin/class-admin.php:358
+msgid "Search title, file, plugin…"
+msgstr "Пошук за назвою, файлом, плагіном…"
+
+#: admin/class-admin.php:358
+msgid "Filter"
+msgstr "Фільтрувати"
+
+#: admin/class-admin.php:360
+msgid "Reset"
+msgstr "Скинути"
+
+#: admin/class-admin.php:365
+msgid "No events match."
+msgstr "Немає подій за цими умовами."
+
+#: admin/class-admin.php:371
+msgid "Mark as acknowledged"
+msgstr "Позначити як переглянуті"
+
+#: admin/class-admin.php:371
+msgid "Mark as resolved"
+msgstr "Позначити як вирішені"
+
+#: admin/class-admin.php:371
+msgid "Ignore (never report again)"
+msgstr "Ігнорувати (більше не повідомляти)"
+
+#: admin/class-admin.php:371
+msgid "Reopen"
+msgstr "Відкрити знову"
+
+#: admin/class-admin.php:371
+msgid "Apply"
+msgstr "Застосувати"
+
+#. translators: %d: count
+#: admin/class-admin.php:373
+msgid "%d event"
+msgid_plural "%d events"
+msgstr[0] "%d подія"
+msgstr[1] "%d події"
+msgstr[2] "%d подій"
+
+#: admin/class-admin.php:374
+msgid "Severity"
+msgstr "Рівень"
+
+#: admin/class-admin.php:374
+msgid "Event"
+msgstr "Подія"
+
+#: admin/class-admin.php:374 includes/class-reports.php:226
+msgid "Area"
+msgstr "Розділ"
+
+#: admin/class-admin.php:374
+msgid "Seen"
+msgstr "Коли"
+
+#: admin/class-admin.php:374
+msgid "Status"
+msgstr "Статус"
+
+#: admin/class-admin.php:394 admin/class-admin.php:461
+msgid "First seen"
+msgstr "Уперше"
+
+#: admin/class-admin.php:395 admin/class-admin.php:461
+msgid "Last seen"
+msgstr "Востаннє"
+
+#. translators: %s: domain
+#: admin/class-admin.php:400
+msgid "Trust %s"
+msgstr "Довіряти %s"
+
+#: admin/class-admin.php:424
+msgid ""
+"Every host this site contacted in the last 30 days through the WordPress "
+"HTTP API, grouped by the plugin or theme that made the request. \"Faked\" "
+"means a callback returned a response without the request ever leaving the "
+"server."
+msgstr ""
+"Усі хости, з якими сайт зв'язувався за останні 30 днів через HTTP API "
+"WordPress, згруповані за плагіном чи темою, що зробили запит. «Підроблено» "
+"означає, що callback повернув відповідь, а запит так і не вийшов за межі "
+"сервера."
+
+#: admin/class-admin.php:444
+msgid "Code that can fake HTTP responses"
+msgstr "Код, що може підробляти HTTP-відповіді"
+
+#: admin/class-admin.php:446
+msgid "No plugin or theme is attached to pre_http_request in this request."
+msgstr ""
+"Жоден плагін чи тема не підключені до pre_http_request у цьому запиті."
+
+#: admin/class-admin.php:448 admin/class-admin.php:488
+msgid "Plugin / theme"
+msgstr "Плагін / тема"
+
+#: admin/class-admin.php:448 admin/class-admin.php:488
+#: includes/class-reports.php:224
+msgid "Callback"
+msgstr "Callback"
+
+#: admin/class-admin.php:448 admin/class-admin.php:488
+msgid "Location"
+msgstr "Розташування"
+
+#: admin/class-admin.php:448 includes/class-reports.php:227
+msgid "Priority"
+msgstr "Пріоритет"
+
+#: admin/class-admin.php:456
+msgid "Destinations"
+msgstr "Адреси"
+
+#: admin/class-admin.php:458
+msgid "No outbound requests recorded yet."
+msgstr "Вихідних запитів ще не зафіксовано."
+
+#: admin/class-admin.php:461
+msgid "Host"
+msgstr "Хост"
+
+#: admin/class-admin.php:461 includes/class-reports.php:225
+msgid "Requested by"
+msgstr "Хто запитав"
+
+#: admin/class-admin.php:461
+msgid "Requests"
+msgstr "Запити"
+
+#: admin/class-admin.php:461
+msgid "Faked"
+msgstr "Підроблено"
+
+#: admin/class-admin.php:461
+msgid "Errors"
+msgstr "Помилки"
+
+#: admin/class-admin.php:470
+msgid "Trust"
+msgstr "Довіряти"
+
+#: admin/class-admin.php:481
+msgid ""
+"Third-party code attached to the hooks that decide who is logged in, what "
+"users may do, what the administrator sees and where updates and mail go. "
+"Core callbacks are not listed. A plugin here is not bad by itself — "
+"security, membership and SMTP plugins must hook in — but you should "
+"recognise every line."
+msgstr ""
+"Сторонній код, підключений до хуків, які вирішують, хто увійшов, що "
+"дозволено користувачам, що бачить адміністратор і куди йдуть оновлення та "
+"пошта. Callback ядра не показані. Плагін тут сам по собі не поганий - "
+"плагіни безпеки, членства й SMTP мусять підключатися - але кожен рядок ви "
+"маєте впізнавати."
+
+#: admin/class-admin.php:485
+msgid "Only WordPress core."
+msgstr "Лише ядро WordPress."
+
+#: admin/class-admin.php:488 includes/class-reports.php:226
+msgid "Hook"
+msgstr "Хук"
+
+#: admin/class-admin.php:498
+msgid "Task"
+msgstr "Завдання"
+
+#: admin/class-admin.php:498
+msgid "Runs"
+msgstr "Запуск"
+
+#: admin/class-admin.php:498 includes/class-reports.php:232
+msgid "Next run"
+msgstr "Наступний запуск"
+
+#: admin/class-admin.php:498 includes/class-reports.php:233
+msgid "Handler"
+msgstr "Обробник"
+
+#: admin/class-admin.php:502
+msgid "once"
+msgstr "одноразово"
+
+#: admin/class-admin.php:503
+msgid "overdue"
+msgstr "прострочено"
+
+#: admin/class-admin.php:504
+msgid "no handler (leftover of a removed plugin?)"
+msgstr "без обробника (залишок видаленого плагіна?)"
+
+#. translators: 1: files, 2: time ago, 3: problems
+#: admin/class-admin.php:519
+msgid "Last scan: %1$s files, %2$s, %3$d problem found."
+msgid_plural "Last scan: %1$s files, %2$s, %3$d problems found."
+msgstr[0] "Останнє сканування: %1$s файлів, %2$s, знайдено %3$d проблему."
+msgstr[1] "Останнє сканування: %1$s файлів, %2$s, знайдено %3$d проблеми."
+msgstr[2] "Останнє сканування: %1$s файлів, %2$s, знайдено %3$d проблем."
+
+#: admin/class-admin.php:521
+msgid "No scan finished yet."
+msgstr "Жодне сканування ще не завершено."
+
+#. translators: %s: time
+#: admin/class-admin.php:524
+msgid "Runs automatically every day at %s in small batches."
+msgstr "Запускається автоматично щодня о %s невеликими порціями."
+
+#: admin/class-admin.php:525
+msgid "Scan now"
+msgstr "Сканувати зараз"
+
+#: admin/class-admin.php:528
+msgid "Official checksums"
+msgstr "Офіційні контрольні суми"
+
+#: admin/class-admin.php:529
+msgid "WordPress.org checksums"
+msgstr "Контрольні суми WordPress.org"
+
+#: admin/class-admin.php:530
+msgid "Own snapshot"
+msgstr "Власний знімок"
+
+#: admin/class-admin.php:531
+msgid "Snapshot taken"
+msgstr "Знімок зроблено"
+
+#: admin/class-admin.php:538 includes/class-reports.php:229
+msgid "Package"
+msgstr "Пакет"
+
+#: admin/class-admin.php:538
+msgid "Version"
+msgstr "Версія"
+
+#: admin/class-admin.php:538
+msgid "Verified against"
+msgstr "Порівнюється з"
+
+#: admin/class-admin.php:538
+msgid "Problems"
+msgstr "Проблеми"
+
+#: admin/class-admin.php:541
+msgid "not scanned yet"
+msgstr "ще не скановано"
+
+#: admin/class-admin.php:546
+msgid "Accept current files"
+msgstr "Прийняти поточні файли"
+
+#: admin/class-admin.php:549
+msgid ""
+"\"Own snapshot\" means the package is not on WordPress.org, so Nightward "
+"compares it with the state recorded at the first scan. Changes that come "
+"with a version bump are treated as updates; changes without one are "
+"reported."
+msgstr ""
+"«Власний знімок» означає, що пакета немає на WordPress.org, тож Nightward "
+"порівнює його зі станом, зафіксованим під час першого сканування. Зміни "
+"разом зі зміною версії вважаються оновленням; зміни без неї потрапляють у "
+"звіт."
+
+#. translators: %s: time ago
+#: admin/class-admin.php:560
+msgid "Checked %s ago."
+msgstr "Перевірено %s тому."
+
+#. translators: %s: time ago
+#: admin/class-admin.php:560
+msgid "Not checked yet."
+msgstr "Ще не перевірялося."
+
+#. translators: %s: time ago
+#: admin/class-admin.php:561
+msgid ""
+"Where it matters, checks are done the way an attacker would: by requesting "
+"the file from outside."
+msgstr ""
+"Там, де це важливо, перевірка робиться так, як це зробив би зловмисник: "
+"запитом файлу ззовні."
+
+#: admin/class-admin.php:562
+msgid "Run checks"
+msgstr "Запустити перевірку"
+
+#: admin/class-admin.php:601
+msgid "Send a daily security report"
+msgstr "Надсилати щоденний звіт безпеки"
+
+#: admin/class-admin.php:602
+msgid "Time (site timezone)"
+msgstr "Час (часовий пояс сайту)"
+
+#: admin/class-admin.php:603
+msgid "Recipients"
+msgstr "Отримувачі"
+
+#: admin/class-admin.php:603
+msgid "Comma-separated. Empty = site admin e-mail."
+msgstr "Через кому. Порожньо - e-mail адміністратора сайту."
+
+#. translators: %s: timezone
+#: admin/class-admin.php:605
+msgid "Site timezone: %s. Change it in Settings → General."
+msgstr "Часовий пояс сайту: %s. Змінити можна в Налаштування → Загальні."
+
+#: admin/class-admin.php:606
+msgid "Send the report even when nothing happened"
+msgstr "Надсилати звіт, навіть якщо нічого не сталося"
+
+#: admin/class-admin.php:606
+msgid ""
+"Recommended. A missing \"all clear\" tells you that the site, WP-Cron or "
+"Nightward itself stopped working."
+msgstr ""
+"Рекомендовано. Відсутній лист «усе чисто» підкаже, що сайт, WP-Cron або сам "
+"Nightward перестали працювати."
+
+#: admin/class-admin.php:610
+msgid "E-mail immediately when something serious is detected"
+msgstr "Писати одразу, коли виявлено щось серйозне"
+
+#: admin/class-admin.php:611
+msgid "Alert on"
+msgstr "Сповіщати про"
+
+#: admin/class-admin.php:611
+msgid "Critical only"
+msgstr "Лише критичні"
+
+#: admin/class-admin.php:611
+msgid "Critical and high"
+msgstr "Критичні й високі"
+
+#: admin/class-admin.php:612
+msgid "Maximum alerts per hour"
+msgstr "Максимум сповіщень на годину"
+
+#: admin/class-admin.php:612
+msgid "Anything above is combined into one message."
+msgstr "Усе понад ліміт об'єднується в один лист."
+
+#: admin/class-admin.php:613
+msgid "Preview report"
+msgstr "Попередній перегляд звіту"
+
+#: admin/class-admin.php:617
+msgid "Outbound requests & HTTP interception"
+msgstr "Вихідні запити й перехоплення HTTP"
+
+#: admin/class-admin.php:625
+msgid "Hardening checks"
+msgstr "Перевірки захищеності"
+
+#: admin/class-admin.php:628
+msgid "Advanced"
+msgstr "Додатково"
+
+#: admin/class-admin.php:629
+msgid "Block updates downloaded from hosts unrelated to the plugin vendor"
+msgstr ""
+"Блокувати оновлення, завантажені з хостів, не пов'язаних із розробником "
+"плагіна"
+
+#: admin/class-admin.php:629
+msgid ""
+"Hijacked WordPress.org updates and known malicious hosts are always blocked."
+msgstr ""
+"Перехоплені оновлення з WordPress.org і відомі шкідливі хости блокуються "
+"завжди."
+
+#: admin/class-admin.php:630
+msgid "Start before other plugins (must-use loader)"
+msgstr "Запускатися раніше за інші плагіни (must-use завантажувач)"
+
+#: admin/class-admin.php:630
+msgid ""
+"Lets Nightward see hooks and requests of plugins from their first line."
+msgstr "Дає Nightward бачити хуки й запити плагінів з їхнього першого рядка."
+
+#: admin/class-admin.php:631
+msgid "Trusted hosts"
+msgstr "Довірені хости"
+
+#: admin/class-admin.php:631
+msgid ""
+"One domain per line. Requests and update downloads to these are not "
+"reported."
+msgstr ""
+"Один домен на рядок. Запити й завантаження оновлень на ці адреси не "
+"потрапляють у звіт."
+
+#: admin/class-admin.php:632
+msgid "Daily scan time"
+msgstr "Час щоденного сканування"
+
+#: admin/class-admin.php:633
+msgid "Files per batch"
+msgstr "Файлів за порцію"
+
+#: admin/class-admin.php:634
+msgid "Learning period, hours"
+msgstr "Період навчання, годин"
+
+#: admin/class-admin.php:635
+msgid "Keep resolved events, days"
+msgstr "Зберігати вирішені події, днів"
+
+#: admin/class-admin.php:638
+msgid "Save settings"
+msgstr "Зберегти налаштування"
+
+#: admin/class-admin.php:675
+msgid "Not allowed."
+msgstr "Недостатньо прав."
+
+#: admin/class-admin.php:706
+msgid "wp_mail() failed. Check the SMTP configuration of the site."
+msgstr "wp_mail() не спрацювала. Перевірте налаштування SMTP на сайті."
+
+#: includes/class-attribution.php:167
+msgid "WordPress core"
+msgstr "Ядро WordPress"
+
+#: includes/class-attribution.php:170
+msgid "code executed via eval()"
+msgstr "код, виконаний через eval()"
+
+#. translators: %s: must-use plugin file name
+#: includes/class-attribution.php:174
+msgid "must-use plugin %s"
+msgstr "must-use плагін %s"
+
+#. translators: %s: drop-in file name
+#: includes/class-attribution.php:178
+msgid "drop-in %s"
+msgstr "drop-in %s"
+
+#: includes/class-events.php:27
+msgid "Critical"
+msgstr "Критичний"
+
+#: includes/class-events.php:28
+msgid "High"
+msgstr "Високий"
+
+#: includes/class-events.php:29
+msgid "Medium"
+msgstr "Середній"
+
+#: includes/class-events.php:30
+msgid "Low"
+msgstr "Низький"
+
+#: includes/class-events.php:31
+msgid "Info"
+msgstr "Інфо"
+
+#: includes/class-events.php:39
+msgid "HTTP interception"
+msgstr "Перехоплення HTTP"
+
+#: includes/class-installer.php:30
+msgid ""
+"Nightward activated. Baselines for hooks, outbound hosts and scheduled tasks"
+" are being learned."
+msgstr ""
+"Nightward активовано. Вивчаються еталони хуків, вихідних хостів і "
+"запланованих завдань."
+
+#: includes/class-installer.php:54
+msgid "Cannot create the mu-plugins directory."
+msgstr "Не вдається створити теку mu-plugins."
+
+#: includes/class-installer.php:74
+msgid ""
+"mu-plugins is not writable; Nightward will start later than other plugins."
+msgstr ""
+"Тека mu-plugins недоступна для запису; Nightward стартуватиме пізніше за "
+"інші плагіни."
+
+#. translators: 1: severity, 2: site, 3: title
+#: includes/class-reports.php:82
+msgid "[Nightward] %1$s on %2$s: %3$s"
+msgstr "[Nightward] %1$s на %2$s: %3$s"
+
+#. translators: 1: count, 2: site
+#: includes/class-reports.php:84
+msgid "[Nightward] %1$d security alert on %2$s"
+msgid_plural "[Nightward] %1$d security alerts on %2$s"
+msgstr[0] "[Nightward] %1$d сповіщення безпеки на %2$s"
+msgstr[1] "[Nightward] %1$d сповіщення безпеки на %2$s"
+msgstr[2] "[Nightward] %1$d сповіщень безпеки на %2$s"
+
+#. translators: %d: number of critical findings
+#: includes/class-reports.php:152
+msgid "%d critical"
+msgid_plural "%d critical"
+msgstr[0] "%d критична"
+msgstr[1] "%d критичні"
+msgstr[2] "%d критичних"
+
+#. translators: %d: number of high-severity findings
+#: includes/class-reports.php:156
+msgid "%d high"
+msgid_plural "%d high"
+msgstr[0] "%d висока"
+msgstr[1] "%d високі"
+msgstr[2] "%d високих"
+
+#. translators: %d: number of medium-severity findings
+#: includes/class-reports.php:160
+msgid "%d medium"
+msgid_plural "%d medium"
+msgstr[0] "%d середня"
+msgstr[1] "%d середні"
+msgstr[2] "%d середніх"
+
+#: includes/class-reports.php:162
+msgid "[Nightward test]"
+msgstr "[Nightward тест]"
+
+#. translators: 1: prefix, 2: site, 3: date
+#: includes/class-reports.php:165
+msgid "%1$s %2$s: all clear — %3$s"
+msgstr "%1$s %2$s: усе чисто - %3$s"
+
+#. translators: 1: prefix, 2: site, 3: counts, 4: date
+#: includes/class-reports.php:168
+msgid "%1$s %2$s: %3$s — %4$s"
+msgstr "%1$s %2$s: %3$s - %4$s"
+
+#. translators: %s: site URL
+#: includes/class-reports.php:205
+msgid ""
+"Sent by Nightward from %s. Report time, recipients and alert level can be "
+"changed in Nightward → Settings."
+msgstr ""
+"Надіслано Nightward із %s. Час звіту, отримувачів і рівень сповіщень можна "
+"змінити в Nightward → Налаштування."
+
+#: includes/class-reports.php:223
+msgid "URL"
+msgstr "URL"
+
+#: includes/class-reports.php:223 includes/class-reports.php:238
+msgid "Method"
+msgstr "Метод"
+
+#: includes/class-reports.php:223
+msgid "Reason"
+msgstr "Причина"
+
+#: includes/class-reports.php:224
+msgid "Request type"
+msgstr "Тип запиту"
+
+#: includes/class-reports.php:224
+msgid "Fake HTTP status"
+msgstr "Підроблений HTTP-статус"
+
+#: includes/class-reports.php:225
+msgid "Fake response"
+msgstr "Підроблена відповідь"
+
+#: includes/class-reports.php:225
+msgid "Returned"
+msgstr "Повернуто"
+
+#: includes/class-reports.php:226
+msgid "Domains faked"
+msgstr "Підроблені домени"
+
+#: includes/class-reports.php:227
+msgid "User"
+msgstr "Користувач"
+
+#: includes/class-reports.php:227
+msgid "E-mail"
+msgstr "E-mail"
+
+#: includes/class-reports.php:228
+msgid "Done by"
+msgstr "Хто зробив"
+
+#: includes/class-reports.php:228
+msgid "Request"
+msgstr "Запит"
+
+#: includes/class-reports.php:228
+msgid "IP address"
+msgstr "IP-адреса"
+
+#: includes/class-reports.php:229
+msgid "Old value"
+msgstr "Старе значення"
+
+#: includes/class-reports.php:229
+msgid "New value"
+msgstr "Нове значення"
+
+#: includes/class-reports.php:230
+msgid "Size"
+msgstr "Розмір"
+
+#: includes/class-reports.php:230
+msgid "Modified"
+msgstr "Змінено"
+
+#: includes/class-reports.php:230
+msgid "Malware indicators"
+msgstr "Ознаки шкідливого коду"
+
+#: includes/class-reports.php:231
+msgid "Beginning of file"
+msgstr "Початок файлу"
+
+#: includes/class-reports.php:231
+msgid "How to fix"
+msgstr "Як виправити"
+
+#: includes/class-reports.php:231
+msgid "What to do"
+msgstr "Що робити"
+
+#: includes/class-reports.php:232
+msgid "Code that can alter updates"
+msgstr "Код, що може змінювати оновлення"
+
+#: includes/class-reports.php:232
+msgid "Recurrence"
+msgstr "Повторення"
+
+#: includes/class-reports.php:233
+msgid "Arguments"
+msgstr "Аргументи"
+
+#: includes/class-reports.php:233
+msgid "Vendor domains"
+msgstr "Домени розробника"
+
+#: includes/class-reports.php:234
+msgid "Note"
+msgstr "Примітка"
+
+#: includes/class-reports.php:234
+msgid "Largest"
+msgstr "Найбільші"
+
+#: includes/class-reports.php:234
+msgid "Files"
+msgstr "Файли"
+
+#: includes/class-reports.php:235
+msgid "Old e-mail"
+msgstr "Старий e-mail"
+
+#: includes/class-reports.php:235
+msgid "New e-mail"
+msgstr "Новий e-mail"
+
+#: includes/class-reports.php:236
+msgid "Browser"
+msgstr "Браузер"
+
+#: includes/class-reports.php:236
+msgid "Blocked"
+msgstr "Заблоковано"
+
+#: includes/class-reports.php:236
+msgid "Hint"
+msgstr "Підказка"
+
+#: includes/class-reports.php:237
+msgid "Registered"
+msgstr "Зареєстрований"
+
+#: includes/class-reports.php:237
+msgid "File owner"
+msgstr "Власник файлу"
+
+#: includes/class-reports.php:237
+msgid "Created by"
+msgstr "Хто створив"
+
+#: includes/class-reports.php:238
+msgid "Changed by"
+msgstr "Хто змінив"
+
+#: includes/class-reports.php:238
+msgid "eval() called in"
+msgstr "eval() викликано в"
+
+#: includes/class-reports.php:239
+msgid "Sampled page views"
+msgstr "Переглядів у вибірці"
+
+#: includes/class-reports.php:239
+msgid "Instances"
+msgstr "Екземплярів"
+
+#: includes/class-reports.php:239
+msgid "TLS verification"
+msgstr "Перевірка TLS"
+
+#: includes/class-reports.php:253
+msgid "yes"
+msgstr "так"
+
+#: includes/class-reports.php:253
+msgid "no"
+msgstr "ні"
+
+#: includes/class-reports.php:280
+msgid "Security alert"
+msgstr "Сповіщення безпеки"
+
+#. translators: %d: count
+#: includes/class-reports.php:280
+msgid "%d security alert"
+msgid_plural "%d security alerts"
+msgstr[0] "%d сповіщення безпеки"
+msgstr[1] "%d сповіщення безпеки"
+msgstr[2] "%d сповіщень безпеки"
+
+#. translators: %d: count
+#: includes/class-reports.php:281
+msgid ""
+"Detected just now. This message is sent at the moment of detection, not in "
+"the daily report."
+msgstr ""
+"Виявлено щойно. Цей лист надсилається в момент виявлення, а не в щоденному "
+"звіті."
+
+#: includes/class-reports.php:294
+msgid "Source"
+msgstr "Джерело"
+
+#: includes/class-reports.php:303
+msgid "Open in Nightward"
+msgstr "Відкрити в Nightward"
+
+#. translators: 1: from, 2: to
+#: includes/class-reports.php:316
+msgid "%1$s – %2$s"
+msgstr "%1$s - %2$s"
+
+#: includes/class-reports.php:319
+msgid ""
+"No new threats were detected since the last report. Monitors and scheduled "
+"checks are running."
+msgstr ""
+"Від останнього звіту нових загроз не виявлено. Монітори й планові перевірки "
+"працюють."
+
+#: includes/class-reports.php:321
+msgid "Worth a look"
+msgstr "Варто глянути"
+
+#: includes/class-reports.php:322
+msgid ""
+"New findings since the last report are listed below, most serious first."
+msgstr "Нові знахідки від останнього звіту - нижче, найсерйозніші першими."
+
+#: includes/class-reports.php:326
+msgid ""
+"Test message — the real report is sent automatically at the configured time."
+msgstr ""
+"Тестовий лист - справжній звіт надсилається автоматично в заданий час."
+
+#: includes/class-reports.php:329
+msgid "Daily security report"
+msgstr "Щоденний звіт безпеки"
+
+#. translators: %d: count
+#: includes/class-reports.php:348
+msgid "%d critical/high issue is still open from earlier."
+msgid_plural "%d critical/high issues are still open from earlier."
+msgstr[0] "%d критична/висока проблема досі відкрита з минулих звітів."
+msgstr[1] "%d критичні/високі проблеми досі відкриті з минулих звітів."
+msgstr[2] "%d критичних/високих проблем досі відкриті з минулих звітів."
+
+#: includes/class-reports.php:371
+msgid "Other findings"
+msgstr "Інші знахідки"
+
+#. translators: %d: count
+#: includes/class-reports.php:380
+msgid "…and %d more in the dashboard."
+msgstr "…і ще %d в адмінці."
+
+#: includes/class-reports.php:390
+msgid "New outbound destinations"
+msgstr "Нові вихідні адреси"
+
+#: includes/class-reports.php:400
+msgid "Checks"
+msgstr "Перевірки"
+
+#. translators: 1: files, 2: time ago, 3: problems
+#: includes/class-reports.php:407
+msgid "%1$s files checked %2$s, %3$d problem"
+msgid_plural "%1$s files checked %2$s, %3$d problems"
+msgstr[0] "%1$s файлів перевірено %2$s, %3$d проблема"
+msgstr[1] "%1$s файлів перевірено %2$s, %3$d проблеми"
+msgstr[2] "%1$s файлів перевірено %2$s, %3$d проблем"
+
+#. translators: 1: hosts, 2: intercepted
+#: includes/class-reports.php:413
+msgid "%1$d hosts contacted, %2$d responses faked"
+msgstr "%1$d хостів, %2$d відповідей підроблено"
+
+#: includes/class-reports.php:415
+msgid "Hardening score"
+msgstr "Оцінка захищеності"
+
+#: includes/class-reports.php:419
+msgid "NOT RUNNING — scans and reports may be delayed"
+msgstr "НЕ ПРАЦЮЮТЬ - перевірки та звіти можуть запізнюватися"
+
+#: includes/class-reports.php:419
+msgid "running"
+msgstr "працюють"
+
+#: includes/class-reports.php:426
+msgid "Open Nightward"
+msgstr "Відкрити Nightward"
+
+#: includes/class-util.php:63
+msgid "paste / anonymous file-sharing service"
+msgstr "сервіс для вставок / анонімного обміну файлами"
+
+#: includes/class-util.php:65
+msgid "tunnel service (ngrok, Cloudflare tunnel…)"
+msgstr "тунельний сервіс (ngrok, Cloudflare tunnel…)"
+
+#: includes/class-util.php:67
+msgid "request-capture service"
+msgstr "сервіс для перехоплення запитів"
+
+#: includes/class-util.php:69
+msgid "dynamic DNS domain"
+msgstr "домен динамічного DNS"
+
+#: includes/class-util.php:70
+msgid "TOR hidden service"
+msgstr "прихований сервіс TOR"
+
+#: includes/class-util.php:72
+msgid "domain from the polyfill.io supply-chain attack"
+msgstr "домен з атаки на ланцюг постачання polyfill.io"
+
+#: includes/class-util.php:74
+msgid "distributor of pirated (nulled) plugins"
+msgstr "розповсюджувач піратських (nulled) плагінів"
+
+#: includes/class-util.php:87
+msgid "Telegram bot API (common exfiltration channel)"
+msgstr "Telegram Bot API (типовий канал витоку даних)"
+
+#: includes/class-util.php:90
+msgid "Discord webhook (common exfiltration channel)"
+msgstr "вебхук Discord (типовий канал витоку даних)"
+
+#: includes/monitor/class-cron-guard.php:61
+msgid "arguments contain PHP code"
+msgstr "аргументи містять PHP-код"
+
+#: includes/monitor/class-cron-guard.php:64
+msgid "arguments contain a long base64 blob"
+msgstr "аргументи містять довгий base64-блок"
+
+#: includes/monitor/class-cron-guard.php:67
+msgid "arguments contain a URL to a file"
+msgstr "аргументи містять URL на файл"
+
+#. translators: %s: reason
+#: includes/monitor/class-cron-guard.php:90
+msgid "Scheduled task %s"
+msgstr "Заплановане завдання: %s"
+
+#: includes/monitor/class-cron-guard.php:102
+msgid ""
+"The task name looks random. Malware generates such names so that each "
+"infection looks different."
+msgstr ""
+"Ім'я завдання схоже на випадкове. Шкідливий код генерує такі імена, щоб "
+"кожне зараження виглядало інакше."
+
+#: includes/monitor/class-cron-guard.php:110
+msgid "New scheduled task, but no code is attached to it in this request."
+msgstr ""
+"Нове заплановане завдання, але в цьому запиті до нього не підключено жодного"
+" коду."
+
+#: includes/monitor/class-cron-guard.php:111
+msgid "New scheduled task."
+msgstr "Нове заплановане завдання."
+
+#. translators: %s: hook name
+#: includes/monitor/class-cron-guard.php:150
+msgid "Scheduled task %s (no handler)"
+msgstr "Заплановане завдання %s (без обробника)"
+
+#: includes/monitor/class-cron-guard.php:151
+msgid "Scheduled task %1$s → %2$s"
+msgstr "Заплановане завдання %1$s → %2$s"
+
+#: includes/monitor/class-cron-guard.php:155
+msgid "single"
+msgstr "одноразове"
+
+#: includes/monitor/class-hooks-watch.php:65
+msgid "authentication and permissions"
+msgstr "автентифікація та права"
+
+#: includes/monitor/class-hooks-watch.php:66
+msgid "what the administrator can see"
+msgstr "що бачить адміністратор"
+
+#: includes/monitor/class-hooks-watch.php:67
+msgid "updates, HTTP and mail"
+msgstr "оновлення, HTTP і пошта"
+
+#: includes/monitor/class-hooks-watch.php:146
+msgid ""
+"Registered right after this plugin/theme was installed, activated or "
+"updated. Recorded as the new baseline."
+msgstr ""
+"Зареєстровано одразу після встановлення, активації чи оновлення цього "
+"плагіна/теми. Записано як новий еталон."
+
+#: includes/monitor/class-hooks-watch.php:156
+msgid ""
+"This callback appeared although the plugin/theme it belongs to was not "
+"installed or updated recently. Check the code at the given line."
+msgstr ""
+"Цей callback з'явився, хоча плагін/тему, до яких він належить, нещодавно не "
+"встановлювали й не оновлювали. Перевірте код у вказаному рядку."
+
+#. translators: 1: plugin/theme name, 2: hook name
+#: includes/monitor/class-hooks-watch.php:173
+msgid "%1$s hooked into %2$s"
+msgstr "%1$s підключився до %2$s"
+
+#. translators: %s: hook name
+#: includes/monitor/class-hooks-watch.php:224
+msgid "Code created at runtime with eval() is attached to %s"
+msgstr "Код, створений під час виконання через eval(), підключено до %s"
+
+#: includes/monitor/class-hooks-watch.php:226
+msgid ""
+"A hook callback has no source file: it was compiled from a string at "
+"runtime. This is how many backdoors hide from file scanners. The file that "
+"called eval() is the one to inspect."
+msgstr ""
+"Callback хука не має файлу-джерела: його скомпільовано з рядка під час "
+"виконання. Так багато бекдорів ховаються від файлових сканерів. Перевіряти "
+"слід файл, який викликав eval()."
+
+#: includes/monitor/class-options-watch.php:75
+msgid ""
+"Changing the site address redirects all visitors and logins. Done outside "
+"Settings → General, this is how sites get hijacked to spam or phishing "
+"domains."
+msgstr ""
+"Зміна адреси сайту перенаправляє всіх відвідувачів і входи. Якщо це зроблено"
+" поза Налаштування → Загальні, так сайти викрадають під спам чи фішингові "
+"домени."
+
+#: includes/monitor/class-options-watch.php:79
+msgid ""
+"Whoever owns the admin e-mail receives password resets and security notices."
+msgstr ""
+"Хто володіє e-mail адміністратора, той отримує скидання паролів і сповіщення"
+" безпеки."
+
+#. translators: %s: role
+#: includes/monitor/class-options-watch.php:84
+msgid "New registrations will now get the role \"%s\"."
+msgstr "Нові реєстрації тепер отримуватимуть роль «%s»."
+
+#: includes/monitor/class-options-watch.php:88
+msgid "Anyone can now register an account."
+msgstr "Тепер будь-хто може зареєструвати обліковий запис."
+
+#: includes/monitor/class-options-watch.php:88
+msgid "Registration disabled."
+msgstr "Реєстрацію вимкнено."
+
+#: includes/monitor/class-options-watch.php:98
+msgid "The active theme was switched."
+msgstr "Активну тему змінено."
+
+#. translators: 1: option name, 2: plugin name
+#: includes/monitor/class-options-watch.php:112
+msgid "Option %1$s changed by %2$s"
+msgstr "Опцію %1$s змінив %2$s"
+
+#. translators: 1: plugin file(s), 2: plugin name
+#: includes/monitor/class-options-watch.php:152
+msgid "Plugin activated by code: %1$s (by %2$s)"
+msgstr "Плагін активовано кодом: %1$s (зробив %2$s)"
+
+#: includes/monitor/class-options-watch.php:154
+msgid ""
+"A plugin was activated without an administrator using the Plugins screen. "
+"Droppers use this to switch on a second-stage payload."
+msgstr ""
+"Плагін активовано без участі адміністратора на екрані «Плагіни». Так дропери"
+" вмикають другий етап шкідливого коду."
+
+#. translators: 1: role, 2: capabilities
+#: includes/monitor/class-options-watch.php:183
+msgid "Role \"%1$s\" gained %2$s"
+msgstr "Роль «%1$s» отримала %2$s"
+
+#: includes/monitor/class-options-watch.php:185
+msgid "Administrator-level capabilities were added to a lower role."
+msgstr "Нижчій ролі додано права рівня адміністратора."
+
+#. translators: 1: plugin name, 2: option name, 3: percent
+#: includes/monitor/class-options-watch.php:250
+msgid "%1$s writes option \"%2$s\" on %3$s of page views"
+msgstr "%1$s записує опцію «%2$s» на %3$s переглядів"
+
+#: includes/monitor/class-options-watch.php:252
+msgid ""
+"A database write on almost every visit wastes resources and breaks full-page"
+" caching. For licence or \"phone home\" code it can also mean the site is "
+"being tracked on every request."
+msgstr ""
+"Запис у базу майже на кожному відвідуванні марнує ресурси й ламає "
+"повносторінковий кеш. Для ліцензійного коду чи коду «дзвінка додому» це "
+"також може означати відстеження сайту на кожному запиті."
+
+#. translators: %s: size
+#: includes/monitor/class-options-watch.php:280
+msgid "Autoloaded options weigh %s"
+msgstr "Autoload-опції важать %s"
+
+#: includes/monitor/class-options-watch.php:282
+msgid ""
+"WordPress loads these options on every request. Leftovers of removed plugins"
+" are the usual cause."
+msgstr ""
+"WordPress завантажує ці опції на кожному запиті. Зазвичай причина - залишки "
+"видалених плагінів."
+
+#: includes/monitor/class-outbound.php:178
+msgid "raw IP address instead of a domain"
+msgstr "IP-адреса замість домену"
+
+#. translators: 1: host, 2: reason, 3: plugin/theme name
+#: includes/monitor/class-outbound.php:193
+msgid "Request to %1$s (%2$s) from %3$s"
+msgstr "Запит до %1$s (%2$s) від %3$s"
+
+#: includes/monitor/class-outbound.php:207
+msgid "unknown callback"
+msgstr "невідомий callback"
+
+#: includes/monitor/class-outbound.php:235
+msgid "Response replaced before the request reached the network."
+msgstr "Відповідь підмінено ще до того, як запит дійшов до мережі."
+
+#: includes/monitor/class-outbound.php:238
+msgid ""
+"Request blocked (WP_Error returned). Typical for \"disable external "
+"requests\" tools."
+msgstr ""
+"Запит заблоковано (повернуто WP_Error). Типово для інструментів «вимкнути "
+"зовнішні запити»."
+
+#: includes/monitor/class-outbound.php:241
+msgid ""
+"WordPress.org API response is faked: update and security information for "
+"this site may be false."
+msgstr ""
+"Відповідь API WordPress.org підроблено: інформація про оновлення й безпеку "
+"цього сайту може бути хибною."
+
+#: includes/monitor/class-outbound.php:244
+msgid ""
+"A licence / update verification response is fabricated. This is how pirated "
+"(\"nulled\") plugins bypass licensing."
+msgstr ""
+"Відповідь перевірки ліцензії / оновлення сфабриковано. Так піратські "
+"(nulled) плагіни обходять ліцензування."
+
+#. translators: %d: number of domains
+#: includes/monitor/class-outbound.php:249
+msgid ""
+"The same callback has faked responses for %d different domains: it can "
+"intercept any outbound request of this site."
+msgstr ""
+"Один і той самий callback підробив відповіді для %d різних доменів: він може"
+" перехопити будь-який вихідний запит сайту."
+
+#: includes/monitor/class-outbound.php:253
+msgid "The intercepting callback was created with eval()."
+msgstr "Callback-перехоплювач створено через eval()."
+
+#. translators: 1: host, 2: plugin/theme name
+#: includes/monitor/class-outbound.php:261
+msgid "Responses for %1$s are faked by %2$s"
+msgstr "Відповіді для %1$s підробляє %2$s"
+
+#. translators: 1: plugin/theme name, 2: host
+#: includes/monitor/class-outbound.php:341
+msgid "%1$s contacted a new host: %2$s"
+msgstr "%1$s звернувся до нового хоста: %2$s"
+
+#: includes/monitor/class-outbound.php:348
+msgid "Well-known service."
+msgstr "Відомий сервіс."
+
+#: includes/monitor/class-outbound.php:348
+msgid "Not the plugin's own domain. Check what data is sent there."
+msgstr "Це не власний домен плагіна. Перевірте, які дані туди надсилаються."
+
+#: includes/monitor/class-privilege-guard.php:61
+msgid "Done from WP-CLI (server shell access)."
+msgstr "Зроблено з WP-CLI (доступ до оболонки сервера)."
+
+#: includes/monitor/class-privilege-guard.php:64
+msgid "Done by code executed via eval()."
+msgstr "Зроблено кодом, виконаним через eval()."
+
+#. translators: %s: user login
+#: includes/monitor/class-privilege-guard.php:68
+msgid "Done by %s through the standard WordPress screens."
+msgstr "Зробив %s через стандартні екрани WordPress."
+
+#. translators: %s: user login
+#: includes/monitor/class-privilege-guard.php:72
+msgid ""
+"Done by a plugin while %s was working in the dashboard. Make sure this was "
+"intended (e.g. a role editor plugin)."
+msgstr ""
+"Зроблено плагіном, поки %s працював в адмінці. Переконайтеся, що так і "
+"задумано (наприклад, плагін-редактор ролей)."
+
+#. translators: %s: user login
+#: includes/monitor/class-privilege-guard.php:77
+msgid ""
+"The logged-in user %s is not allowed to grant roles, yet an administrator "
+"was created. Classic privilege-escalation or backdoor behaviour."
+msgstr ""
+"Користувач %s, який увійшов, не має права призначати ролі, але "
+"адміністратора створено. Класична ескалація привілеїв або поведінка бекдору."
+
+#: includes/monitor/class-privilege-guard.php:78
+msgid ""
+"Nobody was logged in: an administrator was created by an anonymous request."
+msgstr "Ніхто не був залогінений: адміністратора створив анонімний запит."
+
+#: includes/monitor/class-privilege-guard.php:80
+msgid "An administrator was created outside the standard Users screens."
+msgstr "Адміністратора створено поза стандартними екранами «Користувачі»."
+
+#: includes/monitor/class-privilege-guard.php:117
+msgid "account created"
+msgstr "створено обліковий запис"
+
+#: includes/monitor/class-privilege-guard.php:118
+msgid "role changed"
+msgstr "змінено роль"
+
+#: includes/monitor/class-privilege-guard.php:119
+msgid "role added"
+msgstr "додано роль"
+
+#: includes/monitor/class-privilege-guard.php:120
+msgid "network super admin"
+msgstr "суперадміністратор мережі"
+
+#: includes/monitor/class-privilege-guard.php:121
+msgid "capabilities written directly"
+msgstr "права записано напряму"
+
+#. translators: 1: user login, 2: how
+#: includes/monitor/class-privilege-guard.php:129
+msgid "New administrator: %1$s (%2$s)"
+msgstr "Новий адміністратор: %1$s (%2$s)"
+
+#: includes/monitor/class-privilege-guard.php:196
+#: includes/monitor/class-privilege-guard.php:208
+msgid "password"
+msgstr "пароль"
+
+#: includes/monitor/class-privilege-guard.php:199
+msgid "e-mail"
+msgstr "e-mail"
+
+#. translators: 1: what changed, 2: user login, 3: plugin name
+#: includes/monitor/class-privilege-guard.php:228
+msgid "Administrator %2$s: %1$s changed by %3$s"
+msgstr "Адміністратор %2$s: %1$s змінив %3$s"
+
+#: includes/monitor/class-privilege-guard.php:230
+msgid ""
+"Credentials of an administrator were changed by plugin/theme code, not "
+"through the profile or password-reset screens."
+msgstr ""
+"Облікові дані адміністратора змінено кодом плагіна/теми, а не через екрани "
+"профілю чи скидання пароля."
+
+#. translators: 1: user login, 2: app name
+#: includes/monitor/class-privilege-guard.php:256
+msgid "Application password \"%2$s\" created for administrator %1$s"
+msgstr "Пароль застосунку «%2$s» створено для адміністратора %1$s"
+
+#: includes/monitor/class-privilege-guard.php:258
+msgid ""
+"Application passwords give permanent REST/XML-RPC access that bypasses two-"
+"factor login and survives a password change. Remove it in the user profile "
+"if you did not create it."
+msgstr ""
+"Паролі застосунків дають постійний доступ до REST/XML-RPC в обхід "
+"двофакторного входу і переживають зміну пароля. Якщо ви його не створювали -"
+" видаліть у профілі користувача."
+
+#. translators: 1: user login, 2: IP address
+#: includes/monitor/class-privilege-guard.php:295
+msgid "Administrator %1$s logged in from a new network: %2$s"
+msgstr "Адміністратор %1$s увійшов з нової мережі: %2$s"
+
+#. translators: %s: user login
+#: includes/monitor/class-privilege-guard.php:364
+msgid ""
+"Administrator %s appeared without any WordPress user function being called"
+msgstr ""
+"Адміністратор %s з'явився без виклику будь-якої функції користувачів "
+"WordPress"
+
+#: includes/monitor/class-privilege-guard.php:366
+msgid ""
+"The account got administrator rights through a direct database write (SQL), "
+"bypassing all WordPress hooks. Legitimate plugins and the admin screens "
+"never do this."
+msgstr ""
+"Обліковий запис отримав права адміністратора прямим записом у базу (SQL) в "
+"обхід усіх хуків WordPress. Легітимні плагіни та екрани адмінки так ніколи "
+"не роблять."
+
+#. translators: %s: user login
+#: includes/monitor/class-privilege-guard.php:402
+msgid "Hidden administrator: %s is not shown in the Users list"
+msgstr "Прихований адміністратор: %s не показується в списку користувачів"
+
+#: includes/monitor/class-privilege-guard.php:404
+msgid ""
+"The account is an administrator in the database, but a filter removes it "
+"from user queries so it does not appear in Users. This is a common backdoor "
+"pattern. Check callbacks on pre_user_query and users_list_table_query_args "
+"on the Hooks screen."
+msgstr ""
+"У базі цей обліковий запис - адміністратор, але фільтр прибирає його з "
+"запитів користувачів, тож у «Користувачах» його не видно. Це поширений "
+"шаблон бекдору. Перевірте callback на pre_user_query та "
+"users_list_table_query_args на екрані «Хуки й Cron»."
+
+#. translators: %s: PHP version
+#: includes/scanner/class-hardening.php:62
+msgid "PHP %s no longer receives security fixes"
+msgstr "PHP %s більше не отримує виправлень безпеки"
+
+#. translators: %s: PHP version
+#: includes/scanner/class-hardening.php:62
+msgid "Vulnerabilities found in this PHP version are not patched anymore."
+msgstr "Вразливості, знайдені в цій версії PHP, більше не виправляються."
+
+#. translators: %s: PHP version
+#: includes/scanner/class-hardening.php:62
+msgid "Ask your host to switch to PHP 8.2 or newer."
+msgstr "Попросіть хостинг перейти на PHP 8.2 або новіший."
+
+#: includes/scanner/class-hardening.php:64
+msgid "PHP %s is close to end of life"
+msgstr "PHP %s близький до завершення підтримки"
+
+#: includes/scanner/class-hardening.php:64
+msgid "Plan the move to a newer PHP version."
+msgstr "Сплануйте перехід на новішу версію PHP."
+
+#: includes/scanner/class-hardening.php:64
+msgid "Switch to PHP 8.3 or newer."
+msgstr "Перейдіть на PHP 8.3 або новіший."
+
+#: includes/scanner/class-hardening.php:66
+msgid "PHP %s is supported"
+msgstr "PHP %s підтримується"
+
+#. translators: %s: version
+#: includes/scanner/class-hardening.php:77
+msgid "WordPress %s is available"
+msgstr "Доступний WordPress %s"
+
+#. translators: %s: version
+#: includes/scanner/class-hardening.php:77
+msgid "Security releases are published as minor updates."
+msgstr "Оновлення безпеки виходять як мінорні версії."
+
+#. translators: %s: version
+#: includes/scanner/class-hardening.php:77
+msgid "Dashboard → Updates."
+msgstr "Майстерня → Оновлення."
+
+#: includes/scanner/class-hardening.php:78
+msgid "WordPress is up to date"
+msgstr "WordPress оновлено"
+
+#: includes/scanner/class-hardening.php:82
+msgid "Built-in code editor is disabled"
+msgstr "Вбудований редактор коду вимкнено"
+
+#: includes/scanner/class-hardening.php:83
+msgid "Built-in plugin/theme code editor is enabled"
+msgstr "Вбудований редактор коду плагінів/тем увімкнено"
+
+#: includes/scanner/class-hardening.php:83
+msgid "A stolen administrator session turns directly into code execution."
+msgstr ""
+"Викрадена сесія адміністратора одразу перетворюється на виконання коду."
+
+#: includes/scanner/class-hardening.php:88
+msgid "PHP errors are shown to visitors"
+msgstr "Помилки PHP показуються відвідувачам"
+
+#: includes/scanner/class-hardening.php:88
+msgid "Error messages reveal file paths and plugin internals."
+msgstr ""
+"Повідомлення про помилки розкривають шляхи до файлів і внутрішню будову "
+"плагінів."
+
+#: includes/scanner/class-hardening.php:89
+msgid "PHP errors are not shown to visitors"
+msgstr "Помилки PHP не показуються відвідувачам"
+
+#: includes/scanner/class-hardening.php:93
+msgid "debug.log is publicly readable"
+msgstr "debug.log доступний для читання всім"
+
+#: includes/scanner/class-hardening.php:94
+msgid ".env file is publicly readable"
+msgstr "Файл .env доступний для читання всім"
+
+#: includes/scanner/class-hardening.php:95
+msgid ".git repository is publicly readable"
+msgstr "Репозиторій .git доступний для читання всім"
+
+#: includes/scanner/class-hardening.php:96
+#: includes/scanner/class-hardening.php:97
+#: includes/scanner/class-hardening.php:98
+#: includes/scanner/class-hardening.php:99
+#: includes/scanner/class-hardening.php:100
+#: includes/scanner/class-hardening.php:101
+msgid "Backup of wp-config.php is publicly readable"
+msgstr "Резервна копія wp-config.php доступна для читання всім"
+
+#: includes/scanner/class-hardening.php:102
+msgid "Editor swap file of wp-config.php is publicly readable"
+msgstr "Swap-файл редактора для wp-config.php доступний для читання всім"
+
+#: includes/scanner/class-hardening.php:105
+msgid "Debug log is publicly readable"
+msgstr "Журнал налагодження доступний для читання всім"
+
+#: includes/scanner/class-hardening.php:108
+msgid ""
+"Backup archive / database dump in the site root is publicly downloadable"
+msgstr "Архів бекапу / дамп бази в корені сайту можна завантажити будь-кому"
+
+#: includes/scanner/class-hardening.php:121
+msgid "Anyone can download it. Such files contain passwords, keys or paths."
+msgstr ""
+"Його може завантажити будь-хто. Такі файли містять паролі, ключі або шляхи."
+
+#: includes/scanner/class-hardening.php:121
+msgid "Delete the file or deny access to it in the web server configuration."
+msgstr ""
+"Видаліть файл або забороніть доступ до нього в налаштуваннях вебсервера."
+
+#: includes/scanner/class-hardening.php:125
+msgid "No sensitive files are publicly downloadable"
+msgstr "Чутливі файли недоступні ззовні"
+
+#: includes/scanner/class-hardening.php:125
+msgid ""
+"The site could not request itself (loopback), so this was checked on disk "
+"only."
+msgstr ""
+"Сайт не зміг звернутися сам до себе (loopback), тому перевірено лише на "
+"диску."
+
+#: includes/scanner/class-hardening.php:136
+msgid "Directory listing is enabled for uploads"
+msgstr "Для uploads увімкнено перегляд вмісту теки"
+
+#: includes/scanner/class-hardening.php:136
+msgid "Anyone can browse all uploaded files, including private documents."
+msgstr ""
+"Будь-хто може переглянути всі завантажені файли, зокрема приватні документи."
+
+#: includes/scanner/class-hardening.php:137
+msgid "Directory listing is disabled"
+msgstr "Перегляд вмісту тек вимкнено"
+
+#: includes/scanner/class-hardening.php:145
+msgid "XML-RPC is enabled"
+msgstr "XML-RPC увімкнено"
+
+#: includes/scanner/class-hardening.php:145
+msgid ""
+"Allows hundreds of password guesses in one request (system.multicall). "
+"Needed only by old apps and Jetpack."
+msgstr ""
+"Дозволяє сотні спроб підбору пароля в одному запиті (system.multicall). "
+"Потрібен лише старим застосункам і Jetpack."
+
+#: includes/scanner/class-hardening.php:145
+msgid "Disable XML-RPC if you do not use it."
+msgstr "Вимкніть XML-RPC, якщо не користуєтеся ним."
+
+#: includes/scanner/class-hardening.php:146
+msgid "XML-RPC login is not available"
+msgstr "Вхід через XML-RPC недоступний"
+
+#: includes/scanner/class-hardening.php:155
+msgid "Login names are public via the REST API"
+msgstr "Логіни публічні через REST API"
+
+#. translators: %s: user slugs
+#: includes/scanner/class-hardening.php:155
+msgid "Visible: %s. Half of a brute-force attack is knowing the login."
+msgstr "Видно: %s. Половина атаки підбором - це знати логін."
+
+#. translators: %s: user slugs
+#: includes/scanner/class-hardening.php:155
+msgid "Restrict /wp/v2/users to logged-in users."
+msgstr "Обмежте /wp/v2/users лише для залогінених користувачів."
+
+#. translators: %s: user slugs
+#: includes/scanner/class-hardening.php:156
+msgid "User list is not exposed via REST"
+msgstr "Список користувачів не розкривається через REST"
+
+#: includes/scanner/class-hardening.php:162
+msgid "An administrator is called \"admin\""
+msgstr "Адміністратора звуть «admin»"
+
+#: includes/scanner/class-hardening.php:162
+msgid "It is the first login every bot tries."
+msgstr "Це перший логін, який пробує кожен бот."
+
+#: includes/scanner/class-hardening.php:162
+msgid ""
+"Create a new administrator with another login and delete this one "
+"(attributing content to the new account)."
+msgstr ""
+"Створіть нового адміністратора з іншим логіном і видаліть цього (передавши "
+"контент новому обліковому запису)."
+
+#: includes/scanner/class-hardening.php:163
+msgid "No administrator named \"admin\""
+msgstr "Немає адміністратора з логіном «admin»"
+
+#: includes/scanner/class-hardening.php:168
+msgid "Site uses HTTPS"
+msgstr "Сайт використовує HTTPS"
+
+#: includes/scanner/class-hardening.php:169
+msgid "Site address is not HTTPS"
+msgstr "Адреса сайту не HTTPS"
+
+#: includes/scanner/class-hardening.php:169
+msgid "Passwords and session cookies travel unencrypted."
+msgstr "Паролі й cookie сесій передаються без шифрування."
+
+#: includes/scanner/class-hardening.php:169
+msgid "Install a certificate and change the site address to https://."
+msgstr "Встановіть сертифікат і змініть адресу сайту на https://."
+
+#: includes/scanner/class-hardening.php:188
+msgid "Security headers missing"
+msgstr "Бракує заголовків безпеки"
+
+#: includes/scanner/class-hardening.php:188
+msgid "Add them in the web server or CDN configuration."
+msgstr "Додайте їх у конфігурації вебсервера або CDN."
+
+#: includes/scanner/class-hardening.php:189
+msgid "Security headers are set"
+msgstr "Заголовки безпеки встановлено"
+
+#. translators: %s: permissions
+#: includes/scanner/class-hardening.php:197
+msgid "wp-config.php is writable by everyone (%s)"
+msgstr "wp-config.php доступний для запису всім (%s)"
+
+#. translators: %s: permissions
+#: includes/scanner/class-hardening.php:197
+msgid ""
+"Any process on the server can change database credentials and inject code."
+msgstr ""
+"Будь-який процес на сервері може змінити дані доступу до бази й вставити "
+"код."
+
+#: includes/scanner/class-hardening.php:199
+msgid "wp-config.php is readable by all users of the server (%s)"
+msgstr "wp-config.php доступний для читання всім користувачам сервера (%s)"
+
+#: includes/scanner/class-hardening.php:199
+msgid "On shared hosting other accounts may read your database password."
+msgstr ""
+"На спільному хостингу інші акаунти можуть прочитати пароль від вашої бази."
+
+#. translators: %s: octal permissions
+#: includes/scanner/class-hardening.php:202
+msgid "wp-config.php permissions are strict (%s)"
+msgstr "Права на wp-config.php суворі (%s)"
+
+#. translators: %d: count
+#: includes/scanner/class-hardening.php:217
+msgid "%d inactive plugin is still on disk"
+msgid_plural "%d inactive plugins are still on disk"
+msgstr[0] "%d неактивний плагін досі на диску"
+msgstr[1] "%d неактивні плагіни досі на диску"
+msgstr[2] "%d неактивних плагінів досі на диску"
+
+#. translators: %d: count
+#: includes/scanner/class-hardening.php:217
+msgid ""
+"Their files can be requested directly and exploited even when deactivated."
+msgstr ""
+"Їхні файли можна запитати напряму й використати вразливість навіть у "
+"вимкненому стані."
+
+#. translators: %d: count
+#: includes/scanner/class-hardening.php:217
+msgid "Delete plugins you do not use."
+msgstr "Видаліть плагіни, якими не користуєтеся."
+
+#. translators: %d: count
+#: includes/scanner/class-hardening.php:218
+msgid "No inactive plugins on disk"
+msgstr "Неактивних плагінів на диску немає"
+
+#: includes/scanner/class-hardening.php:223
+msgid "Scheduled tasks are not running"
+msgstr "Заплановані завдання не виконуються"
+
+#: includes/scanner/class-hardening.php:223
+msgid ""
+"Reports, scans and WordPress updates depend on WP-Cron. It has not run for "
+"more than three hours."
+msgstr ""
+"Звіти, сканування й оновлення WordPress залежать від WP-Cron. Він не "
+"запускався понад три години."
+
+#: includes/scanner/class-hardening.php:223
+msgid "Set a real server cron job to call wp-cron.php every 5 minutes."
+msgstr ""
+"Налаштуйте серверне cron-завдання, що викликає wp-cron.php кожні 5 хвилин."
+
+#: includes/scanner/class-hardening.php:224
+msgid "Scheduled tasks are running"
+msgstr "Заплановані завдання виконуються"
+
+#: includes/scanner/class-hardening.php:227
+msgid "The site cannot make requests to itself"
+msgstr "Сайт не може звертатися сам до себе"
+
+#: includes/scanner/class-hardening.php:227
+msgid ""
+"Some checks were skipped. Loopback is also needed by WordPress for Site "
+"Health and plugin editor safety checks."
+msgstr ""
+"Деякі перевірки пропущено. Loopback також потрібен WordPress для «Здоров'я "
+"сайту» та захисних перевірок редактора плагінів."
+
+#: includes/scanner/class-hardening.php:272
+#: includes/scanner/class-hardening.php:279
+msgid "PHP execution in uploads: not tested"
+msgstr "Виконання PHP в uploads: не перевірено"
+
+#: includes/scanner/class-hardening.php:272
+msgid "Loopback unavailable or uploads not writable."
+msgstr "Loopback недоступний або uploads недоступна для запису."
+
+#: includes/scanner/class-hardening.php:284
+msgid "PHP files in uploads are executed"
+msgstr "PHP-файли в uploads виконуються"
+
+#: includes/scanner/class-hardening.php:284
+msgid ""
+"Any upload vulnerability in any plugin becomes full code execution. "
+"Nightward wrote a harmless test file, requested it and it ran."
+msgstr ""
+"Будь-яка вразливість завантаження файлів у будь-якому плагіні перетворюється"
+" на повне виконання коду. Nightward записав нешкідливий тестовий файл, "
+"запитав його - і він виконався."
+
+#: includes/scanner/class-hardening.php:284
+msgid ""
+"Deny PHP in wp-content/uploads (nginx: location ~* /uploads/.*\\.php$ { deny"
+" all; }; Apache: <FilesMatch \"\\.php$\"> Require all denied </FilesMatch>)."
+msgstr ""
+"Забороніть PHP у wp-content/uploads (nginx: location ~* /uploads/.*\\.php$ {"
+" deny all; }; Apache: <FilesMatch \"\\.php$\"> Require all denied "
+"</FilesMatch>)."
+
+#: includes/scanner/class-hardening.php:286
+msgid "PHP files in uploads are not executed"
+msgstr "PHP-файли в uploads не виконуються"
+
+#. translators: 1: name, 2: old version, 3: new version
+#: includes/scanner/class-integrity.php:377
+msgid "%1$s changed version %2$s → %3$s outside the WordPress updater"
+msgstr "%1$s змінив версію %2$s → %3$s поза оновлювачем WordPress"
+
+#: includes/scanner/class-integrity.php:378
+msgid ""
+"Files were replaced via FTP, SSH, a deployment or a third-party manager. If "
+"none of that was you, compare the package with the vendor's copy."
+msgstr ""
+"Файли замінено через FTP, SSH, деплой або сторонній менеджер. Якщо це були "
+"не ви - порівняйте пакет із копією розробника."
+
+#: includes/scanner/class-integrity.php:412
+msgid "Core file differs from the official WordPress release."
+msgstr "Файл ядра відрізняється від офіційного релізу WordPress."
+
+#: includes/scanner/class-integrity.php:418
+msgid ""
+"File is not part of WordPress but sits among core files. Malware hides here "
+"because nobody looks."
+msgstr ""
+"Файл не належить WordPress, але лежить серед файлів ядра. Шкідливий код "
+"ховається тут, бо сюди ніхто не дивиться."
+
+#: includes/scanner/class-integrity.php:429
+msgid ""
+"File differs from the official WordPress.org copy of this exact version."
+msgstr "Файл відрізняється від офіційної копії цієї версії на WordPress.org."
+
+#: includes/scanner/class-integrity.php:434
+msgid ""
+"PHP file that is not in the official WordPress.org release of this version."
+msgstr ""
+"PHP-файл, якого немає в офіційному релізі цієї версії на WordPress.org."
+
+#: includes/scanner/class-integrity.php:447
+msgid "New PHP file appeared although the version number did not change."
+msgstr "З'явився новий PHP-файл, хоча номер версії не змінився."
+
+#: includes/scanner/class-integrity.php:452
+msgid ""
+"File changed although the version number did not change. Updates change the "
+"version; injected code does not."
+msgstr ""
+"Файл змінився, хоча номер версії лишився тим самим. Оновлення змінюють "
+"версію, вставлений код - ні."
+
+#. translators: 1: name, 2: version, 3: files
+#: includes/scanner/class-integrity.php:468
+msgid "Reference snapshot taken for %1$s %2$s (%3$d files)"
+msgstr "Знято еталонний знімок для %1$s %2$s (%3$d файлів)"
+
+#: includes/scanner/class-integrity.php:469
+msgid ""
+"This package is not on WordPress.org, so its current files become the "
+"reference. Nightward cannot tell whether they were clean at this moment."
+msgstr ""
+"Цього пакета немає на WordPress.org, тому його поточні файли стають "
+"еталоном. Nightward не може знати, чи були вони чистими в цей момент."
+
+#. translators: 1: count, 2: name
+#: includes/scanner/class-integrity.php:486
+msgid "%1$d files removed from %2$s without a version change"
+msgstr "%1$d файлів видалено з %2$s без зміни версії"
+
+#. translators: 1: file, 2: package name
+#: includes/scanner/class-integrity.php:552
+msgid "Unexpected file %1$s in %2$s"
+msgstr "Неочікуваний файл %1$s у %2$s"
+
+#. translators: 1: file, 2: package name
+#: includes/scanner/class-integrity.php:552
+msgid "Modified file %1$s in %2$s"
+msgstr "Змінений файл %1$s у %2$s"
+
+#: includes/scanner/class-update-channel.php:52
+msgid ""
+"the plugin is from WordPress.org, but the update is served by another server"
+msgstr "плагін з WordPress.org, але оновлення роздає інший сервер"
+
+#: includes/scanner/class-update-channel.php:55
+msgid "package is downloaded over plain HTTP and can be replaced in transit"
+msgstr ""
+"пакет завантажується через звичайний HTTP і може бути підмінений у дорозі"
+
+#: includes/scanner/class-update-channel.php:58
+msgid "package is downloaded from a bare IP address"
+msgstr "пакет завантажується з голої IP-адреси"
+
+#. translators: %s: vendor domains
+#: includes/scanner/class-update-channel.php:67
+msgid "host is unrelated to the vendor (%s)"
+msgstr "хост не пов'язаний з розробником (%s)"
+
+#: includes/scanner/class-update-channel.php:68
+msgid "the plugin declares no vendor website, so the source cannot be matched"
+msgstr "плагін не вказує сайт розробника, тож джерело неможливо зіставити"
+
+#. translators: 1: plugin name, 2: host
+#: includes/scanner/class-update-channel.php:103
+msgid "Blocked update of %1$s from %2$s"
+msgstr "Заблоковано оновлення %1$s з %2$s"
+
+#. translators: 1: plugin name, 2: host
+#: includes/scanner/class-update-channel.php:103
+msgid "Update of %1$s downloaded from %2$s"
+msgstr "Оновлення %1$s завантажено з %2$s"
+
+#. translators: %s: reason
+#: includes/scanner/class-update-channel.php:106
+#: includes/scanner/class-update-channel.php:167
+#: includes/scanner/class-update-channel.php:199
+msgid "Reason: %s."
+msgstr "Причина: %s."
+
+#: includes/scanner/class-update-channel.php:109
+msgid ""
+"If this source is legitimate, add its domain to Trusted hosts in Settings."
+msgstr ""
+"Якщо це джерело легітимне, додайте його домен у «Довірені хости» в "
+"налаштуваннях."
+
+#. translators: %s: reason
+#: includes/scanner/class-update-channel.php:116
+msgid "Nightward blocked this download: %s."
+msgstr "Nightward заблокував це завантаження: %s."
+
+#. translators: 1: plugin name, 2: version, 3: host
+#: includes/scanner/class-update-channel.php:164
+msgid "Pending update %1$s %2$s comes from %3$s"
+msgstr "Оновлення %1$s %2$s, що очікує, надходить з %3$s"
+
+#: includes/scanner/class-update-channel.php:170
+msgid ""
+"Do not install this update. Find the plugin/theme code that injects it (see "
+"Sensitive hooks: pre_set_site_transient_update_plugins)."
+msgstr ""
+"Не встановлюйте це оновлення. Знайдіть код плагіна/теми, який його підкладає"
+" (див. «Чутливі хуки»: pre_set_site_transient_update_plugins)."
+
+#: includes/scanner/class-update-channel.php:171
+msgid ""
+"Verify that the vendor really distributes updates from this host before "
+"updating."
+msgstr ""
+"Перш ніж оновлювати, переконайтеся, що розробник справді роздає оновлення з "
+"цього хоста."
+
+#. translators: 1: theme name, 2: host
+#: includes/scanner/class-update-channel.php:197
+msgid "Pending theme update %1$s comes from %2$s"
+msgstr "Оновлення теми %1$s, що очікує, надходить з %2$s"
+
+#. translators: %s: plugin files
+#: includes/scanner/class-update-channel.php:255
+msgid "Update data injected without the required \"plugin\" field: %s"
+msgstr "Дані оновлень підкладено без обов'язкового поля «plugin»: %s"
+
+#: includes/scanner/class-update-channel.php:257
+msgid ""
+"A custom updater wrote its own entry into the WordPress update list. "
+"WordPress.org never produces such entries; they cause the \"Undefined "
+"property: stdClass::$plugin\" warning on Plugins → Add New. Check the code "
+"listed below."
+msgstr ""
+"Сторонній оновлювач записав власний запис у список оновлень WordPress. "
+"WordPress.org таких записів не створює; саме вони дають попередження "
+"«Undefined property: stdClass::$plugin» на сторінці Плагіни → Додати. "
+"Перевірте код, наведений нижче."
+
+#: includes/scanner/class-upload-guard.php:101
+msgid ""
+"PHP configuration file inside uploads. It can enable auto_prepend_file to "
+"run a payload on every request."
+msgstr ""
+"Файл конфігурації PHP всередині uploads. Він може увімкнути "
+"auto_prepend_file і запускати шкідливий код на кожному запиті."
+
+#: includes/scanner/class-upload-guard.php:110
+msgid ""
+"Executable script in the uploads folder. Uploads should contain only media "
+"and documents; a script here can usually be run directly from the browser."
+msgstr ""
+"Виконуваний скрипт у теці uploads. Там мають бути лише медіа й документи; "
+"скрипт звідти зазвичай можна запустити просто з браузера."
+
+#: includes/scanner/class-upload-guard.php:115
+msgid ""
+"Double extension (e.g. file.php.jpg). On some Apache setups such files are "
+"executed as PHP."
+msgstr ""
+"Подвійне розширення (наприклад, file.php.jpg). На деяких конфігураціях "
+"Apache такі файли виконуються як PHP."
+
+#: includes/scanner/class-upload-guard.php:122
+msgid ""
+"A media file contains PHP code. Used together with an include() elsewhere to"
+" hide a payload."
+msgstr ""
+"Медіафайл містить PHP-код. Використовується разом з include() в іншому "
+"місці, щоб сховати шкідливий код."
+
+#: includes/scanner/class-upload-guard.php:135
+msgid ""
+".htaccess inside uploads enables script execution or PHP settings. Normal "
+"ones only deny access."
+msgstr ""
+".htaccess в uploads вмикає виконання скриптів або налаштування PHP. Звичайні"
+" лише забороняють доступ."
+
+#: includes/scanner/class-upload-guard.php:154
+msgid ""
+"PHP file in the wp-content root that is not a WordPress drop-in. Nothing "
+"loads it normally, so it is meant to be called from outside."
+msgstr ""
+"PHP-файл у корені wp-content, який не є drop-in файлом WordPress. Звичайно "
+"його ніщо не завантажує, тож він призначений для виклику ззовні."
+
+#: includes/scanner/class-upload-guard.php:181
+msgid ""
+"New must-use plugin. It runs on every request, cannot be deactivated from "
+"the dashboard and is easy to overlook — a favourite place for persistence."
+msgstr ""
+"Новий must-use плагін. Виконується на кожному запиті, його не можна вимкнути"
+" з адмінки і легко не помітити - улюблене місце для закріплення шкідливого "
+"коду."
+
+#. translators: %s: folder name
+#: includes/scanner/class-upload-guard.php:210
+msgid ""
+"PHP file inside wp-content/%s. This folder should not contain runnable code."
+msgstr "PHP-файл у wp-content/%s. У цій теці не має бути виконуваного коду."
+
+#. translators: %s: file path
+#: includes/scanner/class-upload-guard.php:236
+msgid "Suspicious file: %s"
+msgstr "Підозрілий файл: %s"
