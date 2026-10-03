@@ -208,6 +208,8 @@ class Export {
 			'nightward_installed' => gmdate( 'Y-m-d', (int) get_option( 'nightward_installed_at', time() ) ),
 			'learning_mode'      => Settings::in_learning(),
 			'wp_cron_running'    => ! $h['stale'],
+			'wp_cron_waiting'    => $h['overdue']['count'] ? $h['overdue']['count'] . ' task(s), oldest due ' . human_time_diff( $h['overdue']['oldest'] ) . ' ago: ' . implode( ', ', $h['overdue']['hooks'] ) : 'none',
+			'disable_wp_cron'    => $h['disabled'],
 			'last_report_email'  => is_array( $mail ) ? ( $mail['ok'] ? 'sent' : 'failed' ) : 'none yet',
 			'early_loader'       => Installer::loader_installed(),
 			'modules_disabled'   => array_values( array_filter( array( 'outbound', 'hooks', 'privilege', 'options', 'cron', 'integrity', 'uploads', 'update_channel', 'hardening' ), function ( $m ) {

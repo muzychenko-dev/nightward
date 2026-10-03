@@ -316,7 +316,7 @@ class Integrity {
 		update_option( self::JOB, $job, false );
 		if ( ! $job['done'] && empty( $job['manual'] ) ) {
 			self::schedule_step();
-			if ( function_exists( 'spawn_cron' ) && ! wp_doing_cron() ) {
+			if ( function_exists( 'spawn_cron' ) && ! wp_doing_cron() && ! ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) ) {
 				spawn_cron();
 			}
 		}

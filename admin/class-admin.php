@@ -35,7 +35,7 @@ class Admin {
 		add_action( 'admin_post_nightward_save', array( __CLASS__, 'save_settings' ) );
 		add_action( 'admin_post_nightward_preview', array( __CLASS__, 'preview_report' ) );
 		add_action( 'admin_post_nightward_export', array( __CLASS__, 'download_export' ) );
-		foreach ( array( 'status', 'integrity', 'hardening', 'test_email', 'trust_host', 'accept', 'export_text' ) as $a ) {
+		foreach ( array( 'status', 'integrity', 'hardening', 'test_email', 'trust_host', 'accept', 'export_text', 'cron_test', 'cron_run' ) as $a ) {
 			add_action( 'wp_ajax_nightward_' . $a, array( __CLASS__, 'ajax_' . $a ) );
 		}
 		add_filter( 'plugin_action_links_' . plugin_basename( NIGHTWARD_FILE ), array( __CLASS__, 'action_links' ) );
@@ -76,6 +76,7 @@ class Admin {
 				'copied'     => __( 'Copied. Paste it into ChatGPT, Claude, Gemini or another assistant.', 'nightward' ),
 				'copyFailed' => __( 'The browser blocked copying. The text is selected below: press Ctrl+C.', 'nightward' ),
 				'preparing'  => __( 'Preparing…', 'nightward' ),
+				'checking'   => __( 'Checking…', 'nightward' ),
 				'scanning'   => __( 'Scanning…', 'nightward' ),
 				'scanDone'   => __( 'Scan finished.', 'nightward' ),
 				/* translators: 1: done, 2: total, 3: files */
@@ -97,10 +98,90 @@ class Admin {
 			return;
 		}
 		$screen = get_current_screen();
-		$h      = Cron::health();
-		if ( $screen && 'toplevel_page_' . self::SLUG === $screen->id && ( $h['stale'] || ( $h['disabled'] && ! $h['last_hourly'] ) ) ) {
-			echo '<div class="notice notice-warning"><p><strong>Nightward:</strong> ' . esc_html__( 'WP-Cron does not seem to run, so scheduled scans and the daily report can be late or missing. Configure a real cron job that requests wp-cron.php every 5 minutes.', 'nightward' ) . '</p></div>';
+		if ( ! $screen || 'toplevel_page_' . self::SLUG !== $screen->id ) {
+			return;
 		}
+		$tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'overview'; // phpcs:ignore WordPress.Security.NonceVerification
+		if ( in_array( $tab, array( 'overview', 'settings' ), true ) ) {
+			return; // these screens show the full panel
+		}
+		$h = Cron::health();
+		if ( $h['stale'] ) {
+			echo '<div class="notice notice-warning"><p><strong>Nightward:</strong> ' . esc_html__( 'WP-Cron is not running, so scheduled tasks wait.', 'nightward' ) . ' <a href="' . esc_url( self::url( 'overview' ) . '#nw-cron' ) . '">' . esc_html__( 'Find out why and fix it', 'nightward' ) . '</a></p></div>';
+		}
+	}
+
+	/**
+	 * WP-Cron status, diagnosis and fixes. Shown on the overview when tasks wait,
+	 * and always on the settings screen.
+	 */
+	private static function cron_panel( $always = false ) {
+		$h = Cron::health();
+		if ( ! $always && ! $h['stale'] ) {
+			return;
+		}
+		$test = get_option( 'nightward_cron_test' );
+		$test = is_array( $test ) && isset( $test['checked'] ) && $test['checked'] > time() - DAY_IN_SECONDS ? $test : null;
+		$own  = Cron::own_overdue( 0 );
+		$cls  = $h['stale'] ? ' nw-cron-bad' : '';
+		echo '<section class="nw-card nw-cron' . esc_attr( $cls ) . '" id="nw-cron">';
+		echo '<h2>' . ( $h['stale'] ? esc_html__( 'WP-Cron is not running', 'nightward' ) : esc_html__( 'Scheduled tasks (WP-Cron)', 'nightward' ) ) . '</h2>';
+		if ( $h['stale'] ) {
+			/* translators: 1: number of tasks, 2: time */
+			echo '<p class="nw-lead">' . esc_html( sprintf( _n( '%1$d scheduled task has been waiting for %2$s. The daily report, scans and WordPress\'s own updates run only when WP-Cron fires.', '%1$d scheduled tasks have been waiting for %2$s. The daily report, scans and WordPress\'s own updates run only when WP-Cron fires.', $h['overdue']['count'], 'nightward' ), $h['overdue']['count'], human_time_diff( $h['overdue']['oldest'] ) ) ) . '</p>';
+		}
+		echo '<dl class="nw-dl">';
+		echo '<dt>' . esc_html__( 'Status', 'nightward' ) . '</dt><dd>' . ( $h['stale'] ? '<b class="nw-bad">' . esc_html__( 'not running', 'nightward' ) . '</b>' : esc_html__( 'running', 'nightward' ) ) . '</dd>';
+		echo '<dt>' . esc_html__( 'Last WP-Cron run', 'nightward' ) . '</dt><dd>' . ( $h['last_wpcron'] ? esc_html( sprintf( /* translators: %s: time */ __( '%s ago', 'nightward' ), human_time_diff( $h['last_wpcron'] ) ) ) : esc_html__( 'not seen since this version was installed', 'nightward' ) ) . '</dd>';
+		if ( $h['overdue']['count'] ) {
+			echo '<dt>' . esc_html__( 'Waiting tasks', 'nightward' ) . '</dt><dd><code>' . implode( '</code> <code>', array_map( 'esc_html', $h['overdue']['hooks'] ) ) . '</code></dd>';
+		}
+		echo '<dt>DISABLE_WP_CRON</dt><dd>' . ( $h['disabled'] ? esc_html__( 'set (WordPress does not start WP-Cron by itself)', 'nightward' ) : esc_html__( 'not set', 'nightward' ) ) . '</dd>';
+		echo '<dt>' . esc_html__( 'Backup scheduler', 'nightward' ) . '</dt><dd>';
+		if ( ! $h['fallback'] ) {
+			echo esc_html__( 'off', 'nightward' );
+		} elseif ( $h['fallback_last'] ) {
+			/* translators: %s: time */
+			echo esc_html( sprintf( __( 'on, last ran Nightward\'s own tasks %s ago', 'nightward' ), human_time_diff( $h['fallback_last'] ) ) );
+		} else {
+			echo esc_html__( 'on, not needed so far', 'nightward' );
+		}
+		echo '</dd>';
+		if ( $test ) {
+			echo '<dt>' . esc_html__( 'Connection check', 'nightward' ) . '</dt><dd>' . ( 'ok' === $test['verdict'] ? esc_html__( 'passed', 'nightward' ) : '<b class="nw-bad">' . esc_html__( 'failed', 'nightward' ) . '</b>' ) . ' <span class="nw-muted">· ' . esc_html( sprintf( /* translators: %s: time */ __( '%s ago', 'nightward' ), human_time_diff( $test['checked'] ) ) ) . ( $test['code'] ? ' · HTTP ' . (int) $test['code'] : '' ) . ' · ' . (int) $test['ms'] . ' ms</span></dd>';
+		}
+		echo '</dl>';
+
+		$why = Cron::diagnosis( $h, $test );
+		if ( $h['stale'] || ( $test && 'ok' !== $test['verdict'] ) ) {
+			if ( $why ) {
+				echo '<div class="nw-cron-why"><b>' . esc_html__( 'Why', 'nightward' ) . '</b>';
+				foreach ( $why as $w ) {
+					echo '<p>' . esc_html( $w ) . '</p>';
+				}
+				echo '</div>';
+			} else {
+				echo '<p class="nw-muted">' . esc_html__( 'Run the check to see why WP-Cron does not start.', 'nightward' ) . '</p>';
+			}
+		}
+
+		echo '<p class="nw-actions"><button type="button" class="button" data-nw-cron-test>' . esc_html__( 'Check WP-Cron', 'nightward' ) . '</button>';
+		if ( $own ) {
+			echo ' <button type="button" class="button" data-nw-cron-run>' . esc_html__( 'Run Nightward tasks now', 'nightward' ) . '</button>';
+		}
+		echo ' <span class="nw-inline-status" data-nw-status></span></p>';
+
+		if ( $h['fallback'] && $h['stale'] ) {
+			echo '<p class="nw-note">' . esc_html__( 'Until WP-Cron works, Nightward runs its own report and checks when someone opens the site or the dashboard. WordPress updates and other plugins still wait for WP-Cron.', 'nightward' ) . '</p>';
+		}
+
+		$cmd = Cron::server_commands();
+		echo '<details class="nw-cron-fix"' . ( $h['stale'] ? ' open' : '' ) . '><summary>' . esc_html__( 'Reliable fix: a server cron job', 'nightward' ) . '</summary>';
+		echo '<p>' . esc_html__( 'In the hosting control panel, open Cron jobs (Scheduler) and add a task that runs every 5 minutes with one of these commands. WP-Cron then no longer depends on visits or on the site reaching itself.', 'nightward' ) . '</p>';
+		echo '<pre class="nw-pre">' . esc_html( $cmd['curl'] ) . "\n" . esc_html( $cmd['wget'] ) . "\n" . esc_html( $cmd['cli'] ) . '</pre>';
+		echo '<p>' . esc_html__( 'Once the job runs, you can add this line to wp-config.php so that page views stop starting WP-Cron:', 'nightward' ) . ' <code>define( \'DISABLE_WP_CRON\', true );</code></p>';
+		echo '</details>';
+		echo '</section>';
 	}
 
 	/* ================================================================== */
@@ -207,6 +288,8 @@ class Admin {
 			printf( '<a class="nw-counter nw-c-%1$s %4$s" href="%2$s"><b>%3$s</b><span>%5$s</span></a>', esc_attr( $s ), esc_url( self::url( 'events', array( 'severity' => $s, 'status' => 'open' ) ) ), (int) $c[ $s ], $c[ $s ] ? '' : 'is-zero', esc_html( Events::severity_label( $s ) ) );
 		}
 		echo '</div></section>';
+
+		self::cron_panel();
 
 		// Needs attention
 		$top = Events::query( array( 'min_severity' => 'high', 'status' => 'open', 'limit' => 8, 'order' => 'severity' ) );
@@ -705,6 +788,7 @@ class Admin {
 		echo '<section class="nw-card"><h2>' . esc_html__( 'Advanced', 'nightward' ) . '</h2>';
 		self::field_check( 'block_foreign_packages', __( 'Block updates downloaded from hosts unrelated to the plugin vendor', 'nightward' ), __( 'Hijacked WordPress.org updates and known malicious hosts are always blocked.', 'nightward' ) );
 		self::field_check( 'mu_loader', __( 'Start before other plugins (must-use loader)', 'nightward' ), __( 'Lets Nightward see hooks and requests of plugins from their first line.', 'nightward' ) );
+		self::field_check( 'cron_fallback', __( 'Run Nightward\'s tasks without WP-Cron when it fails', 'nightward' ), __( 'If WP-Cron has not fired for 15 minutes, the daily report and checks run during an ordinary request, after the page has been sent where the server allows it.', 'nightward' ) );
 		echo '<div class="nw-row2"><label><span>' . esc_html__( 'Trusted hosts', 'nightward' ) . '</span><textarea name="nw[trusted_hosts]" rows="4" placeholder="example.com">' . esc_textarea( $s['trusted_hosts'] ) . '</textarea><small>' . esc_html__( 'One domain per line. Requests and update downloads to these are not reported.', 'nightward' ) . '</small></label>';
 		echo '<div><label><span>' . esc_html__( 'Daily scan time', 'nightward' ) . '</span><input type="time" name="nw[integrity_time]" value="' . esc_attr( $s['integrity_time'] ) . '"></label>';
 		echo '<label><span>' . esc_html__( 'Files per batch', 'nightward' ) . '</span><input type="number" min="50" max="3000" name="nw[integrity_batch]" value="' . (int) $s['integrity_batch'] . '"></label>';
@@ -713,6 +797,7 @@ class Admin {
 		echo '</section>';
 
 		echo '<p class="submit"><button class="button button-primary button-hero">' . esc_html__( 'Save settings', 'nightward' ) . '</button></p></form>';
+		self::cron_panel( true );
 	}
 
 	public static function save_settings() {
@@ -751,6 +836,19 @@ class Admin {
 		if ( ! current_user_can( self::CAP ) || ! check_ajax_referer( 'nightward', 'nonce', false ) ) {
 			wp_send_json_error( array( 'message' => __( 'Not allowed.', 'nightward' ) ), 403 );
 		}
+	}
+
+	public static function ajax_cron_test() {
+		self::guard();
+		$r = Cron::loopback_test();
+		wp_send_json_success( array( 'verdict' => $r['verdict'], 'text' => Cron::verdict_text( $r ) ) );
+	}
+
+	public static function ajax_cron_run() {
+		self::guard();
+		$n = Cron::run_due( Cron::own_overdue( 0 ), true, 'manual' );
+		/* translators: %d: number of tasks */
+		wp_send_json_success( array( 'ran' => $n, 'text' => sprintf( _n( '%d task done.', '%d tasks done.', $n, 'nightward' ), $n ) ) );
 	}
 
 	public static function ajax_status() {

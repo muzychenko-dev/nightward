@@ -41,6 +41,7 @@ class Settings {
 			'trusted_hosts'        => '',          // one per line
 			'retention_days'       => 60,
 			'mu_loader'            => 1,
+			'cron_fallback'        => 1,           // run Nightward's own overdue tasks from ordinary requests
 		);
 	}
 
@@ -84,7 +85,7 @@ class Settings {
 		$out = array();
 		foreach ( $d as $k => $def ) {
 			if ( is_int( $def ) ) {
-				$out[ $k ] = isset( $in[ $k ] ) ? max( 0, (int) $in[ $k ] ) : ( 0 === strpos( $k, 'mod_' ) || in_array( $k, array( 'report_enabled', 'report_send_empty', 'instant_enabled', 'block_foreign_packages', 'mu_loader' ), true ) ? 0 : $def );
+				$out[ $k ] = isset( $in[ $k ] ) ? max( 0, (int) $in[ $k ] ) : ( 0 === strpos( $k, 'mod_' ) || in_array( $k, array( 'report_enabled', 'report_send_empty', 'instant_enabled', 'block_foreign_packages', 'mu_loader', 'cron_fallback' ), true ) ? 0 : $def );
 			} else {
 				$out[ $k ] = isset( $in[ $k ] ) ? sanitize_textarea_field( wp_unslash( $in[ $k ] ) ) : $def;
 			}

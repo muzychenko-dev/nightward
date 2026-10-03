@@ -146,6 +146,29 @@
 			return;
 		}
 
+		// WP-Cron: check / run Nightward tasks
+		if ( ( b = e.target.closest( '[data-nw-cron-test], [data-nw-cron-run]' ) ) ) {
+			var cs = statusEl( b );
+			var run = b.hasAttribute( 'data-nw-cron-run' );
+			b.disabled = true;
+			setStatus( cs, run ? t.running : t.checking );
+			post( run ? 'cron_run' : 'cron_test' ).then( function ( r ) {
+				if ( ! r.success ) {
+					b.disabled = false;
+					setStatus( cs, t.failed, 'is-err' );
+					return;
+				}
+				setStatus( cs, r.data.text, run || 'ok' === r.data.verdict ? 'is-ok' : 'is-err' );
+				window.setTimeout( function () {
+					window.location.reload();
+				}, run ? 900 : 2500 );
+			} ).catch( function () {
+				b.disabled = false;
+				setStatus( cs, t.failed, 'is-err' );
+			} );
+			return;
+		}
+
 		// Hardening
 		if ( ( b = e.target.closest( '[data-nw-hardening]' ) ) ) {
 			var hs = statusEl( b );

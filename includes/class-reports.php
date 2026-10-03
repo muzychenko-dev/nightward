@@ -416,7 +416,7 @@ class Reports {
 		$c      = $d['cron'];
 		$rows[] = array(
 			__( 'Scheduled tasks', 'nightward' ),
-			$c['stale'] ? __( 'NOT RUNNING — scans and reports may be delayed', 'nightward' ) : __( 'running', 'nightward' ),
+			$c['stale'] ? ( $c['fallback'] ? __( 'NOT RUNNING - this report was sent by Nightward\'s backup scheduler', 'nightward' ) : __( 'NOT RUNNING — scans and reports may be delayed', 'nightward' ) ) : __( 'running', 'nightward' ),
 		);
 		$inner .= '<tr><td style="padding:4px 28px 10px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;">';
 		foreach ( $rows as $r ) {

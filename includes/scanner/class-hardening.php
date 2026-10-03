@@ -220,7 +220,7 @@ class Hardening {
 		// WP-Cron
 		$ch = \Nightward\Cron::health();
 		$res[] = $ch['stale']
-			? self::r( 'cron', 'fail', 'medium', __( 'Scheduled tasks are not running', 'nightward' ), __( 'Reports, scans and WordPress updates depend on WP-Cron. It has not run for more than three hours.', 'nightward' ), __( 'Set a real server cron job to call wp-cron.php every 5 minutes.', 'nightward' ) )
+			? self::r( 'cron', 'fail', 'medium', __( 'Scheduled tasks are not running', 'nightward' ), __( 'Reports, scans and WordPress updates depend on WP-Cron. Scheduled tasks have been waiting for more than an hour.', 'nightward' ), __( 'Open the Nightward overview: the WP-Cron panel shows the cause and the server cron job to add.', 'nightward' ) )
 			: self::r( 'cron', 'pass', '', __( 'Scheduled tasks are running', 'nightward' ), '' );
 
 		if ( ! $ok ) {
