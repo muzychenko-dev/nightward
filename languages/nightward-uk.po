@@ -2,10 +2,10 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Nightward 1.1.5\n"
+"Project-Id-Version: Nightward 1.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/nightward\n"
-"POT-Creation-Date: 2026-10-03T13:57:21+00:00\n"
-"PO-Revision-Date: 2026-10-03 13:57+0000\n"
+"POT-Creation-Date: 2026-10-03T14:28:38+00:00\n"
+"PO-Revision-Date: 2026-10-03 14:28+0000\n"
 "Last-Translator: Ihor Muzychenko\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -49,7 +49,7 @@ msgstr "Ігор Музиченко"
 msgid "https://muzychenko.dev"
 msgstr "https://muzychenko.dev"
 
-#: admin/class-admin.php:58 admin/class-admin.php:237
+#: admin/class-admin.php:58 admin/class-admin.php:238
 msgid "Settings"
 msgstr "Налаштування"
 
@@ -107,15 +107,15 @@ msgstr ""
 "Прийняти поточні файли цього пакета як новий еталон? Робіть це лише після "
 "того, як перевірили зміни."
 
-#: admin/class-admin.php:89 admin/class-admin.php:597
+#: admin/class-admin.php:89 admin/class-admin.php:601
 msgid "Trusted"
 msgstr "Довірений"
 
-#: admin/class-admin.php:90 admin/class-admin.php:512
+#: admin/class-admin.php:90 admin/class-admin.php:516
 msgid "Details"
 msgstr "Деталі"
 
-#: admin/class-admin.php:91 admin/class-admin.php:512
+#: admin/class-admin.php:91 admin/class-admin.php:516
 msgid "Hide"
 msgstr "Сховати"
 
@@ -153,15 +153,16 @@ msgstr[2] ""
 "%1$d запланованих завдань чекають вже %2$s. Щоденний звіт, сканування й "
 "власні оновлення WordPress виконуються тільки тоді, коли спрацьовує WP-Cron."
 
-#: admin/class-admin.php:134 admin/class-admin.php:501
+#: admin/class-admin.php:134 admin/class-admin.php:505
 msgid "Status"
 msgstr "Статус"
 
-#: admin/class-admin.php:134
+#: admin/class-admin.php:134 admin/class-admin.php:356
 msgid "not running"
 msgstr "не запускається"
 
-#: admin/class-admin.php:134 includes/class-reports.php:419
+#: admin/class-admin.php:134 admin/class-admin.php:357
+#: includes/class-reports.php:419
 msgid "running"
 msgstr "працюють"
 
@@ -173,9 +174,9 @@ msgstr "Останній запуск WP-Cron"
 #. translators: 1: files, 2: time ago, 3: problems
 #. translators: %s: human time difference, e.g. "5 mins"
 #: admin/class-admin.php:135 admin/class-admin.php:161
-#: admin/class-admin.php:184 admin/class-admin.php:393
-#: admin/class-admin.php:646 includes/class-reports.php:407
-#: includes/class-util.php:133
+#: admin/class-admin.php:184 admin/class-admin.php:357
+#: admin/class-admin.php:397 admin/class-admin.php:650
+#: includes/class-reports.php:407 includes/class-util.php:133
 msgid "%s ago"
 msgstr "%s тому"
 
@@ -281,8 +282,8 @@ msgid "Backup scheduler"
 msgstr "Резервний планувальник"
 
 #. translators: %s: time
-#: admin/class-admin.php:175 admin/class-admin.php:349
-#: admin/class-admin.php:352
+#: admin/class-admin.php:175 admin/class-admin.php:350
+#: admin/class-admin.php:353
 msgid "off"
 msgstr "вимкнено"
 
@@ -307,11 +308,15 @@ msgstr "пройдено"
 msgid "failed"
 msgstr "не пройдено"
 
-#: admin/class-admin.php:191
+#: admin/class-admin.php:192
+msgid "Result"
+msgstr "Результат"
+
+#: admin/class-admin.php:192
 msgid "Why"
 msgstr "Причина"
 
-#: admin/class-admin.php:197 includes/class-cron.php:781
+#: admin/class-admin.php:198 includes/class-cron.php:781
 msgid ""
 "Run the check: it starts WP-Cron the way WordPress does and shows where it "
 "stops."
@@ -319,15 +324,15 @@ msgstr ""
 "Запустіть перевірку: вона стартує WP-Cron так само, як WordPress, і показує,"
 " де він зупиняється."
 
-#: admin/class-admin.php:204
+#: admin/class-admin.php:205
 msgid "Start and check WP-Cron"
 msgstr "Запустити й перевірити WP-Cron"
 
-#: admin/class-admin.php:206
+#: admin/class-admin.php:207
 msgid "Run Nightward tasks now"
 msgstr "Виконати завдання Nightward зараз"
 
-#: admin/class-admin.php:209
+#: admin/class-admin.php:210
 msgid ""
 "The check starts WP-Cron exactly the way WordPress does and waits for the "
 "answer, so waiting tasks really run. It can take up to a minute."
@@ -335,7 +340,7 @@ msgstr ""
 "Перевірка запускає WP-Cron так само, як WordPress, і чекає на результат, тож"
 " завдання в черзі справді виконуються. Це може тривати до хвилини."
 
-#: admin/class-admin.php:212
+#: admin/class-admin.php:213
 msgid ""
 "Until WP-Cron works, Nightward runs its own report and checks when someone "
 "opens the site or the dashboard. WordPress updates and other plugins still "
@@ -345,11 +350,11 @@ msgstr ""
 "коли хтось відкриває сайт або адмінку. Оновлення WordPress та інші плагіни й"
 " далі чекають на WP-Cron."
 
-#: admin/class-admin.php:216
+#: admin/class-admin.php:217
 msgid "Reliable fix: a server cron job"
 msgstr "Надійне рішення: серверне cron-завдання"
 
-#: admin/class-admin.php:217
+#: admin/class-admin.php:218
 msgid ""
 "In the hosting control panel, open Cron jobs (Scheduler) and add a task that"
 " runs every 5 minutes with one of these commands. WP-Cron then no longer "
@@ -360,7 +365,7 @@ msgstr ""
 "не залежить ні від відвідувань, ні від того, чи може сайт звернутися сам до "
 "себе."
 
-#: admin/class-admin.php:219
+#: admin/class-admin.php:220
 msgid ""
 "Once the job runs, you can add this line to wp-config.php so that page views"
 " stop starting WP-Cron:"
@@ -368,72 +373,72 @@ msgstr ""
 "Коли завдання запрацює, можна додати в wp-config.php цей рядок, щоб "
 "перегляди сторінок більше не запускали WP-Cron:"
 
-#: admin/class-admin.php:230
+#: admin/class-admin.php:231
 msgid "Overview"
 msgstr "Огляд"
 
-#: admin/class-admin.php:231
+#: admin/class-admin.php:232
 msgid "Events"
 msgstr "Події"
 
-#: admin/class-admin.php:232 includes/class-reports.php:235
+#: admin/class-admin.php:233 includes/class-reports.php:235
 msgid "Network"
 msgstr "Мережа"
 
-#: admin/class-admin.php:233
+#: admin/class-admin.php:234
 msgid "Hooks & Cron"
 msgstr "Хуки й Cron"
 
-#: admin/class-admin.php:234
+#: admin/class-admin.php:235
 msgid "Integrity"
 msgstr "Цілісність"
 
-#: admin/class-admin.php:235 admin/class-admin.php:419
-#: admin/class-admin.php:686 includes/class-events.php:47
+#: admin/class-admin.php:236 admin/class-admin.php:423
+#: admin/class-admin.php:690 includes/class-events.php:47
 msgid "Hardening"
 msgstr "Захищеність"
 
-#: admin/class-admin.php:236
+#: admin/class-admin.php:237
 msgid "AI export"
 msgstr "Експорт для ШІ"
 
-#: admin/class-admin.php:263
+#: admin/class-admin.php:264
 msgid "Settings saved."
 msgstr "Налаштування збережено."
 
-#: admin/class-admin.php:275
+#: admin/class-admin.php:276
 msgid "Open"
 msgstr "Відкрита"
 
-#: admin/class-admin.php:276
+#: admin/class-admin.php:277
 msgid "Acknowledged"
 msgstr "Переглянута"
 
-#: admin/class-admin.php:277
+#: admin/class-admin.php:278
 msgid "Resolved"
 msgstr "Вирішена"
 
-#: admin/class-admin.php:278
+#: admin/class-admin.php:279
 msgid "Ignored"
 msgstr "Ігнорується"
 
-#: admin/class-admin.php:302 includes/class-reports.php:321
+#: admin/class-admin.php:303 includes/class-reports.php:321
 msgid "Action required"
 msgstr "Потрібна дія"
 
-#: admin/class-admin.php:303 includes/class-reports.php:321
+#: admin/class-admin.php:304 includes/class-reports.php:321
 msgid "Needs your attention"
 msgstr "Потребує вашої уваги"
 
-#: admin/class-admin.php:304
+#: admin/class-admin.php:305
 msgid "A few things are worth a look"
 msgstr "Є кілька речей, на які варто глянути"
 
-#: admin/class-admin.php:305 includes/class-reports.php:318
+#: admin/class-admin.php:306 includes/class-reports.php:318
 msgid "All clear"
 msgstr "Усе чисто"
 
-#: admin/class-admin.php:308
+#: admin/class-admin.php:309
 msgid ""
 "Nightward found signs of compromise or dangerous changes. Start with the "
 "items below."
@@ -441,7 +446,7 @@ msgstr ""
 "Nightward знайшов ознаки зламу або небезпечні зміни. Почніть із пунктів "
 "нижче."
 
-#: admin/class-admin.php:309
+#: admin/class-admin.php:310
 msgid ""
 "There are findings that can mean a problem. Review them and mark what is "
 "expected."
@@ -449,23 +454,23 @@ msgstr ""
 "Є знахідки, які можуть означати проблему. Перегляньте їх і позначте "
 "очікувані."
 
-#: admin/class-admin.php:310
+#: admin/class-admin.php:311
 msgid ""
 "Nothing urgent. Some findings are worth reviewing when you have a minute."
 msgstr ""
 "Нічого термінового. Деякі знахідки варто переглянути, коли буде хвилина."
 
-#: admin/class-admin.php:311
+#: admin/class-admin.php:312
 msgid "No open critical, high or medium findings. Monitors are running."
 msgstr ""
 "Немає відкритих критичних, високих чи середніх знахідок. Монітори працюють."
 
-#: admin/class-admin.php:315
+#: admin/class-admin.php:316
 msgid "Site status"
 msgstr "Стан сайту"
 
 #. translators: %s: time left
-#: admin/class-admin.php:321
+#: admin/class-admin.php:322
 msgid ""
 "Learning mode: for the next %s Nightward records the normal behaviour of "
 "this site (hosts, hooks, scheduled tasks) without reporting it. Critical "
@@ -475,91 +480,100 @@ msgstr ""
 "поведінку сайту (хости, хуки, заплановані завдання) і не повідомляє про неї."
 " Критичні знахідки все одно надходять."
 
-#: admin/class-admin.php:333 includes/class-reports.php:359
+#: admin/class-admin.php:334 includes/class-reports.php:359
 msgid "Needs attention"
 msgstr "Потребує уваги"
 
-#: admin/class-admin.php:335
+#: admin/class-admin.php:336
 msgid "Nothing critical or high is open."
 msgstr "Немає відкритих критичних чи високих подій."
 
-#: admin/class-admin.php:342
+#: admin/class-admin.php:343
 msgid "All open events"
 msgstr "Усі відкриті події"
 
-#: admin/class-admin.php:342
+#: admin/class-admin.php:343
 msgid "Ask an AI assistant about these findings"
 msgstr "Запитати ШІ-асистента про ці знахідки"
 
-#: admin/class-admin.php:348
+#: admin/class-admin.php:349
 msgid "E-mail reports"
 msgstr "Звіти на пошту"
 
-#: admin/class-admin.php:349 admin/class-admin.php:797
+#: admin/class-admin.php:350 admin/class-admin.php:801
 msgid "Daily report"
 msgstr "Щоденний звіт"
 
 #. translators: %s: time
-#: admin/class-admin.php:349
+#: admin/class-admin.php:350
 msgid "every day at %s"
 msgstr "щодня о %s"
 
 #. translators: %s: time
-#: admin/class-admin.php:350
+#: admin/class-admin.php:351
 msgid "Next report"
 msgstr "Наступний звіт"
 
-#: admin/class-admin.php:351
+#: admin/class-admin.php:352
 msgid "Last sent"
 msgstr "Останній надіслано"
 
-#: admin/class-admin.php:351 admin/class-admin.php:393
-#: admin/class-admin.php:415
+#: admin/class-admin.php:352 admin/class-admin.php:397
+#: admin/class-admin.php:419
 msgid "not yet"
 msgstr "ще ні"
 
-#: admin/class-admin.php:352 admin/class-admin.php:806
+#: admin/class-admin.php:353 admin/class-admin.php:810
 msgid "Instant alerts"
 msgstr "Миттєві сповіщення"
 
-#: admin/class-admin.php:352
+#: admin/class-admin.php:353
 msgid "critical only"
 msgstr "лише критичні"
 
-#: admin/class-admin.php:352
+#: admin/class-admin.php:353
 msgid "critical and high"
 msgstr "критичні й високі"
 
-#: admin/class-admin.php:353
+#: admin/class-admin.php:354
 msgid "Recipient"
 msgstr "Отримувач"
 
-#: admin/class-admin.php:355
+#: admin/class-admin.php:356
+msgid "why"
+msgstr "чому"
+
+#. translators: %s: time
+#: admin/class-admin.php:357
+msgid "details and check"
+msgstr "деталі й перевірка"
+
+#: admin/class-admin.php:359
 msgid "Last error"
 msgstr "Остання помилка"
 
-#: admin/class-admin.php:355
+#: admin/class-admin.php:359
 msgid "wp_mail() returned false"
 msgstr "wp_mail() повернула false"
 
-#: admin/class-admin.php:357 admin/class-admin.php:810
+#: admin/class-admin.php:361 admin/class-admin.php:814
 msgid "Send test report"
 msgstr "Надіслати тестовий звіт"
 
-#: admin/class-admin.php:358
+#: admin/class-admin.php:362
 msgid "Preview"
 msgstr "Попередній перегляд"
 
-#: admin/class-admin.php:362 admin/class-admin.php:813
+#: admin/class-admin.php:366 admin/class-admin.php:817
 msgid "Monitors"
 msgstr "Монітори"
 
-#: admin/class-admin.php:396 includes/class-events.php:38
+#: admin/class-admin.php:400 includes/class-events.php:38
 #: includes/class-reports.php:411
 msgid "Outbound requests"
 msgstr "Вихідні запити"
 
-#: admin/class-admin.php:396
+#: admin/class-admin.php:400
 msgid ""
 "Every HTTP request of the site, attributed to the plugin file and line that "
 "made it. Faked responses are traced to the exact callback."
@@ -568,16 +582,16 @@ msgstr ""
 "зробив. Підроблені відповіді відстежуються до конкретного callback."
 
 #. translators: 1: hosts, 2: faked
-#: admin/class-admin.php:398
+#: admin/class-admin.php:402
 msgid "24 h: %1$d hosts · %2$d faked"
 msgstr "24 год: %1$d хостів · %2$d підроблено"
 
-#: admin/class-admin.php:399 admin/class-admin.php:815
+#: admin/class-admin.php:403 admin/class-admin.php:819
 #: includes/class-events.php:40
 msgid "Sensitive hooks"
 msgstr "Чутливі хуки"
 
-#: admin/class-admin.php:399
+#: admin/class-admin.php:403
 msgid ""
 "Who can influence login, permissions, the users/plugins lists and the update"
 " channel. New callbacks and eval()-made code are reported."
@@ -586,16 +600,16 @@ msgstr ""
 "оновлень. Нові callback і код, створений через eval(), потрапляють у звіт."
 
 #. translators: %d: count
-#: admin/class-admin.php:401
+#: admin/class-admin.php:405
 msgid "%d third-party callbacks watched"
 msgstr "Під наглядом сторонніх callback: %d"
 
-#: admin/class-admin.php:402 admin/class-admin.php:816
+#: admin/class-admin.php:406 admin/class-admin.php:820
 #: includes/class-events.php:41
 msgid "Users & privileges"
 msgstr "Користувачі та права"
 
-#: admin/class-admin.php:402
+#: admin/class-admin.php:406
 msgid ""
 "Administrators created by code, via direct SQL or hidden from the Users "
 "list; credential changes, application passwords, logins from new networks."
@@ -605,19 +619,19 @@ msgstr ""
 "мереж."
 
 #. translators: %d: count
-#: admin/class-admin.php:404
+#: admin/class-admin.php:408
 msgid "%d administrator"
 msgid_plural "%d administrators"
 msgstr[0] "%d адміністратор"
 msgstr[1] "%d адміністратори"
 msgstr[2] "%d адміністраторів"
 
-#: admin/class-admin.php:405 admin/class-admin.php:817
+#: admin/class-admin.php:409 admin/class-admin.php:821
 #: includes/class-events.php:42
 msgid "Options"
 msgstr "Опції"
 
-#: admin/class-admin.php:405
+#: admin/class-admin.php:409
 msgid ""
 "Site URL, admin e-mail, default role, role capabilities, plugin activation "
 "by code; options written on every page view; autoload weight."
@@ -627,17 +641,17 @@ msgstr ""
 "autoload."
 
 #. translators: %s: size
-#: admin/class-admin.php:407
+#: admin/class-admin.php:411
 msgid "autoload %s"
 msgstr "autoload %s"
 
-#: admin/class-admin.php:408 admin/class-admin.php:624
-#: admin/class-admin.php:818 includes/class-events.php:43
+#: admin/class-admin.php:412 admin/class-admin.php:628
+#: admin/class-admin.php:822 includes/class-events.php:43
 #: includes/class-reports.php:418
 msgid "Scheduled tasks"
 msgstr "Заплановані завдання"
 
-#: admin/class-admin.php:408
+#: admin/class-admin.php:412
 msgid ""
 "New WP-Cron tasks, random names, code in arguments, tasks without a handler."
 msgstr ""
@@ -645,17 +659,17 @@ msgstr ""
 "обробника."
 
 #. translators: 1: tasks, 2: overdue
-#: admin/class-admin.php:410
+#: admin/class-admin.php:414
 msgid "%1$d tasks · %2$d overdue"
 msgstr "%1$d завдань · %2$d прострочено"
 
-#: admin/class-admin.php:411 admin/class-admin.php:643
-#: admin/class-admin.php:819 includes/class-events.php:44
+#: admin/class-admin.php:415 admin/class-admin.php:647
+#: admin/class-admin.php:823 includes/class-events.php:44
 #: includes/class-reports.php:404
 msgid "File integrity"
 msgstr "Цілісність файлів"
 
-#: admin/class-admin.php:411
+#: admin/class-admin.php:415
 msgid ""
 "Core and WordPress.org plugins against official checksums; premium plugins "
 "and themes against their own first snapshot."
@@ -664,21 +678,21 @@ msgstr ""
 "плагіни й теми - за їхнім першим знімком."
 
 #. translators: 1: files, 2: time
-#: admin/class-admin.php:413
+#: admin/class-admin.php:417
 msgid "%1$s files · %2$s"
 msgstr "%1$s файлів · %2$s"
 
 #. translators: 1: files, 2: time
-#: admin/class-admin.php:413 includes/class-reports.php:408
+#: admin/class-admin.php:417 includes/class-reports.php:408
 msgid "first scan pending"
 msgstr "очікує першого сканування"
 
-#: admin/class-admin.php:414 admin/class-admin.php:820
+#: admin/class-admin.php:418 admin/class-admin.php:824
 #: includes/class-events.php:45
 msgid "Executable files"
 msgstr "Виконувані файли"
 
-#: admin/class-admin.php:414
+#: admin/class-admin.php:418
 msgid ""
 "Scripts in uploads, PHP hidden in images, .htaccess tricks, unknown files in"
 " wp-content and mu-plugins."
@@ -686,12 +700,12 @@ msgstr ""
 "Скрипти в uploads, PHP у зображеннях, трюки з .htaccess, невідомі файли в "
 "wp-content і mu-plugins."
 
-#: admin/class-admin.php:416 admin/class-admin.php:821
+#: admin/class-admin.php:420 admin/class-admin.php:825
 #: includes/class-events.php:46
 msgid "Update channel"
 msgstr "Канал оновлень"
 
-#: admin/class-admin.php:416
+#: admin/class-admin.php:420
 msgid ""
 "Where updates are downloaded from. Hijacked WordPress.org updates and "
 "packages from unrelated hosts are flagged or blocked."
@@ -700,14 +714,14 @@ msgstr ""
 "пакети з невідповідних хостів позначаються або блокуються."
 
 #. translators: %d: count
-#: admin/class-admin.php:418
+#: admin/class-admin.php:422
 msgid "%d update pending"
 msgid_plural "%d updates pending"
 msgstr[0] "%d оновлення очікує"
 msgstr[1] "%d оновлення очікують"
 msgstr[2] "%d оновлень очікують"
 
-#: admin/class-admin.php:419
+#: admin/class-admin.php:423
 msgid ""
 "Verified from outside: exposed backups and logs, PHP execution in uploads, "
 "XML-RPC, user enumeration, headers."
@@ -716,15 +730,15 @@ msgstr ""
 "RPC, перелік користувачів, заголовки."
 
 #. translators: %d: score
-#: admin/class-admin.php:421
+#: admin/class-admin.php:425
 msgid "score %d / 100"
 msgstr "оцінка %d / 100"
 
-#: admin/class-admin.php:426
+#: admin/class-admin.php:430
 msgid "What Nightward cannot see"
 msgstr "Чого Nightward не бачить"
 
-#: admin/class-admin.php:428
+#: admin/class-admin.php:432
 msgid ""
 "Requests made with raw cURL, sockets or file_get_contents() bypass the "
 "WordPress HTTP API and are not logged."
@@ -732,7 +746,7 @@ msgstr ""
 "Запити через «сирий» cURL, сокети чи file_get_contents() оминають HTTP API "
 "WordPress і не записуються."
 
-#: admin/class-admin.php:429
+#: admin/class-admin.php:433
 msgid ""
 "Code that runs before Nightward starts: wp-config.php, drop-ins (db.php, "
 "advanced-cache.php, object-cache.php) and must-use plugins loaded before "
@@ -742,7 +756,7 @@ msgstr ""
 "(db.php, advanced-cache.php, object-cache.php) і must-use плагіни, які "
 "завантажуються раніше за «0-nightward-early.php»."
 
-#: admin/class-admin.php:430
+#: admin/class-admin.php:434
 msgid ""
 "Direct database edits are found by the hourly audit, not at the moment they "
 "happen, and without the file that did it."
@@ -750,7 +764,7 @@ msgstr ""
 "Прямі зміни в базі даних знаходить щогодинний аудит - не в момент зміни і "
 "без файлу, який її зробив."
 
-#: admin/class-admin.php:431
+#: admin/class-admin.php:435
 msgid ""
 "Premium plugins and themes are trusted as they are at the first scan. If "
 "they were already modified, only later changes are detected."
@@ -759,7 +773,7 @@ msgstr ""
 " під час першого сканування. Якщо їх уже змінили, виявляються лише наступні "
 "зміни."
 
-#: admin/class-admin.php:432
+#: admin/class-admin.php:436
 msgid ""
 "Nightward detects and reports; it is not a firewall. Someone with access to "
 "the server can disable any plugin, including this one — if the daily e-mail "
@@ -770,103 +784,103 @@ msgstr ""
 "перестав приходити, вважайте тишу тривогою."
 
 #. translators: %d: count
-#: admin/class-admin.php:460
+#: admin/class-admin.php:464
 msgid "%d event updated."
 msgid_plural "%d events updated."
 msgstr[0] "Оновлено %d подію."
 msgstr[1] "Оновлено %d події."
 msgstr[2] "Оновлено %d подій."
 
-#: admin/class-admin.php:472
+#: admin/class-admin.php:476
 msgid "All severities"
 msgstr "Усі рівні"
 
-#: admin/class-admin.php:476
+#: admin/class-admin.php:480
 msgid "All areas"
 msgstr "Усі розділи"
 
-#: admin/class-admin.php:480
+#: admin/class-admin.php:484
 msgid "Open & acknowledged"
 msgstr "Відкриті й переглянуті"
 
-#: admin/class-admin.php:484
+#: admin/class-admin.php:488
 msgid "Search title, file, plugin…"
 msgstr "Пошук за назвою, файлом, плагіном…"
 
-#: admin/class-admin.php:484
+#: admin/class-admin.php:488
 msgid "Filter"
 msgstr "Фільтрувати"
 
-#: admin/class-admin.php:486
+#: admin/class-admin.php:490
 msgid "Reset"
 msgstr "Скинути"
 
-#: admin/class-admin.php:488 admin/class-admin.php:727
+#: admin/class-admin.php:492 admin/class-admin.php:731
 msgid "Export for AI analysis"
 msgstr "Експорт для аналізу в ШІ"
 
-#: admin/class-admin.php:492
+#: admin/class-admin.php:496
 msgid "No events match."
 msgstr "Немає подій за цими умовами."
 
-#: admin/class-admin.php:498
+#: admin/class-admin.php:502
 msgid "Mark as acknowledged"
 msgstr "Позначити як переглянуті"
 
-#: admin/class-admin.php:498
+#: admin/class-admin.php:502
 msgid "Mark as resolved"
 msgstr "Позначити як вирішені"
 
-#: admin/class-admin.php:498
+#: admin/class-admin.php:502
 msgid "Ignore (never report again)"
 msgstr "Ігнорувати (більше не повідомляти)"
 
-#: admin/class-admin.php:498
+#: admin/class-admin.php:502
 msgid "Reopen"
 msgstr "Відкрити знову"
 
-#: admin/class-admin.php:498
+#: admin/class-admin.php:502
 msgid "Apply"
 msgstr "Застосувати"
 
 #. translators: %d: count
-#: admin/class-admin.php:500
+#: admin/class-admin.php:504
 msgid "%d event"
 msgid_plural "%d events"
 msgstr[0] "%d подія"
 msgstr[1] "%d події"
 msgstr[2] "%d подій"
 
-#: admin/class-admin.php:501
+#: admin/class-admin.php:505
 msgid "Severity"
 msgstr "Рівень"
 
-#: admin/class-admin.php:501
+#: admin/class-admin.php:505
 msgid "Event"
 msgstr "Подія"
 
-#: admin/class-admin.php:501 includes/class-reports.php:226
+#: admin/class-admin.php:505 includes/class-reports.php:226
 msgid "Area"
 msgstr "Розділ"
 
-#: admin/class-admin.php:501
+#: admin/class-admin.php:505
 msgid "Seen"
 msgstr "Коли"
 
-#: admin/class-admin.php:521 admin/class-admin.php:588
+#: admin/class-admin.php:525 admin/class-admin.php:592
 msgid "First seen"
 msgstr "Уперше"
 
-#: admin/class-admin.php:522 admin/class-admin.php:588
+#: admin/class-admin.php:526 admin/class-admin.php:592
 msgid "Last seen"
 msgstr "Востаннє"
 
 #. translators: %s: domain
-#: admin/class-admin.php:527
+#: admin/class-admin.php:531
 msgid "Trust %s"
 msgstr "Довіряти %s"
 
-#: admin/class-admin.php:551
+#: admin/class-admin.php:555
 msgid ""
 "Every host this site contacted in the last 30 days through the WordPress "
 "HTTP API, grouped by the plugin or theme that made the request. \"Faked\" "
@@ -878,65 +892,65 @@ msgstr ""
 "означає, що callback повернув відповідь, а запит так і не вийшов за межі "
 "сервера."
 
-#: admin/class-admin.php:571
+#: admin/class-admin.php:575
 msgid "Code that can fake HTTP responses"
 msgstr "Код, що може підробляти HTTP-відповіді"
 
-#: admin/class-admin.php:573
+#: admin/class-admin.php:577
 msgid "No plugin or theme is attached to pre_http_request in this request."
 msgstr ""
 "Жоден плагін чи тема не підключені до pre_http_request у цьому запиті."
 
-#: admin/class-admin.php:575 admin/class-admin.php:615
+#: admin/class-admin.php:579 admin/class-admin.php:619
 msgid "Plugin / theme"
 msgstr "Плагін / тема"
 
-#: admin/class-admin.php:575 admin/class-admin.php:615
+#: admin/class-admin.php:579 admin/class-admin.php:619
 #: includes/class-reports.php:224
 msgid "Callback"
 msgstr "Callback"
 
-#: admin/class-admin.php:575 admin/class-admin.php:615
+#: admin/class-admin.php:579 admin/class-admin.php:619
 msgid "Location"
 msgstr "Розташування"
 
-#: admin/class-admin.php:575 includes/class-reports.php:227
+#: admin/class-admin.php:579 includes/class-reports.php:227
 msgid "Priority"
 msgstr "Пріоритет"
 
-#: admin/class-admin.php:583
+#: admin/class-admin.php:587
 msgid "Destinations"
 msgstr "Адреси"
 
-#: admin/class-admin.php:585
+#: admin/class-admin.php:589
 msgid "No outbound requests recorded yet."
 msgstr "Вихідних запитів ще не зафіксовано."
 
-#: admin/class-admin.php:588
+#: admin/class-admin.php:592
 msgid "Host"
 msgstr "Хост"
 
-#: admin/class-admin.php:588 includes/class-reports.php:225
+#: admin/class-admin.php:592 includes/class-reports.php:225
 msgid "Requested by"
 msgstr "Хто запитав"
 
-#: admin/class-admin.php:588
+#: admin/class-admin.php:592
 msgid "Requests"
 msgstr "Запити"
 
-#: admin/class-admin.php:588
+#: admin/class-admin.php:592
 msgid "Faked"
 msgstr "Підроблено"
 
-#: admin/class-admin.php:588
+#: admin/class-admin.php:592
 msgid "Errors"
 msgstr "Помилки"
 
-#: admin/class-admin.php:597
+#: admin/class-admin.php:601
 msgid "Trust"
 msgstr "Довіряти"
 
-#: admin/class-admin.php:608
+#: admin/class-admin.php:612
 msgid ""
 "Third-party code attached to the hooks that decide who is logged in, what "
 "users may do, what the administrator sees and where updates and mail go. "
@@ -950,104 +964,104 @@ msgstr ""
 "плагіни безпеки, членства й SMTP мусять підключатися - але кожен рядок ви "
 "маєте впізнавати."
 
-#: admin/class-admin.php:612
+#: admin/class-admin.php:616
 msgid "Only WordPress core."
 msgstr "Лише ядро WordPress."
 
-#: admin/class-admin.php:615 includes/class-reports.php:226
+#: admin/class-admin.php:619 includes/class-reports.php:226
 msgid "Hook"
 msgstr "Хук"
 
-#: admin/class-admin.php:625
+#: admin/class-admin.php:629
 msgid "Task"
 msgstr "Завдання"
 
-#: admin/class-admin.php:625
+#: admin/class-admin.php:629
 msgid "Runs"
 msgstr "Запуск"
 
-#: admin/class-admin.php:625 includes/class-reports.php:232
+#: admin/class-admin.php:629 includes/class-reports.php:232
 msgid "Next run"
 msgstr "Наступний запуск"
 
-#: admin/class-admin.php:625 includes/class-reports.php:233
+#: admin/class-admin.php:629 includes/class-reports.php:233
 msgid "Handler"
 msgstr "Обробник"
 
-#: admin/class-admin.php:629
+#: admin/class-admin.php:633
 msgid "once"
 msgstr "одноразово"
 
-#: admin/class-admin.php:630
+#: admin/class-admin.php:634
 msgid "overdue"
 msgstr "прострочено"
 
-#: admin/class-admin.php:631
+#: admin/class-admin.php:635
 msgid "no handler (leftover of a removed plugin?)"
 msgstr "без обробника (залишок видаленого плагіна?)"
 
 #. translators: 1: files, 2: time ago, 3: problems
-#: admin/class-admin.php:646
+#: admin/class-admin.php:650
 msgid "Last scan: %1$s files, %2$s, %3$d problem found."
 msgid_plural "Last scan: %1$s files, %2$s, %3$d problems found."
 msgstr[0] "Останнє сканування: %1$s файлів, %2$s, знайдено %3$d проблему."
 msgstr[1] "Останнє сканування: %1$s файлів, %2$s, знайдено %3$d проблеми."
 msgstr[2] "Останнє сканування: %1$s файлів, %2$s, знайдено %3$d проблем."
 
-#: admin/class-admin.php:648
+#: admin/class-admin.php:652
 msgid "No scan finished yet."
 msgstr "Жодне сканування ще не завершено."
 
 #. translators: %s: time
-#: admin/class-admin.php:651
+#: admin/class-admin.php:655
 msgid "Runs automatically every day at %s in small batches."
 msgstr "Запускається автоматично щодня о %s невеликими порціями."
 
-#: admin/class-admin.php:652
+#: admin/class-admin.php:656
 msgid "Scan now"
 msgstr "Сканувати зараз"
 
-#: admin/class-admin.php:655
+#: admin/class-admin.php:659
 msgid "Official checksums"
 msgstr "Офіційні контрольні суми"
 
-#: admin/class-admin.php:656
+#: admin/class-admin.php:660
 msgid "WordPress.org checksums"
 msgstr "Контрольні суми WordPress.org"
 
-#: admin/class-admin.php:657
+#: admin/class-admin.php:661
 msgid "Own snapshot"
 msgstr "Власний знімок"
 
-#: admin/class-admin.php:658
+#: admin/class-admin.php:662
 msgid "Snapshot taken"
 msgstr "Знімок зроблено"
 
-#: admin/class-admin.php:665 includes/class-reports.php:229
+#: admin/class-admin.php:669 includes/class-reports.php:229
 msgid "Package"
 msgstr "Пакет"
 
-#: admin/class-admin.php:665
+#: admin/class-admin.php:669
 msgid "Version"
 msgstr "Версія"
 
-#: admin/class-admin.php:665
+#: admin/class-admin.php:669
 msgid "Verified against"
 msgstr "Порівнюється з"
 
-#: admin/class-admin.php:665
+#: admin/class-admin.php:669
 msgid "Problems"
 msgstr "Проблеми"
 
-#: admin/class-admin.php:668
+#: admin/class-admin.php:672
 msgid "not scanned yet"
 msgstr "ще не скановано"
 
-#: admin/class-admin.php:673
+#: admin/class-admin.php:677
 msgid "Accept current files"
 msgstr "Прийняти поточні файли"
 
-#: admin/class-admin.php:676
+#: admin/class-admin.php:680
 msgid ""
 "\"Own snapshot\" means the package is not on WordPress.org, so Nightward "
 "compares it with the state recorded at the first scan. Changes that come "
@@ -1060,17 +1074,17 @@ msgstr ""
 "звіт."
 
 #. translators: %s: time ago
-#: admin/class-admin.php:687
+#: admin/class-admin.php:691
 msgid "Checked %s ago."
 msgstr "Перевірено %s тому."
 
 #. translators: %s: time ago
-#: admin/class-admin.php:687
+#: admin/class-admin.php:691
 msgid "Not checked yet."
 msgstr "Ще не перевірялося."
 
 #. translators: %s: time ago
-#: admin/class-admin.php:688
+#: admin/class-admin.php:692
 msgid ""
 "Where it matters, checks are done the way an attacker would: by requesting "
 "the file from outside."
@@ -1078,11 +1092,11 @@ msgstr ""
 "Там, де це важливо, перевірка робиться так, як це зробив би зловмисник: "
 "запитом файлу ззовні."
 
-#: admin/class-admin.php:689
+#: admin/class-admin.php:693
 msgid "Run checks"
 msgstr "Запустити перевірку"
 
-#: admin/class-admin.php:728
+#: admin/class-admin.php:732
 msgid ""
 "One file with everything an AI assistant needs to review this site: "
 "instructions for the assistant, site context, findings with file and line, "
@@ -1098,59 +1112,59 @@ msgstr ""
 "Claude, Gemini чи інший асистент і поставте своє питання. Пояснювати, що це "
 "за файл, не потрібно."
 
-#: admin/class-admin.php:733
+#: admin/class-admin.php:737
 msgid "Format"
 msgstr "Формат"
 
-#: admin/class-admin.php:733
+#: admin/class-admin.php:737
 msgid "Markdown (.md) - best for chat"
 msgstr "Markdown (.md) - найкраще для чату"
 
-#: admin/class-admin.php:733
+#: admin/class-admin.php:737
 msgid "JSON (.json) - structured"
 msgstr "JSON (.json) - структурований"
 
-#: admin/class-admin.php:734
+#: admin/class-admin.php:738
 msgid "Period"
 msgstr "Період"
 
-#: admin/class-admin.php:735
+#: admin/class-admin.php:739
 msgid "Last 7 days"
 msgstr "Останні 7 днів"
 
-#: admin/class-admin.php:735
+#: admin/class-admin.php:739
 msgid "Last 30 days"
 msgstr "Останні 30 днів"
 
-#: admin/class-admin.php:735
+#: admin/class-admin.php:739
 msgid "Last 90 days"
 msgstr "Останні 90 днів"
 
-#: admin/class-admin.php:735
+#: admin/class-admin.php:739
 msgid "All time"
 msgstr "За весь час"
 
-#: admin/class-admin.php:739
+#: admin/class-admin.php:743
 msgid "Findings"
 msgstr "Знахідки"
 
-#: admin/class-admin.php:739
+#: admin/class-admin.php:743
 msgid "Open and acknowledged"
 msgstr "Відкриті й переглянуті"
 
-#: admin/class-admin.php:739
+#: admin/class-admin.php:743
 msgid "All, including resolved and ignored"
 msgstr "Усі, зокрема вирішені й проігноровані"
 
-#: admin/class-admin.php:740
+#: admin/class-admin.php:744
 msgid "Minimum severity"
 msgstr "Мінімальний рівень"
 
-#: admin/class-admin.php:745
+#: admin/class-admin.php:749
 msgid "Include site inventory"
 msgstr "Додати опис сайту"
 
-#: admin/class-admin.php:745
+#: admin/class-admin.php:749
 msgid ""
 "Installed plugins and themes, outbound hosts, sensitive hooks and scheduled "
 "tasks. Lets the assistant confirm or dismiss findings."
@@ -1158,11 +1172,11 @@ msgstr ""
 "Встановлені плагіни й теми, вихідні хости, чутливі хуки й заплановані "
 "завдання. Дає асистенту змогу підтвердити або зняти знахідки."
 
-#: admin/class-admin.php:746
+#: admin/class-admin.php:750
 msgid "Hide the site address, e-mail and IP addresses"
 msgstr "Приховати адресу сайту, e-mail та IP-адреси"
 
-#: admin/class-admin.php:746
+#: admin/class-admin.php:750
 msgid ""
 "Recommended before pasting into an online service. User logins, plugin names"
 " and file paths stay, because the analysis needs them."
@@ -1170,23 +1184,23 @@ msgstr ""
 "Рекомендовано перед тим, як вставляти в онлайн-сервіс. Логіни користувачів, "
 "назви плагінів і шляхи до файлів лишаються, бо вони потрібні для аналізу."
 
-#: admin/class-admin.php:747
+#: admin/class-admin.php:751
 msgid "Download file"
 msgstr "Завантажити файл"
 
-#: admin/class-admin.php:747
+#: admin/class-admin.php:751
 msgid "Copy to clipboard"
 msgstr "Скопіювати в буфер"
 
-#: admin/class-admin.php:748
+#: admin/class-admin.php:752
 msgid "Export text"
 msgstr "Текст експорту"
 
-#: admin/class-admin.php:750
+#: admin/class-admin.php:754
 msgid "What the assistant is told"
 msgstr "Що отримує асистент"
 
-#: admin/class-admin.php:751
+#: admin/class-admin.php:755
 msgid ""
 "The file starts with these instructions, in English, so any assistant "
 "understands them. It is asked to answer in your WordPress language."
@@ -1194,36 +1208,36 @@ msgstr ""
 "Файл починається з цих інструкцій англійською, щоб їх зрозумів будь-який "
 "асистент. Відповідати його просять мовою вашого WordPress."
 
-#: admin/class-admin.php:753
+#: admin/class-admin.php:757
 msgid "From the command line: wp nightward export > nightward.md"
 msgstr "З командного рядка: wp nightward export > nightward.md"
 
-#: admin/class-admin.php:798
+#: admin/class-admin.php:802
 msgid "Send a daily security report"
 msgstr "Надсилати щоденний звіт безпеки"
 
-#: admin/class-admin.php:799
+#: admin/class-admin.php:803
 msgid "Time (site timezone)"
 msgstr "Час (часовий пояс сайту)"
 
-#: admin/class-admin.php:800
+#: admin/class-admin.php:804
 msgid "Recipients"
 msgstr "Отримувачі"
 
-#: admin/class-admin.php:800
+#: admin/class-admin.php:804
 msgid "Comma-separated. Empty = site admin e-mail."
 msgstr "Через кому. Порожньо - e-mail адміністратора сайту."
 
 #. translators: %s: timezone
-#: admin/class-admin.php:802
+#: admin/class-admin.php:806
 msgid "Site timezone: %s. Change it in Settings → General."
 msgstr "Часовий пояс сайту: %s. Змінити можна в Налаштування → Загальні."
 
-#: admin/class-admin.php:803
+#: admin/class-admin.php:807
 msgid "Send the report even when nothing happened"
 msgstr "Надсилати звіт, навіть якщо нічого не сталося"
 
-#: admin/class-admin.php:803
+#: admin/class-admin.php:807
 msgid ""
 "Recommended. A missing \"all clear\" tells you that the site, WP-Cron or "
 "Nightward itself stopped working."
@@ -1231,73 +1245,73 @@ msgstr ""
 "Рекомендовано. Відсутній лист «усе чисто» підкаже, що сайт, WP-Cron або сам "
 "Nightward перестали працювати."
 
-#: admin/class-admin.php:807
+#: admin/class-admin.php:811
 msgid "E-mail immediately when something serious is detected"
 msgstr "Писати одразу, коли виявлено щось серйозне"
 
-#: admin/class-admin.php:808
+#: admin/class-admin.php:812
 msgid "Alert on"
 msgstr "Сповіщати про"
 
-#: admin/class-admin.php:808
+#: admin/class-admin.php:812
 msgid "Critical only"
 msgstr "Лише критичні"
 
-#: admin/class-admin.php:808
+#: admin/class-admin.php:812
 msgid "Critical and high"
 msgstr "Критичні й високі"
 
-#: admin/class-admin.php:809
+#: admin/class-admin.php:813
 msgid "Maximum alerts per hour"
 msgstr "Максимум сповіщень на годину"
 
-#: admin/class-admin.php:809
+#: admin/class-admin.php:813
 msgid "Anything above is combined into one message."
 msgstr "Усе понад ліміт об'єднується в один лист."
 
-#: admin/class-admin.php:810
+#: admin/class-admin.php:814
 msgid "Preview report"
 msgstr "Попередній перегляд звіту"
 
-#: admin/class-admin.php:814
+#: admin/class-admin.php:818
 msgid "Outbound requests & HTTP interception"
 msgstr "Вихідні запити й перехоплення HTTP"
 
-#: admin/class-admin.php:822
+#: admin/class-admin.php:826
 msgid "Hardening checks"
 msgstr "Перевірки захищеності"
 
-#: admin/class-admin.php:825
+#: admin/class-admin.php:829
 msgid "Advanced"
 msgstr "Додатково"
 
-#: admin/class-admin.php:826
+#: admin/class-admin.php:830
 msgid "Block updates downloaded from hosts unrelated to the plugin vendor"
 msgstr ""
 "Блокувати оновлення, завантажені з хостів, не пов'язаних із розробником "
 "плагіна"
 
-#: admin/class-admin.php:826
+#: admin/class-admin.php:830
 msgid ""
 "Hijacked WordPress.org updates and known malicious hosts are always blocked."
 msgstr ""
 "Перехоплені оновлення з WordPress.org і відомі шкідливі хости блокуються "
 "завжди."
 
-#: admin/class-admin.php:827
+#: admin/class-admin.php:831
 msgid "Start before other plugins (must-use loader)"
 msgstr "Запускатися раніше за інші плагіни (must-use завантажувач)"
 
-#: admin/class-admin.php:827
+#: admin/class-admin.php:831
 msgid ""
 "Lets Nightward see hooks and requests of plugins from their first line."
 msgstr "Дає Nightward бачити хуки й запити плагінів з їхнього першого рядка."
 
-#: admin/class-admin.php:828
+#: admin/class-admin.php:832
 msgid "Run Nightward's tasks without WP-Cron when it fails"
 msgstr "Виконувати завдання Nightward без WP-Cron, коли він не працює"
 
-#: admin/class-admin.php:828
+#: admin/class-admin.php:832
 msgid ""
 "If WP-Cron has not fired for 15 minutes, the daily report and checks run "
 "during an ordinary request, after the page has been sent where the server "
@@ -1307,11 +1321,11 @@ msgstr ""
 "виконуються під час звичайного запиту, після того як сторінку вже віддано, "
 "якщо сервер це дозволяє."
 
-#: admin/class-admin.php:829
+#: admin/class-admin.php:833
 msgid "Trusted hosts"
 msgstr "Довірені хости"
 
-#: admin/class-admin.php:829
+#: admin/class-admin.php:833
 msgid ""
 "One domain per line. Requests and update downloads to these are not "
 "reported."
@@ -1319,39 +1333,39 @@ msgstr ""
 "Один домен на рядок. Запити й завантаження оновлень на ці адреси не "
 "потрапляють у звіт."
 
-#: admin/class-admin.php:830
+#: admin/class-admin.php:834
 msgid "Daily scan time"
 msgstr "Час щоденного сканування"
 
-#: admin/class-admin.php:831
+#: admin/class-admin.php:835
 msgid "Files per batch"
 msgstr "Файлів за порцію"
 
-#: admin/class-admin.php:832
+#: admin/class-admin.php:836
 msgid "Learning period, hours"
 msgstr "Період навчання, годин"
 
-#: admin/class-admin.php:833
+#: admin/class-admin.php:837
 msgid "Keep resolved events, days"
 msgstr "Зберігати вирішені події, днів"
 
-#: admin/class-admin.php:836
+#: admin/class-admin.php:840
 msgid "Save settings"
 msgstr "Зберегти налаштування"
 
-#: admin/class-admin.php:874
+#: admin/class-admin.php:878
 msgid "Not allowed."
 msgstr "Недостатньо прав."
 
 #. translators: %d: number of tasks
-#: admin/class-admin.php:888
+#: admin/class-admin.php:892
 msgid "%d task done."
 msgid_plural "%d tasks done."
 msgstr[0] "Виконано %d завдання."
 msgstr[1] "Виконано %d завдання."
 msgstr[2] "Виконано %d завдань."
 
-#: admin/class-admin.php:918
+#: admin/class-admin.php:922
 msgid "wp_mail() failed. Check the SMTP configuration of the site."
 msgstr "wp_mail() не спрацювала. Перевірте налаштування SMTP на сайті."
 

@@ -188,7 +188,8 @@ class Admin {
 		$why = Cron::diagnosis( $h, $test );
 		if ( $h['stale'] || $test ) {
 			if ( $why ) {
-				echo '<div class="nw-cron-why"><b>' . esc_html__( 'Why', 'nightward' ) . '</b>';
+				$passed = ! $h['stale'] && ( ! $test || in_array( $test['verdict'], array( 'ok', 'slow' ), true ) );
+				echo '<div class="nw-cron-why' . ( $passed ? ' is-ok' : '' ) . '"><b>' . ( $passed ? esc_html__( 'Result', 'nightward' ) : esc_html__( 'Why', 'nightward' ) ) . '</b>';
 				foreach ( $why as $w ) {
 					echo '<p>' . esc_html( $w ) . '</p>';
 				}
@@ -351,6 +352,9 @@ class Admin {
 		echo '<dt>' . esc_html__( 'Last sent', 'nightward' ) . '</dt><dd>' . ( $h['last_report'] ? esc_html( wp_date( 'j M, H:i', $h['last_report'] ) ) : esc_html__( 'not yet', 'nightward' ) ) . '</dd>';
 		echo '<dt>' . esc_html__( 'Instant alerts', 'nightward' ) . '</dt><dd>' . ( Settings::get( 'instant_enabled', 1 ) ? esc_html( 'critical' === Settings::get( 'instant_min_severity' ) ? __( 'critical only', 'nightward' ) : __( 'critical and high', 'nightward' ) ) : esc_html__( 'off', 'nightward' ) ) . '</dd>';
 		echo '<dt>' . esc_html__( 'Recipient', 'nightward' ) . '</dt><dd>' . esc_html( Settings::report_email() ) . '</dd>';
+		echo '<dt>WP-Cron</dt><dd>' . ( $h['stale']
+			? '<b class="nw-bad">' . esc_html__( 'not running', 'nightward' ) . '</b> · <a href="#nw-cron">' . esc_html__( 'why', 'nightward' ) . '</a>'
+			: esc_html__( 'running', 'nightward' ) . ( $h['last_wpcron'] ? ' <span class="nw-muted">· ' . esc_html( sprintf( /* translators: %s: time */ __( '%s ago', 'nightward' ), human_time_diff( $h['last_wpcron'] ) ) ) . '</span>' : '' ) . ' · <a href="' . esc_url( self::url( 'settings' ) . '#nw-cron' ) . '">' . esc_html__( 'details and check', 'nightward' ) . '</a>' ) . '</dd>';
 		if ( is_array( $ms ) && ! $ms['ok'] ) {
 			echo '<dt>' . esc_html__( 'Last error', 'nightward' ) . '</dt><dd class="nw-bad">' . esc_html( $ms['error'] ? $ms['error'] : __( 'wp_mail() returned false', 'nightward' ) ) . '</dd>';
 		}

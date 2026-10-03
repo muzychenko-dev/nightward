@@ -242,3 +242,5 @@
 .nw-cron-locks { margin: 0; padding: 0; list-style: none; }
 .nw-cron-locks li { margin: 0 0 3px; }
 .nw-cron-locks li.nw-bad { color: var(--nw-crit); }
+.nw-cron-why.is-ok { border-left-color: var(--nw-ok); }
+.nw-cron-why.is-ok b { color: var(--nw-ok); }
