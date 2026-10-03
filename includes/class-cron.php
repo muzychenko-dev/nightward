@@ -26,6 +26,7 @@ class Cron {
 			return;
 		}
 		add_filter( 'cron_request', array( __CLASS__, 'note_spawn' ), PHP_INT_MAX );
+		add_action( 'admin_init', array( __CLASS__, 'ensure_scheduled' ) );
 		if ( ! ( defined( 'WP_CLI' ) && WP_CLI ) && ! ( defined( 'WP_INSTALLING' ) && WP_INSTALLING ) && Settings::get( 'cron_fallback', 1 ) ) {
 			add_action( 'shutdown', array( __CLASS__, 'fallback' ), 99 );
 		}
@@ -63,6 +64,9 @@ class Cron {
 	 * spawn_cron() and wp-cron.php do, at most once a minute.
 	 */
 	public static function note_lock_write( $value = null ) {
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			return;
+		}
 		$op  = doing_action( 'deleted_transient' ) ? 'delete' : 'set';
 		$how = 'other';
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
@@ -113,18 +117,32 @@ class Cron {
 		$foreign = array();
 		$spawns  = array();
 		foreach ( $log as $r ) {
-			if ( 'core' !== $r['component'] && 'nightward' !== $r['component'] ) {
+			if ( 'check' !== $r['how'] && 'core' !== $r['component'] && 'nightward' !== $r['component'] ) {
 				$foreign[ $r['component'] . '|' . $r['file'] . '|' . $r['op'] ] = $r;
 			} elseif ( 'spawn' === $r['how'] && 'set' === $r['op'] ) {
 				$spawns[] = $r['at'];
+			} elseif ( 'delete' === $r['op'] || 'check' === $r['how'] ) {
+				$spawns[] = null; // a released lock allows an early start
 			}
 		}
-		$min = null;
+		// Two requests in the same second may both start WP-Cron (a race WordPress accepts);
+		// repeated early starts seconds apart mean the lock is not seen.
+		$min   = null;
+		$short = 0;
 		for ( $i = 1, $n = count( $spawns ); $i < $n; $i++ ) {
-			$d   = $spawns[ $i ] - $spawns[ $i - 1 ];
-			$min = null === $min ? $d : min( $min, $d );
+			if ( null === $spawns[ $i ] || null === $spawns[ $i - 1 ] ) {
+				continue;
+			}
+			$d = $spawns[ $i ] - $spawns[ $i - 1 ];
+			if ( $d > 2 && $d < 50 ) {
+				$short++;
+				$min = null === $min ? $d : min( $min, $d );
+			}
 		}
-		return array( 'foreign' => array_values( $foreign ), 'min_spawn_gap' => $min, 'spawns' => count( $spawns ), 'log' => $log );
+		if ( $short < 2 ) {
+			$min = null;
+		}
+		return array( 'foreign' => array_values( $foreign ), 'min_spawn_gap' => $min, 'spawns' => count( array_filter( $spawns ) ), 'log' => $log );
 	}
 
 	/** Persistent object cache in use, and which drop-in provides it. */
@@ -153,6 +171,12 @@ class Cron {
 		if ( ! headers_sent() ) {
 			header( 'X-Nightward-Cron: ' . $lock );
 		}
+		// How far this request gets: a fatal error, an exit during loading, or a process
+		// killed from outside (nothing recorded at all) look the same from the outside.
+		self::$exit_key = $check ? 'nightward_cron_check_exit' : 'nightward_cron_exit';
+		self::$exit_t   = time();
+		register_shutdown_function( array( __CLASS__, 'arrival_shutdown' ) );
+		add_filter( 'wp_php_error_message', array( __CLASS__, 'arrival_fatal' ), 1, 2 );
 		if ( $check ) {
 			// Nightward's own check is kept apart, so it does not hide what real starts do.
 			update_option( 'nightward_cron_check_seen', array( 'at' => time(), 'lock' => $lock ), false );
@@ -162,6 +186,51 @@ class Cron {
 		if ( ! is_array( $prev ) || $prev['at'] < time() - 30 || $prev['lock'] !== $lock ) {
 			update_option( 'nightward_cron_seen', array( 'at' => time(), 'lock' => $lock ), false );
 		}
+	}
+
+	private static $exit_key = '';
+	private static $exit_t   = 0;
+	private static $exit_err = null;
+
+	/** WordPress's fatal error page is about to end the request: keep the error. */
+	public static function arrival_fatal( $message, $error ) {
+		self::$exit_err = $error;
+		self::arrival_shutdown();
+		return $message;
+	}
+
+	public static function arrival_shutdown() {
+		static $done = false;
+		if ( $done || ! self::$exit_key ) {
+			return;
+		}
+		$done  = true;
+		$stage = did_action( 'wp_loaded' ) ? 'wp_loaded' : ( did_action( 'init' ) ? 'init' : ( did_action( 'plugins_loaded' ) ? 'plugins_loaded' : 'mu-plugins' ) );
+		$err   = self::$exit_err ? self::$exit_err : error_get_last();
+		$fatal = null;
+		if ( is_array( $err ) && in_array( (int) $err['type'], array( E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, E_RECOVERABLE_ERROR ), true ) ) {
+			$fatal = array(
+				'message'   => substr( preg_replace( '~ in /\S+$~', '', strtok( (string) $err['message'], "\n" ) ), 0, 300 ),
+				'file'      => Attribution::rel( (string) $err['file'] ) . ':' . (int) $err['line'],
+				'component' => Attribution::component_of_file( (string) $err['file'] ),
+			);
+		}
+		$prev = get_option( self::$exit_key );
+		// Keep a recorded fatal error for a while: later clean runs must not hide it.
+		if ( ! $fatal && is_array( $prev ) && ! empty( $prev['fatal'] ) && $prev['at'] > time() - HOUR_IN_SECONDS && 'nightward_cron_exit' === self::$exit_key ) {
+			return;
+		}
+		update_option( self::$exit_key, array( 'at' => self::$exit_t, 'stage' => $stage, 'fatal' => $fatal ), false );
+	}
+
+	/** Server software and PHP SAPI, for the diagnosis of killed background requests. */
+	public static function server_info() {
+		$sw = isset( $_SERVER['SERVER_SOFTWARE'] ) ? (string) $_SERVER['SERVER_SOFTWARE'] : ''; // phpcs:ignore
+		return array(
+			'software'  => substr( sanitize_text_field( $sw ), 0, 60 ),
+			'sapi'      => PHP_SAPI,
+			'litespeed' => false !== stripos( $sw, 'litespeed' ) || 0 === strpos( PHP_SAPI, 'litespeed' ),
+		);
 	}
 
 	/** WP-Cron really fired in this request. */
@@ -298,6 +367,13 @@ class Cron {
 		wp_schedule_single_event( self::next_local( Settings::get( 'integrity_time', '03:30' ) ), 'nightward_daily_maintenance' );
 		if ( ! wp_next_scheduled( 'nightward_hourly' ) ) {
 			wp_schedule_event( time() + 300, 'hourly', 'nightward_hourly' );
+		}
+	}
+
+	/** Recreate Nightward's jobs if another plugin or a person removed them. */
+	public static function ensure_scheduled() {
+		if ( ! wp_next_scheduled( 'nightward_hourly' ) || ! wp_next_scheduled( 'nightward_daily_maintenance' ) || ( Settings::get( 'report_enabled', 1 ) && ! wp_next_scheduled( 'nightward_daily_report' ) ) ) {
+			self::schedule_all();
 		}
 	}
 
@@ -503,6 +579,11 @@ class Cron {
 				$r['verdict'] = 'auth';
 			} elseif ( $r['code'] >= 400 ) {
 				$r['verdict'] = 'blocked';
+				$ex           = self::fresh_option( 'nightward_cron_check_exit' );
+				if ( $r['code'] >= 500 && is_array( $ex ) && $ex['at'] >= (int) floor( $t0 ) && ! empty( $ex['fatal'] ) ) {
+					$r['verdict'] = 'fatal';
+					$r['exit']    = $ex;
+				}
 			} elseif ( '' !== trim( $body ) && false !== stripos( $body, '<html' ) ) {
 				$r['verdict'] = 'page';
 			}
@@ -532,6 +613,16 @@ class Cron {
 				$r['ran']    = max( 0, $before['count'] - self::overdue( true )['count'] );
 				if ( ! $done ) {
 					$r['verdict'] = $r['ran'] ? 'slow' : 'stuck';
+					if ( ! $r['ran'] ) {
+						$ex = self::fresh_option( 'nightward_cron_check_exit' );
+						if ( is_array( $ex ) && $ex['at'] >= $t0i ) {
+							$r['exit'] = $ex;
+							$r['verdict'] = ! empty( $ex['fatal'] ) ? 'fatal' : 'exited';
+						} else {
+							$r['verdict'] = 'killed';
+						}
+						$r['server'] = self::server_info();
+					}
 				} elseif ( empty( $done['ok'] ) ) {
 					$r['verdict'] = 'lock';
 					$r['lock']    = $done['lock'];
@@ -574,6 +665,20 @@ class Cron {
 					return __( 'The request reached WordPress, but by then another request had already replaced the WP-Cron lock with a newer one, so wp-cron.php exits without running anything. WordPress normally re-locks at most once a minute; here something starts WP-Cron again and again or rewrites the lock. See "Who changes the WP-Cron lock" above.', 'nightward' );
 				}
 				return __( 'The request reached WordPress, but the lock WordPress had just saved was not there (transients do not survive between requests), so wp-cron.php exits without running anything. Usually a broken object cache: check the object-cache.php drop-in and the Redis or Memcached connection.', 'nightward' );
+			case 'fatal':
+				/* translators: 1: plugin or theme, 2: error message, 3: file and line */
+				return sprintf( __( 'WP-Cron dies with a fatal error while WordPress loads: %1$s - "%2$s" (%3$s). Every WP-Cron run stops at this point, so no task ever runs. Fix or remove the code that fails.', 'nightward' ), Attribution::label( $r['exit']['fatal']['component'] ), $r['exit']['fatal']['message'], $r['exit']['fatal']['file'] );
+			case 'exited':
+				/* translators: %s: loading stage */
+				return sprintf( __( 'WP-Cron ends without an error while WordPress is still loading (last stage reached: %s). A plugin stops wp-cron.php requests with exit, typically a firewall or a "cron guard". No task runs.', 'nightward' ), $r['exit']['stage'] );
+			case 'killed':
+				$t = __( 'WordPress started loading behind wp-cron.php, then the PHP process vanished: no error, no normal end. wp-cron.php sends its answer first and works afterwards; this server stops PHP as soon as the answer has gone out.', 'nightward' );
+				if ( ! empty( $r['server']['litespeed'] ) ) {
+					$t .= ' ' . __( 'This is LiteSpeed\'s "abort" behaviour. Allow background work with the .htaccess lines shown below, or use the WP-CLI server cron job, which does not go through the web server.', 'nightward' );
+				} else {
+					$t .= ' ' . __( 'Ask the host whether PHP processes are terminated after the response (request_terminate_timeout, process killers), or use the WP-CLI server cron job below, which does not go through the web server.', 'nightward' );
+				}
+				return $t;
 			case 'stuck':
 				return __( 'WordPress loaded behind wp-cron.php but did not finish and ran no task within 25 seconds. A task or plugin hangs or ends the request early (a fatal error is the usual reason); check the PHP error log for wp-cron.php.', 'nightward' );
 			case 'slow':
@@ -605,8 +710,12 @@ class Cron {
 			$out[] = self::verdict_text( array( 'verdict' => 'lock', 'lock' => $h['seen']['lock'] ) );
 		} elseif ( $h['stale'] && ! $test ) {
 			$out[] = __( 'Run the check: it starts WP-Cron the way WordPress does and shows where it stops.', 'nightward' );
-		} elseif ( $h['stale'] ) {
+		} elseif ( $h['stale'] && in_array( $test['verdict'], array( 'ok', 'slow' ), true ) ) {
 			$out[] = __( 'WP-Cron starts only when someone opens the site or the dashboard, so on a site with few visits tasks wait. A server cron job removes the dependence on visits.', 'nightward' );
+		}
+		$ex = get_option( 'nightward_cron_exit' );
+		if ( is_array( $ex ) && ! empty( $ex['fatal'] ) && $ex['at'] > time() - DAY_IN_SECONDS ) {
+			$out[] = self::verdict_text( array( 'verdict' => 'fatal', 'exit' => $ex ) );
 		}
 		$ls = self::lock_summary();
 		foreach ( $ls['foreign'] as $f ) {

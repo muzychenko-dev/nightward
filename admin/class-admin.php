@@ -162,6 +162,8 @@ class Admin {
 			}
 			echo '</ul></dd>';
 		}
+		$si = Cron::server_info();
+		echo '<dt>' . esc_html__( 'Server', 'nightward' ) . '</dt><dd>' . esc_html( ( $si['software'] ? $si['software'] : '?' ) . ' · PHP ' . PHP_VERSION . ' (' . $si['sapi'] . ')' ) . '</dd>';
 		$oc = Cron::object_cache();
 		echo '<dt>' . esc_html__( 'Object cache', 'nightward' ) . '</dt><dd>' . ( $oc['dropin'] ? esc_html( $oc['dropin'] ) . ( $oc['active'] ? '' : ' <span class="nw-muted">(' . esc_html__( 'drop-in present but not active', 'nightward' ) . ')</span>' ) : esc_html__( 'none (transients are stored in the database)', 'nightward' ) ) . '</dd>';
 		if ( $h['prepend'] ) {
@@ -196,6 +198,9 @@ class Admin {
 			}
 		}
 
+		if ( $test && 'killed' === $test['verdict'] && ! empty( $test['server']['litespeed'] ) ) {
+			echo '<pre class="nw-pre">' . esc_html( "<IfModule LiteSpeed>\nRewriteEngine On\nRewriteRule .* - [E=noabort:1,E=noconntimeout:1]\n</IfModule>" ) . '</pre>';
+		}
 		echo '<p class="nw-actions"><button type="button" class="button" data-nw-cron-test>' . esc_html__( 'Start and check WP-Cron', 'nightward' ) . '</button>';
 		if ( $own ) {
 			echo ' <button type="button" class="button" data-nw-cron-run>' . esc_html__( 'Run Nightward tasks now', 'nightward' ) . '</button>';
