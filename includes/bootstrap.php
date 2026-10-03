@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( ! defined( 'NIGHTWARD_VERSION' ) ) {
-	define( 'NIGHTWARD_VERSION', '1.1.1' );
+	define( 'NIGHTWARD_VERSION', '1.1.2' );
 }
 if ( ! defined( 'NIGHTWARD_FILE' ) ) {
 	define( 'NIGHTWARD_FILE', dirname( __DIR__ ) . '/nightward.php' );

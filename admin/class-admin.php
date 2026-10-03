@@ -136,6 +136,24 @@ class Admin {
 		if ( $h['overdue']['count'] ) {
 			echo '<dt>' . esc_html__( 'Waiting tasks', 'nightward' ) . '</dt><dd><code>' . implode( '</code> <code>', array_map( 'esc_html', $h['overdue']['hooks'] ) ) . '</code></dd>';
 		}
+		echo '<dt>' . esc_html__( 'Start attempts by WordPress', 'nightward' ) . '</dt><dd>' . ( $h['spawn'] ? esc_html( sprintf( /* translators: %s: time */ __( 'last %s ago', 'nightward' ), human_time_diff( $h['spawn']['last'] ) ) ) : esc_html__( 'none recorded yet', 'nightward' ) ) . '</dd>';
+		echo '<dt>' . esc_html__( 'Requests reaching wp-cron.php', 'nightward' ) . '</dt><dd>';
+		if ( $h['seen'] ) {
+			$locks = array(
+				'match'    => __( 'lock matched', 'nightward' ),
+				'mismatch' => __( 'lock did not match', 'nightward' ),
+				'empty'    => __( 'lock missing', 'nightward' ),
+				'external' => __( 'from a server cron job', 'nightward' ),
+			);
+			/* translators: 1: time, 2: lock state */
+			echo esc_html( sprintf( __( 'last %1$s ago, %2$s', 'nightward' ), human_time_diff( $h['seen']['at'] ), isset( $locks[ $h['seen']['lock'] ] ) ? $locks[ $h['seen']['lock'] ] : $h['seen']['lock'] ) );
+		} else {
+			echo esc_html__( 'none recorded yet', 'nightward' );
+		}
+		echo '</dd>';
+		if ( $h['prepend'] ) {
+			echo '<dt>auto_prepend_file</dt><dd><code>' . esc_html( $h['prepend'] ) . '</code> <span class="nw-muted">' . esc_html__( 'runs before WordPress on every request', 'nightward' ) . '</span></dd>';
+		}
 		echo '<dt>DISABLE_WP_CRON</dt><dd>' . ( $h['disabled'] ? esc_html__( 'set (WordPress does not start WP-Cron by itself)', 'nightward' ) : esc_html__( 'not set', 'nightward' ) ) . '</dd>';
 		echo '<dt>' . esc_html__( 'Backup scheduler', 'nightward' ) . '</dt><dd>';
 		if ( ! $h['fallback'] ) {
@@ -148,12 +166,12 @@ class Admin {
 		}
 		echo '</dd>';
 		if ( $test ) {
-			echo '<dt>' . esc_html__( 'Connection check', 'nightward' ) . '</dt><dd>' . ( 'ok' === $test['verdict'] ? esc_html__( 'passed', 'nightward' ) : '<b class="nw-bad">' . esc_html__( 'failed', 'nightward' ) . '</b>' ) . ' <span class="nw-muted">· ' . esc_html( sprintf( /* translators: %s: time */ __( '%s ago', 'nightward' ), human_time_diff( $test['checked'] ) ) ) . ( $test['code'] ? ' · HTTP ' . (int) $test['code'] : '' ) . ' · ' . (int) $test['ms'] . ' ms</span></dd>';
+			echo '<dt>' . esc_html__( 'Connection check', 'nightward' ) . '</dt><dd>' . ( in_array( $test['verdict'], array( 'ok', 'slow' ), true ) ? esc_html__( 'passed', 'nightward' ) : '<b class="nw-bad">' . esc_html__( 'failed', 'nightward' ) . '</b>' ) . ' <span class="nw-muted">· ' . esc_html( sprintf( /* translators: %s: time */ __( '%s ago', 'nightward' ), human_time_diff( $test['checked'] ) ) ) . ( $test['code'] ? ' · HTTP ' . (int) $test['code'] : '' ) . ' · ' . (int) $test['ms'] . ' ms</span></dd>';
 		}
 		echo '</dl>';
 
 		$why = Cron::diagnosis( $h, $test );
-		if ( $h['stale'] || ( $test && 'ok' !== $test['verdict'] ) ) {
+		if ( $h['stale'] || $test ) {
 			if ( $why ) {
 				echo '<div class="nw-cron-why"><b>' . esc_html__( 'Why', 'nightward' ) . '</b>';
 				foreach ( $why as $w ) {
@@ -161,15 +179,16 @@ class Admin {
 				}
 				echo '</div>';
 			} else {
-				echo '<p class="nw-muted">' . esc_html__( 'Run the check to see why WP-Cron does not start.', 'nightward' ) . '</p>';
+				echo '<p class="nw-muted">' . esc_html__( 'Run the check: it starts WP-Cron the way WordPress does and shows where it stops.', 'nightward' ) . '</p>';
 			}
 		}
 
-		echo '<p class="nw-actions"><button type="button" class="button" data-nw-cron-test>' . esc_html__( 'Check WP-Cron', 'nightward' ) . '</button>';
+		echo '<p class="nw-actions"><button type="button" class="button" data-nw-cron-test>' . esc_html__( 'Start and check WP-Cron', 'nightward' ) . '</button>';
 		if ( $own ) {
 			echo ' <button type="button" class="button" data-nw-cron-run>' . esc_html__( 'Run Nightward tasks now', 'nightward' ) . '</button>';
 		}
 		echo ' <span class="nw-inline-status" data-nw-status></span></p>';
+		echo '<p class="nw-note">' . esc_html__( 'The check starts WP-Cron exactly the way WordPress does and waits for the answer, so waiting tasks really run. It can take up to a minute.', 'nightward' ) . '</p>';
 
 		if ( $h['fallback'] && $h['stale'] ) {
 			echo '<p class="nw-note">' . esc_html__( 'Until WP-Cron works, Nightward runs its own report and checks when someone opens the site or the dashboard. WordPress updates and other plugins still wait for WP-Cron.', 'nightward' ) . '</p>';

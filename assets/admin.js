@@ -158,10 +158,10 @@
 					setStatus( cs, t.failed, 'is-err' );
 					return;
 				}
-				setStatus( cs, r.data.text, run || 'ok' === r.data.verdict ? 'is-ok' : 'is-err' );
+				setStatus( cs, r.data.text, run || 'ok' === r.data.verdict || 'slow' === r.data.verdict ? 'is-ok' : 'is-err' );
 				window.setTimeout( function () {
 					window.location.reload();
-				}, run ? 900 : 2500 );
+				}, run ? 900 : 4000 );
 			} ).catch( function () {
 				b.disabled = false;
 				setStatus( cs, t.failed, 'is-err' );

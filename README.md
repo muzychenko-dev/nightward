@@ -2,7 +2,7 @@
 
 Runtime security monitor for WordPress. Most security plugins look at files and requests from the outside. Nightward watches what installed plugins and themes actually **do** inside the site, names the file and line that did it, and e-mails you a daily report. Critical findings are e-mailed the moment they happen.
 
-- Version: 1.1.1
+- Version: 1.1.2
 - Requires: WordPress 6.2+, PHP 7.4+
 - Languages: English, Ukrainian
 - Website: https://nightward.muzychenko.dev
@@ -33,7 +33,8 @@ Runtime security monitor for WordPress. Most security plugins look at files and 
 Reports and scans are WP-Cron tasks. When tasks have been waiting for more than an hour, the overview shows a **WP-Cron** panel:
 
 - what is waiting and when WP-Cron last really ran;
-- **Check WP-Cron** requests `wp-cron.php` exactly the way WordPress starts it and names the cause: `DISABLE_WP_CRON` without a server job, the server unable to reach its own address, a redirect, password protection, a firewall or maintenance page answering instead of WordPress, a slow start;
+- **Start and check WP-Cron** starts WP-Cron exactly the way WordPress does (same lock, same URL filters) and waits until WordPress reports from inside, so waiting tasks really run. It names the cause: the server unable to reach its own address, a redirect, password protection, a firewall or maintenance page, an answer with no WordPress behind it (a firewall that runs first via `auto_prepend_file`, a server rule), a lock that does not survive between requests (object cache);
+- it also records WordPress's own start attempts and whether they ever reach `wp-cron.php`, which catches background requests dropped by a proxy or CDN, `DISABLE_WP_CRON` without a server job and a removed `wp_cron` hook;
 - ready-made server cron lines (`curl`, `wget`, WP-CLI) with the site's real address and path.
 
 Until it is fixed, the **backup scheduler** runs Nightward's own overdue tasks (report, hourly checks, scans) during ordinary requests, after the response has been sent where PHP-FPM or LiteSpeed allows it. Heavy scans otherwise wait for a dashboard Heartbeat request. Turn it off in Settings → Advanced.
