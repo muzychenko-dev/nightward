@@ -239,3 +239,6 @@
 .nw-cron-fix p { color: var(--nw-ink-2); max-width: 900px; }
 .nw-cron-fix .nw-pre { white-space: pre; overflow-x: auto; }
 .nw-cron-fix code { white-space: nowrap; }
+.nw-cron-locks { margin: 0; padding: 0; list-style: none; }
+.nw-cron-locks li { margin: 0 0 3px; }
+.nw-cron-locks li.nw-bad { color: var(--nw-crit); }

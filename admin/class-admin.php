@@ -121,7 +121,7 @@ class Admin {
 			return;
 		}
 		$test = get_option( 'nightward_cron_test' );
-		$test = is_array( $test ) && isset( $test['checked'] ) && $test['checked'] > time() - DAY_IN_SECONDS ? $test : null;
+		$test = is_array( $test ) && isset( $test['checked'], $test['run_ms'] ) && $test['checked'] > time() - DAY_IN_SECONDS ? wp_parse_args( $test, array( 'ms' => 0, 'run_ms' => 0, 'ran' => 0, 'code' => 0, 'error' => '', 'title' => '', 'via' => '', 'host' => '', 'prepend' => '' ) ) : null;
 		$own  = Cron::own_overdue( 0 );
 		$cls  = $h['stale'] ? ' nw-cron-bad' : '';
 		echo '<section class="nw-card nw-cron' . esc_attr( $cls ) . '" id="nw-cron">';
@@ -142,6 +142,8 @@ class Admin {
 			$locks = array(
 				'match'    => __( 'lock matched', 'nightward' ),
 				'mismatch' => __( 'lock did not match', 'nightward' ),
+				'newer'    => __( 'lock already replaced by a newer one', 'nightward' ),
+				'older'    => __( 'lock did not match', 'nightward' ),
 				'empty'    => __( 'lock missing', 'nightward' ),
 				'external' => __( 'from a server cron job', 'nightward' ),
 			);
@@ -151,6 +153,17 @@ class Admin {
 			echo esc_html__( 'none recorded yet', 'nightward' );
 		}
 		echo '</dd>';
+		$ls = Cron::lock_summary();
+		if ( $ls['log'] ) {
+			echo '<dt>' . esc_html__( 'Who changes the WP-Cron lock', 'nightward' ) . '</dt><dd><ul class="nw-cron-locks">';
+			foreach ( array_slice( array_reverse( $ls['log'] ), 0, 6 ) as $row ) {
+				$who = 'check' === $row['how'] ? __( 'Nightward check', 'nightward' ) : ( 'core' === $row['component'] ? ( 'spawn' === $row['how'] ? __( 'WordPress (start of WP-Cron)', 'nightward' ) : ( 'wp-cron.php' === $row['how'] ? 'wp-cron.php' : 'WordPress' ) ) : Attribution::label( $row['component'] ) );
+				echo '<li' . ( 'core' !== $row['component'] && 'nightward' !== $row['component'] ? ' class="nw-bad"' : '' ) . '>' . esc_html( $who ) . ( 'delete' === $row['op'] ? ' · ' . esc_html__( 'deleted', 'nightward' ) : '' ) . ( $row['file'] ? ' <code>' . esc_html( $row['file'] ) . '</code>' : '' ) . ' <span class="nw-muted">· ' . esc_html( $row['ctx'] ) . ' · ' . esc_html( sprintf( /* translators: %s: time */ __( '%s ago', 'nightward' ), human_time_diff( (int) $row['at'] ) ) ) . '</span></li>';
+			}
+			echo '</ul></dd>';
+		}
+		$oc = Cron::object_cache();
+		echo '<dt>' . esc_html__( 'Object cache', 'nightward' ) . '</dt><dd>' . ( $oc['dropin'] ? esc_html( $oc['dropin'] ) . ( $oc['active'] ? '' : ' <span class="nw-muted">(' . esc_html__( 'drop-in present but not active', 'nightward' ) . ')</span>' ) : esc_html__( 'none (transients are stored in the database)', 'nightward' ) ) . '</dd>';
 		if ( $h['prepend'] ) {
 			echo '<dt>auto_prepend_file</dt><dd><code>' . esc_html( $h['prepend'] ) . '</code> <span class="nw-muted">' . esc_html__( 'runs before WordPress on every request', 'nightward' ) . '</span></dd>';
 		}

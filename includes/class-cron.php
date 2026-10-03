@@ -18,6 +18,8 @@ class Cron {
 		add_action( 'nightward_integrity_step', array( 'Nightward\\Scanner\\Integrity', 'step' ) );
 		add_action( 'nightward_instant_retry', array( 'Nightward\\Reports', 'send_pending_instant' ) );
 		add_action( 'update_option_' . Settings::OPTION, array( __CLASS__, 'schedule_all' ) );
+		add_action( 'set_transient_doing_cron', array( __CLASS__, 'note_lock_write' ), PHP_INT_MAX, 1 );
+		add_action( 'deleted_transient', array( __CLASS__, 'note_lock_delete' ), PHP_INT_MAX, 1 );
 		if ( wp_doing_cron() ) {
 			self::note_arrival();
 			add_action( 'shutdown', array( __CLASS__, 'mark_wpcron' ), 1 );
@@ -45,6 +47,97 @@ class Cron {
 		return $req;
 	}
 
+	/** How the stored lock relates to the key a wp-cron.php request carries. */
+	private static function lock_relation( $stored, $key ) {
+		if ( false === $stored || '' === $stored || null === $stored ) {
+			return 'empty';
+		}
+		if ( (string) $stored === (string) $key ) {
+			return 'match';
+		}
+		return (float) $stored > (float) $key ? 'newer' : 'older';
+	}
+
+	/**
+	 * Who writes or deletes the WP-Cron lock (transient doing_cron). Normally only
+	 * spawn_cron() and wp-cron.php do, at most once a minute.
+	 */
+	public static function note_lock_write( $value = null ) {
+		$op  = doing_action( 'deleted_transient' ) ? 'delete' : 'set';
+		$how = 'other';
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+		foreach ( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 30 ) as $fr ) {
+			if ( isset( $fr['class'], $fr['function'] ) && __CLASS__ === $fr['class'] && 'loopback_test' === $fr['function'] ) {
+				$how = 'check';
+				break;
+			}
+			if ( isset( $fr['function'] ) && 'spawn_cron' === $fr['function'] ) {
+				$how = 'spawn';
+				break;
+			}
+			if ( isset( $fr['file'] ) && 'wp-cron.php' === basename( $fr['file'] ) ) {
+				$how = 'wp-cron.php';
+				break;
+			}
+		}
+		$c   = Attribution::caller();
+		$log = get_option( 'nightward_cron_lock_log' );
+		$log = is_array( $log ) ? $log : array();
+		$now = microtime( true );
+		$row = array(
+			'at'        => $now,
+			'op'        => $op,
+			'how'       => $how,
+			'component' => $c['component'],
+			'file'      => $c['file'] ? $c['file'] . ( $c['line'] ? ':' . $c['line'] : '' ) : '',
+			'ctx'       => Util::request_context(),
+		);
+		$last = end( $log );
+		if ( $last && $now - $last['at'] < 3 && $last['component'] === $row['component'] && $last['how'] === $row['how'] && $last['op'] === $op ) {
+			return; // a burst from the same place counts once
+		}
+		$log[] = $row;
+		update_option( 'nightward_cron_lock_log', array_slice( $log, -15 ), false );
+	}
+
+	public static function note_lock_delete( $transient ) {
+		if ( 'doing_cron' === $transient ) {
+			self::note_lock_write();
+		}
+	}
+
+	/** Summary of the lock log: foreign writers and how often WordPress itself re-locks. */
+	public static function lock_summary() {
+		$log     = get_option( 'nightward_cron_lock_log' );
+		$log     = is_array( $log ) ? $log : array();
+		$foreign = array();
+		$spawns  = array();
+		foreach ( $log as $r ) {
+			if ( 'core' !== $r['component'] && 'nightward' !== $r['component'] ) {
+				$foreign[ $r['component'] . '|' . $r['file'] . '|' . $r['op'] ] = $r;
+			} elseif ( 'spawn' === $r['how'] && 'set' === $r['op'] ) {
+				$spawns[] = $r['at'];
+			}
+		}
+		$min = null;
+		for ( $i = 1, $n = count( $spawns ); $i < $n; $i++ ) {
+			$d   = $spawns[ $i ] - $spawns[ $i - 1 ];
+			$min = null === $min ? $d : min( $min, $d );
+		}
+		return array( 'foreign' => array_values( $foreign ), 'min_spawn_gap' => $min, 'spawns' => count( $spawns ), 'log' => $log );
+	}
+
+	/** Persistent object cache in use, and which drop-in provides it. */
+	public static function object_cache() {
+		$file = WP_CONTENT_DIR . '/object-cache.php';
+		$name = '';
+		if ( is_file( $file ) ) {
+			$head = (string) file_get_contents( $file, false, null, 0, 4096 ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+			$name = preg_match( '/^[ \t\/*#@]*(?:Plugin Name|Name):(.*)$/mi', $head, $m ) ? trim( $m[1] ) : 'object-cache.php';
+		}
+		return array( 'active' => (bool) wp_using_ext_object_cache(), 'dropin' => $name );
+	}
+
 	/**
 	 * A request reached wp-cron.php and WordPress loaded. Records whether its key matches
 	 * the lock WordPress stored: a mismatch means transients do not survive between requests.
@@ -55,8 +148,7 @@ class Cron {
 			$lock = 'external';
 		} else {
 			$key  = (string) wp_unslash( $_GET['doing_wp_cron'] ); // phpcs:ignore
-			$t    = get_transient( 'doing_cron' );
-			$lock = ( false === $t || '' === $t ) ? 'empty' : ( (string) $t === $key ? 'match' : 'mismatch' );
+			$lock = self::lock_relation( get_transient( 'doing_cron' ), $key );
 		}
 		if ( ! headers_sent() ) {
 			header( 'X-Nightward-Cron: ' . $lock );
@@ -79,11 +171,14 @@ class Cron {
 		if ( ! did_action( 'wp_loaded' ) ) {
 			return;
 		}
-		if ( isset( $GLOBALS['doing_wp_cron'] ) && array_key_exists( 'doing_cron_transient', $GLOBALS ) && $GLOBALS['doing_cron_transient'] !== $GLOBALS['doing_wp_cron'] ) {
+		$passed = ! ( isset( $GLOBALS['doing_wp_cron'] ) && array_key_exists( 'doing_cron_transient', $GLOBALS ) && $GLOBALS['doing_cron_transient'] !== $GLOBALS['doing_wp_cron'] );
+		if ( ! empty( $_GET['nightward_check'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			update_option( 'nightward_cron_check_done', array( 'at' => time(), 'ok' => $passed, 'lock' => $passed ? 'match' : self::lock_relation( $GLOBALS['doing_cron_transient'], $GLOBALS['doing_wp_cron'] ) ), false );
 			return;
 		}
-		if ( ! empty( $_GET['nightward_check'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			update_option( 'nightward_cron_check_done', time(), false );
+		if ( ! $passed ) {
+			// wp-cron.php compares after WordPress has loaded; record what it really saw.
+			update_option( 'nightward_cron_seen', array( 'at' => time(), 'lock' => self::lock_relation( $GLOBALS['doing_cron_transient'], $GLOBALS['doing_wp_cron'] ) ), false );
 			return;
 		}
 		if ( (int) get_option( 'nightward_last_wpcron', 0 ) < time() - 60 ) {
@@ -427,14 +522,19 @@ class Cron {
 				$r['verdict'] = 'no_wp';
 			} elseif ( 'match' !== $seen['lock'] ) {
 				$r['verdict'] = 'lock';
+				$r['lock']    = $seen['lock'];
 			} else {
 				$done = self::wait_for( function () use ( $t0i ) {
-					return (int) self::fresh_option( 'nightward_cron_check_done' ) >= $t0i ? true : null;
+					$v = self::fresh_option( 'nightward_cron_check_done' );
+					return is_array( $v ) && $v['at'] >= $t0i ? $v : null;
 				}, 25 );
 				$r['run_ms'] = (int) round( ( microtime( true ) - $t0 ) * 1000 );
 				$r['ran']    = max( 0, $before['count'] - self::overdue( true )['count'] );
 				if ( ! $done ) {
-					$r['verdict'] = 'slow';
+					$r['verdict'] = $r['ran'] ? 'slow' : 'stuck';
+				} elseif ( empty( $done['ok'] ) ) {
+					$r['verdict'] = 'lock';
+					$r['lock']    = $done['lock'];
 				}
 			}
 		}
@@ -470,7 +570,12 @@ class Cron {
 				}
 				return $t . ' ' . __( 'A server cron job that runs WP-CLI bypasses all of this.', 'nightward' );
 			case 'lock':
+				if ( isset( $r['lock'] ) && 'newer' === $r['lock'] ) {
+					return __( 'The request reached WordPress, but by then another request had already replaced the WP-Cron lock with a newer one, so wp-cron.php exits without running anything. WordPress normally re-locks at most once a minute; here something starts WP-Cron again and again or rewrites the lock. See "Who changes the WP-Cron lock" above.', 'nightward' );
+				}
 				return __( 'The request reached WordPress, but the lock WordPress had just saved was not there (transients do not survive between requests), so wp-cron.php exits without running anything. Usually a broken object cache: check the object-cache.php drop-in and the Redis or Memcached connection.', 'nightward' );
+			case 'stuck':
+				return __( 'WordPress loaded behind wp-cron.php but did not finish and ran no task within 25 seconds. A task or plugin hangs or ends the request early (a fatal error is the usual reason); check the PHP error log for wp-cron.php.', 'nightward' );
 			case 'slow':
 				/* translators: %s: seconds */
 				return sprintf( __( 'WP-Cron started and is running the waiting tasks; they were not finished when the check stopped waiting after %s s. WP-Cron itself works.', 'nightward' ), number_format_i18n( $r['run_ms'] / 1000, 0 ) );
@@ -482,7 +587,7 @@ class Cron {
 	/** Most likely reason why tasks wait. */
 	public static function diagnosis( array $h, $test = null ) {
 		$out = array();
-		if ( $test && ! in_array( $test['verdict'], array( 'ok', 'slow' ), true ) ) {
+		if ( $test && ! in_array( $test['verdict'], array( 'ok', 'slow', 'lock', 'stuck' ), true ) ) {
 			$out[] = self::verdict_text( $test );
 			return $out;
 		}
@@ -496,14 +601,34 @@ class Cron {
 		} elseif ( $h['spawn'] && $h['spawn']['first'] && $h['spawn']['first'] < time() - 120 && $h['spawn']['last'] > time() - 2 * HOUR_IN_SECONDS && ( ! $h['seen'] || $h['seen']['at'] < $h['spawn']['first'] ) ) {
 			/* translators: %s: time */
 			$out[] = sprintf( __( 'WordPress has been trying to start WP-Cron for %s, but none of these requests reached WordPress. WordPress sends them in the background and does not wait for the answer; behind a proxy, CDN or a slow TLS handshake such a short request is dropped. A server cron job solves it.', 'nightward' ), human_time_diff( $h['spawn']['first'] ) );
-		} elseif ( $h['seen'] && 'mismatch' === $h['seen']['lock'] || $h['seen'] && 'empty' === $h['seen']['lock'] && $h['stale'] ) {
-			$out[] = self::verdict_text( array( 'verdict' => 'lock' ) );
+		} elseif ( $h['seen'] && in_array( $h['seen']['lock'], array( 'newer', 'older', 'mismatch', 'empty' ), true ) && $h['stale'] ) {
+			$out[] = self::verdict_text( array( 'verdict' => 'lock', 'lock' => $h['seen']['lock'] ) );
 		} elseif ( $h['stale'] && ! $test ) {
 			$out[] = __( 'Run the check: it starts WP-Cron the way WordPress does and shows where it stops.', 'nightward' );
 		} elseif ( $h['stale'] ) {
 			$out[] = __( 'WP-Cron starts only when someone opens the site or the dashboard, so on a site with few visits tasks wait. A server cron job removes the dependence on visits.', 'nightward' );
 		}
-		return $out;
+		$ls = self::lock_summary();
+		foreach ( $ls['foreign'] as $f ) {
+			$out[] = sprintf(
+				/* translators: 1: plugin or theme, 2: file and line, 3: "writes" or "deletes" */
+				__( '%1$s %3$s the WP-Cron lock (%2$s). Only WordPress itself should touch it; a plugin that does breaks WP-Cron for the whole site.', 'nightward' ),
+				Attribution::label( $f['component'] ),
+				$f['file'] ? $f['file'] : '?',
+				'delete' === $f['op'] ? __( 'deletes', 'nightward' ) : __( 'writes', 'nightward' )
+			);
+		}
+		if ( null !== $ls['min_spawn_gap'] && $ls['min_spawn_gap'] < 50 ) {
+			$oc = self::object_cache();
+			/* translators: %s: seconds */
+			$t = sprintf( __( 'WordPress started WP-Cron again after only %s s, although the lock should hold it back for 60 s: the lock is not visible to the next request.', 'nightward' ), number_format_i18n( $ls['min_spawn_gap'], 1 ) );
+			if ( $oc['dropin'] ) {
+				/* translators: %s: object cache drop-in name */
+				$t .= ' ' . sprintf( __( 'The site uses a persistent object cache (%s); a misconfigured or per-process cache is the usual cause.', 'nightward' ), $oc['dropin'] );
+			}
+			$out[] = $t;
+		}
+		return array_values( array_unique( $out ) );
 	}
 
 	/** Lines to give the host or put into the control panel. */
