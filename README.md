@@ -2,7 +2,7 @@
 
 Runtime security monitor for WordPress. Most security plugins look at files and requests from the outside. Nightward watches what installed plugins and themes actually **do** inside the site, names the file and line that did it, and e-mails you a daily report. Critical findings are e-mailed the moment they happen.
 
-- Version: 1.1.4
+- Version: 1.1.5
 - Requires: WordPress 6.2+, PHP 7.4+
 - Languages: English, Ukrainian
 - Website: https://nightward.muzychenko.dev
@@ -35,7 +35,7 @@ Reports and scans are WP-Cron tasks. When tasks have been waiting for more than 
 - what is waiting and when WP-Cron last really ran;
 - **Start and check WP-Cron** starts WP-Cron exactly the way WordPress does (same lock, same URL filters) and waits until WordPress reports from inside, so waiting tasks really run. It names the cause: the server unable to reach its own address, a redirect, password protection, a firewall or maintenance page, an answer with no WordPress behind it (a firewall that runs first via `auto_prepend_file`, a server rule), a lock that does not survive between requests (object cache);
 - it also records WordPress's own start attempts and whether they ever reach `wp-cron.php`, which catches background requests dropped by a proxy or CDN, `DISABLE_WP_CRON` without a server job and a removed `wp_cron` hook;
-- each `wp-cron.php` request records how far it got, so a fatal error (with message, plugin, file and line), an `exit` during loading (a firewall or "cron guard") and a PHP process killed after the answer was sent (LiteSpeed `noabort`, with the `.htaccess` fix) are told apart;
+- each `wp-cron.php` request records how far it got, so a fatal error (with message, plugin, file and line), an `exit` during loading (attributed to the plugin being loaded, or to the hook, priority and callbacks running at that moment, with the server IP to allow in its firewall) and a PHP process killed after the answer was sent (LiteSpeed `noabort`, with the `.htaccess` fix) are told apart;
 - every write or deletion of the WP-Cron lock (`doing_cron` transient) is attributed to the plugin file and line that made it, so a plugin that keeps resetting the lock, or a cache that hides it from the next request, is named;
 - ready-made server cron lines (`curl`, `wget`, WP-CLI) with the site's real address and path.
 

@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Nightward 1.1.4\n"
+"Project-Id-Version: Nightward 1.1.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/nightward\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-03T13:43:06+00:00\n"
+"POT-Creation-Date: 2026-10-03T13:57:21+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: nightward\n"
@@ -299,7 +299,7 @@ msgid "Why"
 msgstr ""
 
 #: admin/class-admin.php:197
-#: includes/class-cron.php:712
+#: includes/class-cron.php:781
 msgid "Run the check: it starts WP-Cron the way WordPress does and shows where it stops."
 msgstr ""
 
@@ -1213,125 +1213,139 @@ msgid "drop-in %s"
 msgstr ""
 
 #. translators: 1: host, 2: error message
-#: includes/class-cron.php:644
+#: includes/class-cron.php:696
 msgid "The server cannot connect to its own address %1$s (%2$s). WordPress starts WP-Cron with exactly this request, so tasks never run. Usually a firewall, DNS or hosting restriction: ask the host to allow requests from the server to its own domain, or set up a server cron job below."
 msgstr ""
 
 #. translators: %s: redirect target
-#: includes/class-cron.php:647
+#: includes/class-cron.php:699
 msgid "wp-cron.php answers with a redirect to %s. WordPress does not follow redirects when it starts WP-Cron, so tasks never run. Make the WordPress and site addresses in Settings → General match the real address (https, www) or remove the redirect for wp-cron.php."
 msgstr ""
 
-#: includes/class-cron.php:649
+#: includes/class-cron.php:701
 msgid "wp-cron.php asks for a password (HTTP 401). Password protection of the site also blocks the request that starts WP-Cron. Exclude wp-cron.php from the protection or set up a server cron job below."
 msgstr ""
 
 #. translators: 1: HTTP status, 2: page title or CDN name
-#: includes/class-cron.php:652
+#: includes/class-cron.php:704
 msgid "wp-cron.php is blocked with HTTP %1$d%2$s. A firewall, security plugin or maintenance mode rejects the request that starts WP-Cron. Allow wp-cron.php for requests from the server itself or set up a server cron job below."
 msgstr ""
 
 #. translators: %s: page title
-#: includes/class-cron.php:655
+#: includes/class-cron.php:707
 msgid "wp-cron.php returns a web page (\"%s\") instead of an empty answer. A maintenance or coming-soon mode, a firewall or a cache intercepts it. Exclude wp-cron.php or set up a server cron job below."
 msgstr ""
 
-#: includes/class-cron.php:657
+#: includes/class-cron.php:709
 msgid "wp-cron.php answers, but WordPress never started behind it: Nightward, which loads with WordPress, did not see the request within 10 seconds. Something stops it before WordPress: a firewall that runs first, a server rule or a cache."
 msgstr ""
 
 #. translators: %s: file path
-#: includes/class-cron.php:660
+#: includes/class-cron.php:712
 msgid "PHP runs %s before every request (auto_prepend_file); that is usually a security plugin's firewall, check its settings for wp-cron.php or for blocked requests from the server's own IP address."
 msgstr ""
 
-#: includes/class-cron.php:662
+#: includes/class-cron.php:714
 msgid "A server cron job that runs WP-CLI bypasses all of this."
 msgstr ""
 
-#: includes/class-cron.php:665
+#: includes/class-cron.php:717
 msgid "The request reached WordPress, but by then another request had already replaced the WP-Cron lock with a newer one, so wp-cron.php exits without running anything. WordPress normally re-locks at most once a minute; here something starts WP-Cron again and again or rewrites the lock. See \"Who changes the WP-Cron lock\" above."
 msgstr ""
 
-#: includes/class-cron.php:667
+#: includes/class-cron.php:719
 msgid "The request reached WordPress, but the lock WordPress had just saved was not there (transients do not survive between requests), so wp-cron.php exits without running anything. Usually a broken object cache: check the object-cache.php drop-in and the Redis or Memcached connection."
 msgstr ""
 
 #. translators: 1: plugin or theme, 2: error message, 3: file and line
-#: includes/class-cron.php:670
+#: includes/class-cron.php:722
 msgid "WP-Cron dies with a fatal error while WordPress loads: %1$s - \"%2$s\" (%3$s). Every WP-Cron run stops at this point, so no task ever runs. Fix or remove the code that fails."
 msgstr ""
 
+#. translators: 1: plugin or theme, 2: file or callbacks, 3: hook or loading stage
+#: includes/class-cron.php:729
+msgid "%1$s stops every wp-cron.php request with exit (%2$s, %3$s), so no task runs. Usually its firewall blocks the request WordPress sends to itself."
+msgstr ""
+
+#: includes/class-cron.php:732
+msgid "while plugins load"
+msgstr ""
+
 #. translators: %s: loading stage
-#: includes/class-cron.php:673
+#: includes/class-cron.php:736
 msgid "WP-Cron ends without an error while WordPress is still loading (last stage reached: %s). A plugin stops wp-cron.php requests with exit, typically a firewall or a \"cron guard\". No task runs."
 msgstr ""
 
-#: includes/class-cron.php:675
+#. translators: %s: IP address
+#: includes/class-cron.php:740
+msgid "The requests come from the server itself (%s): allow wp-cron.php or this address in that plugin's firewall."
+msgstr ""
+
+#: includes/class-cron.php:744
 msgid "WordPress started loading behind wp-cron.php, then the PHP process vanished: no error, no normal end. wp-cron.php sends its answer first and works afterwards; this server stops PHP as soon as the answer has gone out."
 msgstr ""
 
-#: includes/class-cron.php:677
+#: includes/class-cron.php:746
 msgid "This is LiteSpeed's \"abort\" behaviour. Allow background work with the .htaccess lines shown below, or use the WP-CLI server cron job, which does not go through the web server."
 msgstr ""
 
-#: includes/class-cron.php:679
+#: includes/class-cron.php:748
 msgid "Ask the host whether PHP processes are terminated after the response (request_terminate_timeout, process killers), or use the WP-CLI server cron job below, which does not go through the web server."
 msgstr ""
 
-#: includes/class-cron.php:683
+#: includes/class-cron.php:752
 msgid "WordPress loaded behind wp-cron.php but did not finish and ran no task within 25 seconds. A task or plugin hangs or ends the request early (a fatal error is the usual reason); check the PHP error log for wp-cron.php."
 msgstr ""
 
 #. translators: %s: seconds
-#: includes/class-cron.php:686
+#: includes/class-cron.php:755
 msgid "WP-Cron started and is running the waiting tasks; they were not finished when the check stopped waiting after %s s. WP-Cron itself works."
 msgstr ""
 
 #. translators: 1: number of tasks, 2: seconds
-#: includes/class-cron.php:689
+#: includes/class-cron.php:758
 msgid "WP-Cron works when it is started: WordPress picked up the request and finished %1$d waiting task in %2$s s."
 msgid_plural "WP-Cron works when it is started: WordPress picked up the request and finished %1$d waiting tasks in %2$s s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-cron.php:703
+#: includes/class-cron.php:772
 msgid "DISABLE_WP_CRON is set in wp-config.php, so WordPress does not start WP-Cron by itself. That is correct only if a server cron job requests wp-cron.php; here no such job seems to run."
 msgstr ""
 
-#: includes/class-cron.php:705
+#: includes/class-cron.php:774
 msgid "WordPress's own WP-Cron start (wp_cron on init) has been removed by a plugin or theme, so page views never start it."
 msgstr ""
 
 #. translators: %s: time
-#: includes/class-cron.php:708
+#: includes/class-cron.php:777
 msgid "WordPress has been trying to start WP-Cron for %s, but none of these requests reached WordPress. WordPress sends them in the background and does not wait for the answer; behind a proxy, CDN or a slow TLS handshake such a short request is dropped. A server cron job solves it."
 msgstr ""
 
-#: includes/class-cron.php:714
+#: includes/class-cron.php:783
 msgid "WP-Cron starts only when someone opens the site or the dashboard, so on a site with few visits tasks wait. A server cron job removes the dependence on visits."
 msgstr ""
 
 #. translators: 1: plugin or theme, 2: file and line, 3: "writes" or "deletes"
-#: includes/class-cron.php:724
+#: includes/class-cron.php:795
 msgid "%1$s %3$s the WP-Cron lock (%2$s). Only WordPress itself should touch it; a plugin that does breaks WP-Cron for the whole site."
 msgstr ""
 
-#: includes/class-cron.php:727
+#: includes/class-cron.php:798
 msgid "deletes"
 msgstr ""
 
-#: includes/class-cron.php:727
+#: includes/class-cron.php:798
 msgid "writes"
 msgstr ""
 
 #. translators: %s: seconds
-#: includes/class-cron.php:733
+#: includes/class-cron.php:804
 msgid "WordPress started WP-Cron again after only %s s, although the lock should hold it back for 60 s: the lock is not visible to the next request."
 msgstr ""
 
 #. translators: %s: object cache drop-in name
-#: includes/class-cron.php:736
+#: includes/class-cron.php:807
 msgid "The site uses a persistent object cache (%s); a misconfigured or per-process cache is the usual cause."
 msgstr ""
 

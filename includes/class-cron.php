@@ -176,16 +176,64 @@ class Cron {
 		self::$exit_key = $check ? 'nightward_cron_check_exit' : 'nightward_cron_exit';
 		self::$exit_t   = time();
 		register_shutdown_function( array( __CLASS__, 'arrival_shutdown' ) );
+		add_action( 'plugin_loaded', array( __CLASS__, 'arrival_plugin_loaded' ), PHP_INT_MAX );
 		add_filter( 'wp_php_error_message', array( __CLASS__, 'arrival_fatal' ), 1, 2 );
 		if ( $check ) {
 			// Nightward's own check is kept apart, so it does not hide what real starts do.
-			update_option( 'nightward_cron_check_seen', array( 'at' => time(), 'lock' => $lock ), false );
+			update_option( 'nightward_cron_check_seen', array( 'at' => time(), 'lock' => $lock, 'ip' => self::remote_ip() ), false );
 			return;
 		}
 		$prev = get_option( 'nightward_cron_seen' );
 		if ( ! is_array( $prev ) || $prev['at'] < time() - 30 || $prev['lock'] !== $lock ) {
-			update_option( 'nightward_cron_seen', array( 'at' => time(), 'lock' => $lock ), false );
+			update_option( 'nightward_cron_seen', array( 'at' => time(), 'lock' => $lock, 'ip' => self::remote_ip() ), false );
 		}
+	}
+
+	private static $last_plugin = '';
+
+	private static function remote_ip() {
+		return isset( $_SERVER['REMOTE_ADDR'] ) ? substr( preg_replace( '/[^0-9a-fA-F:.]/', '', (string) $_SERVER['REMOTE_ADDR'] ), 0, 45 ) : ''; // phpcs:ignore
+	}
+
+	public static function arrival_plugin_loaded( $file ) {
+		self::$last_plugin = (string) $file;
+	}
+
+	/**
+	 * Who stopped the request. While plugins load: the plugin after the last one that
+	 * finished loading. Inside a hook: the hook, its running priority and the callbacks there.
+	 */
+	private static function exit_culprit( $stage ) {
+		global $wp_filter, $wp_current_filter;
+		if ( 'plugins' === $stage && function_exists( 'wp_get_active_and_valid_plugins' ) ) {
+			$list = wp_get_active_and_valid_plugins();
+			$idx  = self::$last_plugin ? array_search( self::$last_plugin, $list, true ) : -1;
+			$next = false === $idx ? null : ( isset( $list[ $idx + 1 ] ) ? $list[ $idx + 1 ] : null );
+			if ( $next ) {
+				return array( 'component' => Attribution::component_of_file( $next ), 'where' => Attribution::rel( $next ), 'hook' => '' );
+			}
+			return null;
+		}
+		$stack = is_array( $wp_current_filter ) ? $wp_current_filter : array();
+		$hook  = $stack ? end( $stack ) : '';
+		if ( ! $hook || 'shutdown' === $hook || empty( $wp_filter[ $hook ] ) || ! ( $wp_filter[ $hook ] instanceof \WP_Hook ) ) {
+			return null;
+		}
+		$prio = $wp_filter[ $hook ]->current_priority();
+		if ( false === $prio || empty( $wp_filter[ $hook ]->callbacks[ $prio ] ) ) {
+			return array( 'component' => '', 'where' => '', 'hook' => $hook );
+		}
+		$names = array();
+		$comp  = '';
+		foreach ( $wp_filter[ $hook ]->callbacks[ $prio ] as $cb ) {
+			$i = Attribution::callback_info( $cb['function'] );
+			if ( in_array( $i['component'], array( 'core', 'nightward' ), true ) ) {
+				continue;
+			}
+			$comp    = $comp ? $comp : $i['component'];
+			$names[] = $i['file'] ? $i['file'] . ( $i['line'] ? ':' . $i['line'] : '' ) : $i['name'];
+		}
+		return array( 'component' => $comp, 'where' => implode( ', ', array_slice( $names, 0, 3 ) ), 'hook' => $hook . ' (' . $prio . ')' );
 	}
 
 	private static $exit_key = '';
@@ -205,7 +253,7 @@ class Cron {
 			return;
 		}
 		$done  = true;
-		$stage = did_action( 'wp_loaded' ) ? 'wp_loaded' : ( did_action( 'init' ) ? 'init' : ( did_action( 'plugins_loaded' ) ? 'plugins_loaded' : 'mu-plugins' ) );
+		$stage = did_action( 'wp_loaded' ) ? 'wp_loaded' : ( did_action( 'init' ) ? 'init' : ( did_action( 'plugins_loaded' ) ? 'plugins_loaded' : ( did_action( 'muplugins_loaded' ) ? 'plugins' : 'mu-plugins' ) ) );
 		$err   = self::$exit_err ? self::$exit_err : error_get_last();
 		$fatal = null;
 		if ( is_array( $err ) && in_array( (int) $err['type'], array( E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, E_RECOVERABLE_ERROR ), true ) ) {
@@ -220,7 +268,8 @@ class Cron {
 		if ( ! $fatal && is_array( $prev ) && ! empty( $prev['fatal'] ) && $prev['at'] > time() - HOUR_IN_SECONDS && 'nightward_cron_exit' === self::$exit_key ) {
 			return;
 		}
-		update_option( self::$exit_key, array( 'at' => self::$exit_t, 'stage' => $stage, 'fatal' => $fatal ), false );
+		$by = $fatal ? null : self::exit_culprit( $stage );
+		update_option( self::$exit_key, array( 'at' => self::$exit_t, 'stage' => $stage, 'fatal' => $fatal, 'by' => $by ), false );
 	}
 
 	/** Server software and PHP SAPI, for the diagnosis of killed background requests. */
@@ -599,6 +648,9 @@ class Cron {
 				$v = self::fresh_option( 'nightward_cron_check_seen' );
 				return is_array( $v ) && $v['at'] >= $t0i ? $v : null;
 			}, 10 );
+			if ( is_array( $seen ) && ! empty( $seen['ip'] ) ) {
+				$r['ip'] = $seen['ip'];
+			}
 			if ( ! $seen ) {
 				$r['verdict'] = 'no_wp';
 			} elseif ( 'match' !== $seen['lock'] ) {
@@ -669,8 +721,25 @@ class Cron {
 				/* translators: 1: plugin or theme, 2: error message, 3: file and line */
 				return sprintf( __( 'WP-Cron dies with a fatal error while WordPress loads: %1$s - "%2$s" (%3$s). Every WP-Cron run stops at this point, so no task ever runs. Fix or remove the code that fails.', 'nightward' ), Attribution::label( $r['exit']['fatal']['component'] ), $r['exit']['fatal']['message'], $r['exit']['fatal']['file'] );
 			case 'exited':
-				/* translators: %s: loading stage */
-				return sprintf( __( 'WP-Cron ends without an error while WordPress is still loading (last stage reached: %s). A plugin stops wp-cron.php requests with exit, typically a firewall or a "cron guard". No task runs.', 'nightward' ), $r['exit']['stage'] );
+				$by = isset( $r['exit']['by'] ) && is_array( $r['exit']['by'] ) ? $r['exit']['by'] : null;
+				$ip = isset( $r['ip'] ) && $r['ip'] ? $r['ip'] : '';
+				if ( $by && $by['component'] ) {
+					$t = sprintf(
+						/* translators: 1: plugin or theme, 2: file or callbacks, 3: hook or loading stage */
+						__( '%1$s stops every wp-cron.php request with exit (%2$s, %3$s), so no task runs. Usually its firewall blocks the request WordPress sends to itself.', 'nightward' ),
+						Attribution::label( $by['component'] ),
+						$by['where'] ? $by['where'] : '?',
+						$by['hook'] ? $by['hook'] : __( 'while plugins load', 'nightward' )
+					);
+				} else {
+					/* translators: %s: loading stage */
+					$t = sprintf( __( 'WP-Cron ends without an error while WordPress is still loading (last stage reached: %s). A plugin stops wp-cron.php requests with exit, typically a firewall or a "cron guard". No task runs.', 'nightward' ), $r['exit']['stage'] );
+				}
+				if ( $ip ) {
+					/* translators: %s: IP address */
+					$t .= ' ' . sprintf( __( 'The requests come from the server itself (%s): allow wp-cron.php or this address in that plugin\'s firewall.', 'nightward' ), $ip );
+				}
+				return $t;
 			case 'killed':
 				$t = __( 'WordPress started loading behind wp-cron.php, then the PHP process vanished: no error, no normal end. wp-cron.php sends its answer first and works afterwards; this server stops PHP as soon as the answer has gone out.', 'nightward' );
 				if ( ! empty( $r['server']['litespeed'] ) ) {
@@ -716,6 +785,8 @@ class Cron {
 		$ex = get_option( 'nightward_cron_exit' );
 		if ( is_array( $ex ) && ! empty( $ex['fatal'] ) && $ex['at'] > time() - DAY_IN_SECONDS ) {
 			$out[] = self::verdict_text( array( 'verdict' => 'fatal', 'exit' => $ex ) );
+		} elseif ( is_array( $ex ) && ! empty( $ex['by']['component'] ) && $ex['at'] > time() - DAY_IN_SECONDS && $h['stale'] ) {
+			$out[] = self::verdict_text( array( 'verdict' => 'exited', 'exit' => $ex, 'ip' => $h['seen'] && ! empty( $h['seen']['ip'] ) ? $h['seen']['ip'] : '' ) );
 		}
 		$ls = self::lock_summary();
 		foreach ( $ls['foreign'] as $f ) {

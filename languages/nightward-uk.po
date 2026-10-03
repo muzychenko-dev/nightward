@@ -2,10 +2,10 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Nightward 1.1.4\n"
+"Project-Id-Version: Nightward 1.1.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/nightward\n"
-"POT-Creation-Date: 2026-10-03T13:43:06+00:00\n"
-"PO-Revision-Date: 2026-10-03 13:43+0000\n"
+"POT-Creation-Date: 2026-10-03T13:57:21+00:00\n"
+"PO-Revision-Date: 2026-10-03 13:57+0000\n"
 "Last-Translator: Ihor Muzychenko\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -311,7 +311,7 @@ msgstr "не пройдено"
 msgid "Why"
 msgstr "Причина"
 
-#: admin/class-admin.php:197 includes/class-cron.php:712
+#: admin/class-admin.php:197 includes/class-cron.php:781
 msgid ""
 "Run the check: it starts WP-Cron the way WordPress does and shows where it "
 "stops."
@@ -1374,7 +1374,7 @@ msgid "drop-in %s"
 msgstr "drop-in %s"
 
 #. translators: 1: host, 2: error message
-#: includes/class-cron.php:644
+#: includes/class-cron.php:696
 msgid ""
 "The server cannot connect to its own address %1$s (%2$s). WordPress starts "
 "WP-Cron with exactly this request, so tasks never run. Usually a firewall, "
@@ -1388,7 +1388,7 @@ msgstr ""
 "нижче."
 
 #. translators: %s: redirect target
-#: includes/class-cron.php:647
+#: includes/class-cron.php:699
 msgid ""
 "wp-cron.php answers with a redirect to %s. WordPress does not follow "
 "redirects when it starts WP-Cron, so tasks never run. Make the WordPress and"
@@ -1400,7 +1400,7 @@ msgstr ""
 "WordPress і сайту в Налаштування → Загальні такими самими, як справжня "
 "адреса (https, www), або приберіть перенаправлення для wp-cron.php."
 
-#: includes/class-cron.php:649
+#: includes/class-cron.php:701
 msgid ""
 "wp-cron.php asks for a password (HTTP 401). Password protection of the site "
 "also blocks the request that starts WP-Cron. Exclude wp-cron.php from the "
@@ -1411,7 +1411,7 @@ msgstr ""
 "серверне cron-завдання нижче."
 
 #. translators: 1: HTTP status, 2: page title or CDN name
-#: includes/class-cron.php:652
+#: includes/class-cron.php:704
 msgid ""
 "wp-cron.php is blocked with HTTP %1$d%2$s. A firewall, security plugin or "
 "maintenance mode rejects the request that starts WP-Cron. Allow wp-cron.php "
@@ -1423,7 +1423,7 @@ msgstr ""
 " нижче."
 
 #. translators: %s: page title
-#: includes/class-cron.php:655
+#: includes/class-cron.php:707
 msgid ""
 "wp-cron.php returns a web page (\"%s\") instead of an empty answer. A "
 "maintenance or coming-soon mode, a firewall or a cache intercepts it. "
@@ -1433,7 +1433,7 @@ msgstr ""
 "перехоплює режим обслуговування чи «скоро відкриття», фаєрвол або кеш. "
 "Виключіть wp-cron.php або налаштуйте серверне cron-завдання нижче."
 
-#: includes/class-cron.php:657
+#: includes/class-cron.php:709
 msgid ""
 "wp-cron.php answers, but WordPress never started behind it: Nightward, which"
 " loads with WordPress, did not see the request within 10 seconds. Something "
@@ -1446,7 +1446,7 @@ msgstr ""
 "першим, правило сервера або кеш."
 
 #. translators: %s: file path
-#: includes/class-cron.php:660
+#: includes/class-cron.php:712
 msgid ""
 "PHP runs %s before every request (auto_prepend_file); that is usually a "
 "security plugin's firewall, check its settings for wp-cron.php or for "
@@ -1456,11 +1456,11 @@ msgstr ""
 " плагіна безпеки. Перевірте його налаштування щодо wp-cron.php або "
 "блокування запитів із власної IP-адреси сервера."
 
-#: includes/class-cron.php:662
+#: includes/class-cron.php:714
 msgid "A server cron job that runs WP-CLI bypasses all of this."
 msgstr "Серверне cron-завдання з WP-CLI обходить усе це."
 
-#: includes/class-cron.php:665
+#: includes/class-cron.php:717
 msgid ""
 "The request reached WordPress, but by then another request had already "
 "replaced the WP-Cron lock with a newer one, so wp-cron.php exits without "
@@ -1474,7 +1474,7 @@ msgstr ""
 "Cron знову й знову або перезаписує ключ. Див. «Хто змінює ключ WP-Cron» "
 "вище."
 
-#: includes/class-cron.php:667
+#: includes/class-cron.php:719
 msgid ""
 "The request reached WordPress, but the lock WordPress had just saved was not"
 " there (transients do not survive between requests), so wp-cron.php exits "
@@ -1487,7 +1487,7 @@ msgstr ""
 "перевірте drop-in object-cache.php і з'єднання з Redis або Memcached."
 
 #. translators: 1: plugin or theme, 2: error message, 3: file and line
-#: includes/class-cron.php:670
+#: includes/class-cron.php:722
 msgid ""
 "WP-Cron dies with a fatal error while WordPress loads: %1$s - \"%2$s\" "
 "(%3$s). Every WP-Cron run stops at this point, so no task ever runs. Fix or "
@@ -1497,8 +1497,23 @@ msgstr ""
 "«%2$s» (%3$s). Кожен запуск WP-Cron зупиняється на цьому місці, тож жодне "
 "завдання не виконується. Виправте або приберіть код, що падає."
 
+#. translators: 1: plugin or theme, 2: file or callbacks, 3: hook or loading
+#. stage
+#: includes/class-cron.php:729
+msgid ""
+"%1$s stops every wp-cron.php request with exit (%2$s, %3$s), so no task "
+"runs. Usually its firewall blocks the request WordPress sends to itself."
+msgstr ""
+"%1$s зупиняє кожен запит до wp-cron.php через exit (%2$s, %3$s), тож жодне "
+"завдання не виконується. Зазвичай це його фаєрвол блокує запит, який "
+"WordPress надсилає сам собі."
+
+#: includes/class-cron.php:732
+msgid "while plugins load"
+msgstr "під час завантаження плагінів"
+
 #. translators: %s: loading stage
-#: includes/class-cron.php:673
+#: includes/class-cron.php:736
 msgid ""
 "WP-Cron ends without an error while WordPress is still loading (last stage "
 "reached: %s). A plugin stops wp-cron.php requests with exit, typically a "
@@ -1508,7 +1523,16 @@ msgstr ""
 " етап: %s). Якийсь плагін зупиняє запити до wp-cron.php через exit, зазвичай"
 " це фаєрвол або «захист cron». Жодне завдання не виконується."
 
-#: includes/class-cron.php:675
+#. translators: %s: IP address
+#: includes/class-cron.php:740
+msgid ""
+"The requests come from the server itself (%s): allow wp-cron.php or this "
+"address in that plugin's firewall."
+msgstr ""
+"Запити йдуть із самого сервера (%s): дозвольте wp-cron.php або цю адресу у "
+"фаєрволі цього плагіна."
+
+#: includes/class-cron.php:744
 msgid ""
 "WordPress started loading behind wp-cron.php, then the PHP process vanished:"
 " no error, no normal end. wp-cron.php sends its answer first and works "
@@ -1518,7 +1542,7 @@ msgstr ""
 "помилки, ні нормального завершення. wp-cron.php спершу відправляє відповідь "
 "і лише потім працює; цей сервер зупиняє PHP, щойно відповідь пішла."
 
-#: includes/class-cron.php:677
+#: includes/class-cron.php:746
 msgid ""
 "This is LiteSpeed's \"abort\" behaviour. Allow background work with the "
 ".htaccess lines shown below, or use the WP-CLI server cron job, which does "
@@ -1528,7 +1552,7 @@ msgstr ""
 "для .htaccess нижче або скористайтеся серверним cron-завданням з WP-CLI, яке"
 " не йде через вебсервер."
 
-#: includes/class-cron.php:679
+#: includes/class-cron.php:748
 msgid ""
 "Ask the host whether PHP processes are terminated after the response "
 "(request_terminate_timeout, process killers), or use the WP-CLI server cron "
@@ -1538,7 +1562,7 @@ msgstr ""
 "(request_terminate_timeout, «вбивці» процесів), або скористайтеся серверним "
 "cron-завданням з WP-CLI нижче, яке не йде через вебсервер."
 
-#: includes/class-cron.php:683
+#: includes/class-cron.php:752
 msgid ""
 "WordPress loaded behind wp-cron.php but did not finish and ran no task "
 "within 25 seconds. A task or plugin hangs or ends the request early (a fatal"
@@ -1550,7 +1574,7 @@ msgstr ""
 "cron.php."
 
 #. translators: %s: seconds
-#: includes/class-cron.php:686
+#: includes/class-cron.php:755
 msgid ""
 "WP-Cron started and is running the waiting tasks; they were not finished "
 "when the check stopped waiting after %s s. WP-Cron itself works."
@@ -1559,7 +1583,7 @@ msgstr ""
 "перевірка перестала чекати через %s с. Сам WP-Cron працює."
 
 #. translators: 1: number of tasks, 2: seconds
-#: includes/class-cron.php:689
+#: includes/class-cron.php:758
 msgid ""
 "WP-Cron works when it is started: WordPress picked up the request and "
 "finished %1$d waiting task in %2$s s."
@@ -1576,7 +1600,7 @@ msgstr[2] ""
 "WP-Cron працює, коли його запускають: WordPress прийняв запит і виконав %1$d"
 " завдань з черги за %2$s с."
 
-#: includes/class-cron.php:703
+#: includes/class-cron.php:772
 msgid ""
 "DISABLE_WP_CRON is set in wp-config.php, so WordPress does not start WP-Cron"
 " by itself. That is correct only if a server cron job requests wp-cron.php; "
@@ -1586,7 +1610,7 @@ msgstr ""
 "сам. Це правильно лише тоді, коли wp-cron.php викликає серверне cron-"
 "завдання, а тут такого завдання, схоже, немає."
 
-#: includes/class-cron.php:705
+#: includes/class-cron.php:774
 msgid ""
 "WordPress's own WP-Cron start (wp_cron on init) has been removed by a plugin"
 " or theme, so page views never start it."
@@ -1595,7 +1619,7 @@ msgstr ""
 "тема, тож перегляди сторінок його не запускають."
 
 #. translators: %s: time
-#: includes/class-cron.php:708
+#: includes/class-cron.php:777
 msgid ""
 "WordPress has been trying to start WP-Cron for %s, but none of these "
 "requests reached WordPress. WordPress sends them in the background and does "
@@ -1607,7 +1631,7 @@ msgstr ""
 "за проксі, CDN або при повільному TLS-рукостисканні такий короткий запит "
 "губиться. Серверне cron-завдання це вирішує."
 
-#: includes/class-cron.php:714
+#: includes/class-cron.php:783
 msgid ""
 "WP-Cron starts only when someone opens the site or the dashboard, so on a "
 "site with few visits tasks wait. A server cron job removes the dependence on"
@@ -1618,7 +1642,7 @@ msgstr ""
 "прибирає залежність від відвідувань."
 
 #. translators: 1: plugin or theme, 2: file and line, 3: "writes" or "deletes"
-#: includes/class-cron.php:724
+#: includes/class-cron.php:795
 msgid ""
 "%1$s %3$s the WP-Cron lock (%2$s). Only WordPress itself should touch it; a "
 "plugin that does breaks WP-Cron for the whole site."
@@ -1626,16 +1650,16 @@ msgstr ""
 "%1$s %3$s ключ WP-Cron (%2$s). Його має змінювати тільки сам WordPress; "
 "плагін, що втручається, ламає WP-Cron для всього сайту."
 
-#: includes/class-cron.php:727
+#: includes/class-cron.php:798
 msgid "deletes"
 msgstr "видаляє"
 
-#: includes/class-cron.php:727
+#: includes/class-cron.php:798
 msgid "writes"
 msgstr "перезаписує"
 
 #. translators: %s: seconds
-#: includes/class-cron.php:733
+#: includes/class-cron.php:804
 msgid ""
 "WordPress started WP-Cron again after only %s s, although the lock should "
 "hold it back for 60 s: the lock is not visible to the next request."
@@ -1644,7 +1668,7 @@ msgstr ""
 " його 60 с: наступний запит ключа не бачить."
 
 #. translators: %s: object cache drop-in name
-#: includes/class-cron.php:736
+#: includes/class-cron.php:807
 msgid ""
 "The site uses a persistent object cache (%s); a misconfigured or per-process"
 " cache is the usual cause."
