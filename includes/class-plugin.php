@@ -59,7 +59,7 @@ final class Plugin {
 		add_action( 'plugins_loaded', array( $this, 'maybe_upgrade' ) );
 		add_action( 'admin_init', array( __CLASS__, 'maybe_migrate' ) );
 		Cleanup::init();
-		add_action( 'nightward_hourly', array( __CLASS__, 'maybe_migrate' ), 1 );
+		add_action( 'nightward_hourly', array( __CLASS__, 'maybe_migrate' ), 20 );
 		if ( is_admin() ) {
 			require_once NIGHTWARD_DIR . 'admin/class-admin.php';
 			Admin\Admin::init();
@@ -85,10 +85,16 @@ final class Plugin {
 		}
 	}
 
-	/** One-time clean-up of credentials stored before 1.1.7; continues where it stopped. */
+	/** One-time clean-ups of data written by older versions (credentials before 1.1.7, upload duplicates before 1.1.8). */
 	public static function maybe_migrate() {
 		if ( ! Redact::migration_done() ) {
 			Redact::migrate();
+		}
+		Scanner\Upload_Guard::merge_legacy();
+		// 1.1.8 checks XML-RPC login for real: refresh old hardening results on the next hourly run.
+		if ( doing_action( 'nightward_hourly' ) && Settings::enabled( 'hardening' ) && (int) get_option( 'nightward_hardening_rev', 0 ) < 2 ) {
+			update_option( 'nightward_hardening_rev', 2, false );
+			Scanner\Hardening::run();
 		}
 	}
 

@@ -198,10 +198,13 @@ class Events {
 			$details = wp_json_encode( $e['details'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PARTIAL_OUTPUT_ON_ERROR );
 			$is_new  = false;
 			if ( $row ) {
-				$reopen = in_array( $row->status, array( 'resolved' ), true );
+				// The current classification wins: a finding re-assessed as more serious is
+				// reopened and reported again; one re-assessed as less serious just drops.
+				$worse  = self::rank( $e['severity'] ) < self::rank( $row->severity );
+				$reopen = 'resolved' === $row->status || ( $worse && 'ignored' !== $row->status );
 				$wpdb->query( $wpdb->prepare( // phpcs:ignore
-					"UPDATE {$t} SET hits = hits + 1, last_seen = %s, details = %s, title = %s" . ( $reopen ? ", status = 'open', alerted = 0" : '' ) . ' WHERE id = %d',
-					$now, $details, $e['title'], $row->id
+					"UPDATE {$t} SET hits = hits + 1, last_seen = %s, details = %s, title = %s, severity = %s" . ( $reopen ? ", status = 'open', alerted = 0" : '' ) . ' WHERE id = %d',
+					$now, $details, $e['title'], $e['severity'], $row->id
 				) );
 				$is_new = $reopen;
 				$id     = (int) $row->id;
@@ -242,7 +245,7 @@ class Events {
 		global $wpdb;
 		$a = wp_parse_args( $args, array(
 			'severity' => '', 'module' => '', 'status' => '', 'search' => '', 'since' => '',
-			'limit' => 50, 'offset' => 0, 'min_severity' => '', 'order' => 'last_seen',
+			'limit' => 50, 'offset' => 0, 'min_severity' => '', 'order' => 'last_seen', 'exclude_severity' => '',
 		) );
 		$t     = DB::events();
 		$where = array( '1=1' );
@@ -255,6 +258,11 @@ class Events {
 			$allowed = array_slice( self::SEVERITIES, 0, self::rank( $a['min_severity'] ) + 1 );
 			$where[] = 'severity IN (' . implode( ',', array_fill( 0, count( $allowed ), '%s' ) ) . ')';
 			$vals    = array_merge( $vals, $allowed );
+		}
+		if ( $a['exclude_severity'] ) {
+			$ex      = (array) $a['exclude_severity'];
+			$where[] = 'severity NOT IN (' . implode( ',', array_fill( 0, count( $ex ), '%s' ) ) . ')';
+			$vals    = array_merge( $vals, $ex );
 		}
 		if ( $a['module'] ) {
 			$where[] = 'module = %s';
@@ -278,17 +286,20 @@ class Events {
 			$where[] = '(title LIKE %s OR component LIKE %s OR file LIKE %s OR details LIKE %s)';
 			array_push( $vals, $like, $like, $like, $like );
 		}
-		$order = 'first_seen' === $a['order'] ? 'first_seen DESC' : 'last_seen DESC';
+		if ( 'severity' === $a['order'] ) {
+			// Most serious first, then the most recent within each level. Done in SQL so paging stays correct.
+			$case = 'CASE severity';
+			foreach ( self::SEVERITIES as $i => $sev ) {
+				$case .= " WHEN '" . $sev . "' THEN " . (int) $i;
+			}
+			$order = $case . ' ELSE 9 END ASC, last_seen DESC';
+		} else {
+			$order = 'first_seen' === $a['order'] ? 'first_seen DESC' : 'last_seen DESC';
+		}
 		$sql   = "SELECT * FROM {$t} WHERE " . implode( ' AND ', $where ) . " ORDER BY {$order} LIMIT %d OFFSET %d";
 		$vals[] = (int) $a['limit'];
 		$vals[] = (int) $a['offset'];
 		$rows   = $wpdb->get_results( $wpdb->prepare( $sql, $vals ) ); // phpcs:ignore
-		usort( $rows, function ( $x, $y ) use ( $a ) {
-			if ( 'severity' === $a['order'] ) {
-				return self::rank( $x->severity ) <=> self::rank( $y->severity ) ?: strcmp( $y->last_seen, $x->last_seen );
-			}
-			return 0;
-		} );
 		return $rows;
 	}
 
@@ -329,6 +340,36 @@ class Events {
 			"UPDATE {$t} SET status = %s WHERE id IN (" . implode( ',', array_fill( 0, count( $ids ), '%d' ) ) . ')',
 			array_merge( array( $status ), $ids )
 		) );
+	}
+
+	/** Fingerprint of an event key, as record() computes it. */
+	public static function fingerprint( $key ) {
+		return sha1( Redact::text( (string) $key ) );
+	}
+
+	/**
+	 * Resolve open events of a module/type that the latest full check no longer produced
+	 * (an offered update that is gone, an injected entry that was removed).
+	 *
+	 * @param string   $module
+	 * @param string[] $types
+	 * @param string[] $keep  fingerprints still present
+	 */
+	public static function resolve_missing( $module, array $types, array $keep ) {
+		global $wpdb;
+		if ( ! DB::ready() || ! $types ) {
+			return 0;
+		}
+		$t    = DB::events();
+		$sql  = "SELECT id, fingerprint FROM {$t} WHERE module = %s AND status IN ('open','acknowledged') AND type IN (" . implode( ',', array_fill( 0, count( $types ), '%s' ) ) . ')';
+		$rows = $wpdb->get_results( $wpdb->prepare( $sql, array_merge( array( $module ), $types ) ) ); // phpcs:ignore
+		$ids  = array();
+		foreach ( $rows as $r ) {
+			if ( ! in_array( $r->fingerprint, $keep, true ) ) {
+				$ids[] = (int) $r->id;
+			}
+		}
+		return $ids ? self::set_status( $ids, 'resolved' ) : 0;
 	}
 
 	/** Mark matching events resolved (e.g. a file that was restored). */

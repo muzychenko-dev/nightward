@@ -230,6 +230,7 @@ class Admin {
 		return array(
 			'overview'  => __( 'Overview', 'nightward' ),
 			'events'    => __( 'Events', 'nightward' ),
+			'log'       => __( 'Log', 'nightward' ),
 			'network'   => __( 'Network', 'nightward' ),
 			'hooks'     => __( 'Hooks & Cron', 'nightward' ),
 			'integrity' => __( 'Integrity', 'nightward' ),
@@ -466,10 +467,17 @@ class Admin {
 	/* Events                                                             */
 	/* ================================================================== */
 
-	private static function tab_events() {
+	/** Informational events: what changed on the site, nothing to fix. */
+	private static function tab_log() {
+		self::tab_events( true );
+	}
+
+	private static function tab_events( $log = false ) {
+		$tab = $log ? 'log' : 'events';
 		// phpcs:disable WordPress.Security.NonceVerification
 		$f = array(
-			'severity' => isset( $_GET['severity'] ) ? sanitize_key( $_GET['severity'] ) : '',
+			'severity' => $log ? 'info' : ( isset( $_GET['severity'] ) ? sanitize_key( $_GET['severity'] ) : '' ),
+			'order'    => isset( $_GET['order'] ) && in_array( $_GET['order'], array( 'severity', 'last_seen' ), true ) ? sanitize_key( $_GET['order'] ) : '',
 			'module'   => isset( $_GET['module'] ) ? sanitize_key( $_GET['module'] ) : '',
 			'status'   => isset( $_GET['status'] ) ? sanitize_key( $_GET['status'] ) : '',
 			'search'   => isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '',
@@ -485,36 +493,55 @@ class Admin {
 			echo '<div class="nw-flash">' . esc_html( sprintf( _n( '%d event updated.', '%d events updated.', $n, 'nightward' ), $n ) ) . '</div>';
 		}
 
+		if ( 'info' === $f['severity'] && ! $log ) {
+			$f['severity'] = '';
+		}
 		$per  = 40;
 		$args = array_merge( $f, array( 'limit' => $per, 'offset' => ( $paged - 1 ) * $per ) );
-		if ( '' === $f['status'] && ! $event ) {
+		$args['order'] = $f['order'] ? $f['order'] : ( $log ? 'last_seen' : 'severity' );
+		if ( ! $log ) {
+			$args['exclude_severity'] = 'info';
+		}
+		if ( '' === $f['status'] && ! $event && ! $log ) {
 			$args['status'] = array( 'open', 'acknowledged' );
 		}
 		$rows = $event ? array_filter( array( Events::get( $event ) ) ) : Events::query( $args );
 		$total = $event ? count( $rows ) : Events::count( $args );
 
-		echo '<form class="nw-filters" method="get"><input type="hidden" name="page" value="nightward"><input type="hidden" name="tab" value="events">';
-		echo '<select name="severity"><option value="">' . esc_html__( 'All severities', 'nightward' ) . '</option>';
-		foreach ( Events::SEVERITIES as $s ) {
-			printf( '<option value="%s" %s>%s</option>', esc_attr( $s ), selected( $f['severity'], $s, false ), esc_html( Events::severity_label( $s ) ) );
+		if ( $log ) {
+			echo '<section class="nw-card nw-intro"><p>' . esc_html__( 'Informational events: what changed on the site (plugins activated or removed, settings changed, scans finished). Nothing here needs fixing; security findings are on the Events tab.', 'nightward' ) . '</p></section>';
 		}
-		echo '</select><select name="module"><option value="">' . esc_html__( 'All areas', 'nightward' ) . '</option>';
+		echo '<form class="nw-filters" method="get"><input type="hidden" name="page" value="nightward"><input type="hidden" name="tab" value="' . esc_attr( $tab ) . '">';
+		if ( ! $log ) {
+			echo '<select name="severity"><option value="">' . esc_html__( 'All severities', 'nightward' ) . '</option>';
+			foreach ( array_diff( Events::SEVERITIES, array( 'info' ) ) as $s ) {
+				printf( '<option value="%s" %s>%s</option>', esc_attr( $s ), selected( $f['severity'], $s, false ), esc_html( Events::severity_label( $s ) ) );
+			}
+			echo '</select>';
+		}
+		echo '<select name="module"><option value="">' . esc_html__( 'All areas', 'nightward' ) . '</option>';
 		foreach ( array( 'outbound', 'interception', 'hooks', 'privilege', 'options', 'cron', 'integrity', 'uploads', 'update_channel', 'hardening', 'system' ) as $m ) {
 			printf( '<option value="%s" %s>%s</option>', esc_attr( $m ), selected( $f['module'], $m, false ), esc_html( Events::module_label( $m ) ) );
 		}
-		echo '</select><select name="status"><option value="">' . esc_html__( 'Open & acknowledged', 'nightward' ) . '</option>';
+		echo '</select><select name="status"><option value="">' . esc_html( $log ? __( 'Any status', 'nightward' ) : __( 'Open & acknowledged', 'nightward' ) ) . '</option>';
 		foreach ( array( 'open', 'acknowledged', 'resolved', 'ignored' ) as $s ) {
 			printf( '<option value="%s" %s>%s</option>', esc_attr( $s ), selected( $f['status'], $s, false ), esc_html( self::status_label( $s ) ) );
 		}
-		echo '</select><input type="search" name="s" value="' . esc_attr( $f['search'] ) . '" placeholder="' . esc_attr__( 'Search title, file, plugin…', 'nightward' ) . '"><button class="button">' . esc_html__( 'Filter', 'nightward' ) . '</button>';
-		if ( $event || array_filter( $f ) ) {
-			echo ' <a class="button-link" href="' . esc_url( self::url( 'events' ) ) . '">' . esc_html__( 'Reset', 'nightward' ) . '</a>';
+		echo '</select>';
+		if ( ! $log ) {
+			echo '<select name="order"><option value="">' . esc_html__( 'Most serious first', 'nightward' ) . '</option><option value="last_seen" ' . selected( $f['order'], 'last_seen', false ) . '>' . esc_html__( 'Most recent first', 'nightward' ) . '</option></select>';
+		}
+		echo '<input type="search" name="s" value="' . esc_attr( $f['search'] ) . '" placeholder="' . esc_attr__( 'Search title, file, plugin…', 'nightward' ) . '"><button class="button">' . esc_html__( 'Filter', 'nightward' ) . '</button>';
+		$active = $f;
+		unset( $active['severity'] );
+		if ( $event || array_filter( $active ) || ( ! $log && $f['severity'] ) ) {
+			echo ' <a class="button-link" href="' . esc_url( self::url( $tab ) ) . '">' . esc_html__( 'Reset', 'nightward' ) . '</a>';
 		}
 		echo '<a class="button-link nw-push" href="' . esc_url( self::url( 'export' ) ) . '">' . esc_html__( 'Export for AI analysis', 'nightward' ) . '</a>';
 		echo '</form>';
 
 		if ( ! $rows ) {
-			echo '<section class="nw-card"><p class="nw-empty">' . esc_html__( 'No events match.', 'nightward' ) . '</p></section>';
+			echo '<section class="nw-card"><p class="nw-empty">' . esc_html( $log && ! array_filter( $active ) ? __( 'Nothing logged yet.', 'nightward' ) : __( 'No events match.', 'nightward' ) ) . '</p></section>';
 			return;
 		}
 
@@ -523,19 +550,21 @@ class Admin {
 		echo '<div class="nw-bulk"><select name="nw_bulk"><option value="acknowledged">' . esc_html__( 'Mark as acknowledged', 'nightward' ) . '</option><option value="resolved">' . esc_html__( 'Mark as resolved', 'nightward' ) . '</option><option value="ignored">' . esc_html__( 'Ignore (never report again)', 'nightward' ) . '</option><option value="open">' . esc_html__( 'Reopen', 'nightward' ) . '</option></select><button class="button">' . esc_html__( 'Apply', 'nightward' ) . '</button>';
 		/* translators: %d: count */
 		echo '<span class="nw-total">' . esc_html( sprintf( _n( '%d event', '%d events', $total, 'nightward' ), $total ) ) . '</span></div>';
-		echo '<table class="nw-table nw-events"><thead><tr><th class="nw-cb"><input type="checkbox" data-nw-all></th><th>' . esc_html__( 'Severity', 'nightward' ) . '</th><th>' . esc_html__( 'Event', 'nightward' ) . '</th><th>' . esc_html__( 'Area', 'nightward' ) . '</th><th>' . esc_html__( 'Seen', 'nightward' ) . '</th><th>' . esc_html__( 'Status', 'nightward' ) . '</th><th></th></tr></thead><tbody>';
+		echo '<table class="nw-table nw-events"><thead><tr><th class="nw-cb"><input type="checkbox" data-nw-all></th>' . ( $log ? '' : '<th>' . esc_html__( 'Severity', 'nightward' ) . '</th>' ) . '<th>' . esc_html__( 'Event', 'nightward' ) . '</th><th>' . esc_html__( 'Area', 'nightward' ) . '</th><th>' . esc_html__( 'Seen', 'nightward' ) . '</th><th>' . esc_html__( 'Status', 'nightward' ) . '</th><th></th></tr></thead><tbody>';
 		foreach ( $rows as $r ) {
 			$d    = Events::details( $r );
 			$open = $event === (int) $r->id;
 			echo '<tr class="nw-row' . ( $open ? ' is-open' : '' ) . '" data-nw-row="' . (int) $r->id . '">';
 			echo '<td class="nw-cb"><input type="checkbox" name="ids[]" value="' . (int) $r->id . '"></td>';
-			echo '<td>' . self::pill( $r->severity ) . '</td>'; // phpcs:ignore
+			if ( ! $log ) {
+				echo '<td>' . self::pill( $r->severity ) . '</td>'; // phpcs:ignore
+			}
 			echo '<td><div class="nw-title">' . esc_html( Events::title( $r ) ) . '</div><div class="nw-meta">' . self::where( $r ) . '</div></td>'; // phpcs:ignore
 			echo '<td class="nw-muted">' . esc_html( Events::module_label( $r->module ) ) . '</td>';
 			echo '<td class="nw-muted" title="' . esc_attr( Util::local_time( $r->first_seen ) ) . '">' . esc_html( Util::ago( $r->last_seen ) ) . ( $r->hits > 1 ? '<br><small>× ' . (int) $r->hits . '</small>' : '' ) . '</td>';
 			echo '<td><span class="nw-status nw-st-' . esc_attr( $r->status ) . '">' . esc_html( self::status_label( $r->status ) ) . '</span></td>';
 			echo '<td><button type="button" class="button-link" data-nw-toggle="' . (int) $r->id . '">' . esc_html( $open ? __( 'Hide', 'nightward' ) : __( 'Details', 'nightward' ) ) . '</button></td></tr>';
-			echo '<tr class="nw-detail" data-nw-detail="' . (int) $r->id . '"' . ( $open ? '' : ' hidden' ) . '><td></td><td colspan="6">';
+			echo '<tr class="nw-detail" data-nw-detail="' . (int) $r->id . '"' . ( $open ? '' : ' hidden' ) . '><td></td><td colspan="' . ( $log ? 5 : 6 ) . '">';
 			if ( ! empty( $d['explanation'] ) ) {
 				echo '<p class="nw-explain">' . esc_html( Events::text( $d['explanation'] ) ) . '</p>';
 			}
@@ -560,7 +589,12 @@ class Admin {
 		if ( $pages > 1 && ! $event ) {
 			echo '<div class="nw-pager">';
 			for ( $p = 1; $p <= $pages; $p++ ) {
-				printf( '<a class="%s" href="%s">%d</a>', $p === $paged ? 'is-active' : '', esc_url( add_query_arg( array_merge( array_filter( $f ), array( 'paged' => $p, 's' => $f['search'] ) ), self::url( 'events' ) ) ), (int) $p );
+				$q = array_filter( $f );
+				unset( $q['search'] );
+				if ( $log ) {
+					unset( $q['severity'] );
+				}
+				printf( '<a class="%s" href="%s">%d</a>', $p === $paged ? 'is-active' : '', esc_url( add_query_arg( array_merge( $q, array( 'paged' => $p, 's' => $f['search'] ) ), self::url( $tab ) ) ), (int) $p );
 			}
 			echo '</div>';
 		}
@@ -653,7 +687,14 @@ class Admin {
 			echo '<tr class="' . esc_attr( $cls ) . '"><td><code>' . esc_html( $r['hook'] ) . '</code>' . ( $r['bad_args'] ? '<div class="nw-bad">' . esc_html( $r['bad_args'] ) . '</div>' : '' ) . '</td>';
 			echo '<td class="nw-muted">' . esc_html( $r['schedule'] ? $r['schedule'] : __( 'once', 'nightward' ) ) . ( $r['count'] > 1 ? ' × ' . (int) $r['count'] : '' ) . '</td>';
 			echo '<td class="nw-muted">' . esc_html( $r['next'] < time() ? __( 'overdue', 'nightward' ) : wp_date( 'j M H:i', $r['next'] ) ) . '</td>';
-			echo '<td>' . ( 'none' === $r['component'] ? '<span class="nw-muted">' . esc_html__( 'no handler (leftover of a removed plugin?)', 'nightward' ) . '</span>' : esc_html( Attribution::label( $r['component'] ) ) . ' <code class="nw-file">' . esc_html( $r['file'] . ':' . $r['line'] ) . '</code>' ) . '</td></tr>';
+			if ( 'none' === $r['component'] ) {
+				$handler = '<span class="nw-muted">' . esc_html__( 'no handler (leftover of a removed plugin?)', 'nightward' ) . '</span>';
+			} elseif ( 'core' === $r['component'] && ! $r['file'] ) {
+				$handler = '<span class="nw-muted">' . esc_html__( 'WordPress core', 'nightward' ) . '</span>';
+			} else {
+				$handler = esc_html( Attribution::label( $r['component'] ) ) . ' <code class="nw-file">' . esc_html( $r['file'] . ':' . $r['line'] ) . '</code>';
+			}
+			echo '<td>' . $handler . '</td></tr>'; // phpcs:ignore
 		}
 		echo '</tbody></table></section>';
 	}

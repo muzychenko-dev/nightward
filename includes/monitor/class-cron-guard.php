@@ -118,10 +118,28 @@ class Cron_Guard {
 		update_option( 'nightward_cron_stats', array( 'hooks' => count( $inv ), 'overdue' => $overdue, 'at' => time() ), false );
 	}
 
+	/**
+	 * Tasks scheduled by WordPress itself. Some of their handlers are attached only in
+	 * certain requests (wp-includes/update.php skips AJAX and non-main sites), so an
+	 * empty hook here is normal and not a leftover.
+	 */
+	public static function core_hooks() {
+		return array(
+			'wp_version_check', 'wp_update_plugins', 'wp_update_themes', 'wp_maybe_auto_update', 'wp_scheduled_delete',
+			'wp_scheduled_auto_draft_delete', 'delete_expired_transients', 'wp_privacy_delete_old_export_files', 'wp_privacy_personal_data_cleanup_requests',
+			'wp_site_health_scheduled_check', 'recovery_mode_clean_expired_keys', 'wp_https_detection', 'wp_update_user_counts',
+			'wp_delete_temp_updater_backups', 'upgrader_scheduled_cleanup', 'importer_scheduled_cleanup', 'publish_future_post',
+			'do_pings', 'wp_split_shared_term_batch', 'wp_batch_split_terms', 'wp_update_comment_type_batch', 'wp_cron_test',
+		);
+	}
+
 	/** First non-core callback on a cron hook, or 'none' when nothing listens. */
 	public static function callback_of( $hook ) {
 		global $wp_filter;
 		if ( empty( $wp_filter[ $hook ] ) || ! ( $wp_filter[ $hook ] instanceof \WP_Hook ) || ! $wp_filter[ $hook ]->callbacks ) {
+			if ( in_array( $hook, self::core_hooks(), true ) ) {
+				return array( 'component' => 'core', 'file' => '', 'line' => 0, 'name' => $hook );
+			}
 			return array( 'component' => 'none', 'file' => '', 'line' => 0, 'name' => '' );
 		}
 		$first = null;

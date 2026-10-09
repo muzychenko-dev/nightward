@@ -239,7 +239,10 @@ class Outbound {
 		} elseif ( in_array( $reg, array( 'wordpress.org', 'w.org' ), true ) ) {
 			$sev = 'high';
 			$why = __( 'WordPress.org API response is faked: update and security information for this site may be false.', 'nightward' );
-		} elseif ( preg_match( '/licen|activat|verif|validat|check|register|update|version|entitle|purchase/i', $path ) && 200 === $code ) {
+		} elseif ( self::licence_literals( $body ) ) {
+			$sev = 'high';
+			$why = __( 'The fabricated response declares the licence valid (for example "license":"valid" or "expires":"lifetime"). This is how pirated ("nulled") plugins bypass licensing.', 'nightward' );
+		} elseif ( ( preg_match( '/licen|activat|verif|validat|check|register|update|version|entitle|purchase/i', $path ) && 200 === $code ) ) {
 			$sev = 'high';
 			$why = __( 'A licence / update verification response is fabricated. This is how pirated ("nulled") plugins bypass licensing.', 'nightward' );
 		}
@@ -275,6 +278,20 @@ class Outbound {
 			'line'      => $info['line'],
 			'key'       => 'interception|' . $culprit . '|' . $reg . '|' . ( $n_hosts >= 3 ? 'wide' : 'narrow' ),
 		) );
+	}
+
+	/**
+	 * The fabricated body itself says "licence valid": "license":"valid", "license_status":"active",
+	 * "expires":"lifetime", unlimited activations. Whatever URL it was for, that is a licence bypass.
+	 */
+	public static function licence_literals( $body ) {
+		if ( ! is_string( $body ) || '' === $body ) {
+			return false;
+		}
+		$q = '[\'"]?';
+		return (bool) preg_match( '/' . $q . 'licen[cs]e[\w-]*' . $q . '\s*(?::|=>?)\s*' . $q . '(valid|active|activated|lifetime|true)\b/i', $body )
+			|| (bool) preg_match( '/' . $q . '(expires|expiration|expiry)' . $q . '\s*(?::|=>?)\s*' . $q . '(lifetime|never|unlimited)\b/i', $body )
+			|| (bool) preg_match( '/' . $q . '(activations_left|license_limit|site_limit)' . $q . '\s*(?::|=>?)\s*' . $q . '(unlimited|-1|999)/i', $body );
 	}
 
 	/** One upsert per host+component at the end of the request. */

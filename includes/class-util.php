@@ -166,7 +166,8 @@ class Util {
 	}
 
 	public static function request_path() {
-		return isset( $_SERVER['REQUEST_URI'] ) ? substr( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), 0, 200 ) : '';
+		// Not sanitize_text_field(): it deletes percent-encoded bytes (plugin=a%2Fb.php became "ab.php").
+		return isset( $_SERVER['REQUEST_URI'] ) ? substr( preg_replace( '/[\x00-\x20\x7F<>"\'`\\\\]/', '', wp_unslash( (string) $_SERVER['REQUEST_URI'] ) ), 0, 200 ) : ''; // phpcs:ignore
 	}
 
 	public static function client_ip() {

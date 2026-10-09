@@ -38,6 +38,24 @@ class Hardening {
 		);
 	}
 
+	/**
+	 * open: login calls are processed; disabled: XML-RPC refuses them (405);
+	 * blocked: no XML-RPC answer at all (403/404 from the server or a firewall).
+	 */
+	public static function xmlrpc_state() {
+		$call = '<?xml version="1.0"?><methodCall><methodName>wp.getUsersBlogs</methodName><params>'
+			. '<param><value><string></string></value></param><param><value><string></string></value></param></params></methodCall>';
+		$r = self::loopback( site_url( '/xmlrpc.php' ), 'POST', $call );
+		// WordPress answers faults with the matching HTTP status (405, 403), so the body decides.
+		if ( ! $r || false === strpos( $r['body'], 'methodResponse' ) ) {
+			return 'blocked';
+		}
+		if ( preg_match( '#<name>faultCode</name>\s*<value>\s*<(?:int|i4)>\s*(-?\d+)#', $r['body'], $m ) ) {
+			return '405' === $m[1] ? 'disabled' : ( '403' === $m[1] ? 'open' : 'disabled' );
+		}
+		return 'open'; // a successful response to empty credentials: login is clearly processed
+	}
+
 	private static function path_of( $abs ) {
 		$rel  = ltrim( substr( wp_normalize_path( $abs ), strlen( wp_normalize_path( ABSPATH ) ) ), '/' );
 		return $rel;
@@ -139,11 +157,19 @@ class Hardening {
 
 		// XML-RPC
 		if ( $ok ) {
-			$r  = self::loopback( site_url( '/xmlrpc.php' ), 'POST', '<?xml version="1.0"?><methodCall><methodName>system.listMethods</methodName></methodCall>' );
-			$on = $r && 200 === $r['code'] && false !== strpos( $r['body'], 'wp.getUsersBlogs' );
-			$res[] = $on
-				? self::r( 'xmlrpc', 'warn', 'low', __( 'XML-RPC is enabled', 'nightward' ), __( 'Allows hundreds of password guesses in one request (system.multicall). Needed only by old apps and Jetpack.', 'nightward' ), __( 'Disable XML-RPC if you do not use it.', 'nightward' ) )
-				: self::r( 'xmlrpc', 'pass', '', __( 'XML-RPC login is not available', 'nightward' ), '' );
+			// A real login call with empty credentials: WordPress answers 405 when XML-RPC is
+			// switched off (xmlrpc_enabled filter, used by security plugins) and 403 when it would
+			// check a password. Empty credentials never count as a failed login, so lockout
+			// plugins are not triggered. system.listMethods is not enough: it still lists the
+			// login methods when they are disabled.
+			$state = self::xmlrpc_state();
+			if ( 'open' === $state ) {
+				$res[] = self::r( 'xmlrpc', 'warn', 'low', __( 'XML-RPC login is enabled', 'nightward' ), __( 'xmlrpc.php accepts username and password, and system.multicall allows hundreds of password guesses in one request. Needed only by old apps and Jetpack.', 'nightward' ), __( 'Disable XML-RPC if you do not use it.', 'nightward' ) );
+			} elseif ( 'disabled' === $state ) {
+				$res[] = self::r( 'xmlrpc', 'pass', '', __( 'XML-RPC login is disabled', 'nightward' ), __( 'xmlrpc.php answers, but refuses every login call (switched off by a plugin or setting).', 'nightward' ) );
+			} else {
+				$res[] = self::r( 'xmlrpc', 'pass', '', __( 'XML-RPC login is not available', 'nightward' ), __( 'xmlrpc.php is blocked or does not answer XML-RPC calls.', 'nightward' ) );
+			}
 		}
 
 		// User enumeration

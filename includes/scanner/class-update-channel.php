@@ -62,6 +62,9 @@ class Update_Channel {
 		if ( in_array( $reg, $vendor, true ) || in_array( $reg, self::neutral_hosts(), true ) || in_array( $host, $trusted, true ) || in_array( $reg, $trusted, true ) || Util::is_own_host( $host ) ) {
 			return array( 'ok', '' );
 		}
+		if ( '' === (string) $component ) {
+			return array( 'foreign', __( 'the update entry does not say which plugin it belongs to, so the source cannot be matched', 'nightward' ) );
+		}
 		return array( 'foreign', $vendor
 			/* translators: %s: vendor domains */
 			? sprintf( __( 'host is unrelated to the vendor (%s)', 'nightward' ), implode( ', ', $vendor ) )
@@ -140,13 +143,14 @@ class Update_Channel {
 
 	/** Hourly: look at updates that are waiting to be installed. */
 	public static function check_offered_updates() {
-		$t = get_site_transient( 'update_plugins' );
+		$t    = get_site_transient( 'update_plugins' );
+		$keep = array();
 		self::check_malformed( $t );
 		if ( ! empty( $t->response ) ) {
 			foreach ( (array) $t->response as $file => $item ) {
 				$item      = (object) $item;
 				$package   = isset( $item->package ) ? (string) $item->package : '';
-				$component = 'plugin:' . ( false === strpos( $file, '/' ) ? preg_replace( '/\.php$/', '', $file ) : strtok( $file, '/' ) );
+				$component = self::entry_component( $file, $item );
 				$is_wporg  = isset( $item->id ) && 0 === strpos( (string) $item->id, 'w.org/' );
 				if ( ! $package ) {
 					continue;
@@ -155,13 +159,15 @@ class Update_Channel {
 				if ( 'ok' === $verdict ) {
 					continue;
 				}
+				$key    = 'upd|offer|' . ( $component ? $component : 'file:' . $file ) . '|' . Util::host_of( $package );
+				$keep[] = Events::fingerprint( $key );
 				// Для офіційних плагінів — перевіряємо також, хто підмінив запис.
 				Events::record( array(
 					'module'    => 'update_channel',
 					'type'      => 'offered_' . $verdict,
 					'severity'  => self::severity( $verdict ),
 					/* translators: 1: plugin name, 2: version, 3: host */
-					'title'     => array( __( 'Pending update %1$s %2$s comes from %3$s', 'nightward' ), Attribution::label( $component ), isset( $item->new_version ) ? $item->new_version : '', Util::host_of( $package ) ),
+					'title'     => array( __( 'Pending update %1$s %2$s comes from %3$s', 'nightward' ), $component ? Attribution::label( $component ) : __( 'of an unidentified plugin', 'nightward' ), isset( $item->new_version ) ? $item->new_version : '', Util::host_of( $package ) ),
 					'details'   => array(
 						/* translators: %s: reason */
 				'explanation' => array( __( 'Reason: %s.', 'nightward' ), $why ),
@@ -172,7 +178,7 @@ class Update_Channel {
 						'injectors'   => self::injectors(),
 					),
 					'component' => $component,
-					'key'       => 'upd|offer|' . $component . '|' . Util::host_of( $package ),
+					'key'       => $key,
 				) );
 			}
 		}
@@ -189,6 +195,7 @@ class Update_Channel {
 				if ( 'ok' === $verdict ) {
 					continue;
 				}
+				$keep[] = Events::fingerprint( 'upd|offer|theme:' . $slug . '|' . Util::host_of( $package ) );
 				Events::record( array(
 					'module'    => 'update_channel',
 					'type'      => 'offered_' . $verdict,
@@ -202,6 +209,58 @@ class Update_Channel {
 				) );
 			}
 		}
+		// An update that is no longer offered (installed, withdrawn, plugin removed) closes its finding.
+		if ( is_object( $t ) && is_object( $tt ) ) {
+			Events::resolve_missing( 'update_channel', array( 'offered_bad', 'offered_hijack', 'offered_insecure', 'offered_foreign' ), $keep );
+		}
+	}
+
+	/**
+	 * Which installed plugin an update entry belongs to. Custom updaters sometimes write
+	 * the entry under an empty or wrong key; then the "plugin" and "slug" fields and
+	 * finally the vendor host of the package identify it.
+	 *
+	 * @return string component ("plugin:slug") or '' when it cannot be identified
+	 */
+	public static function entry_component( $file, $item ) {
+		$item  = (object) $item;
+		$cands = array( (string) $file, isset( $item->plugin ) ? (string) $item->plugin : '', isset( $item->slug ) ? (string) $item->slug : '' );
+		foreach ( $cands as $c ) {
+			$c = trim( $c );
+			if ( '' === $c ) {
+				continue;
+			}
+			$slug = false === strpos( $c, '/' ) ? preg_replace( '/\.php$/', '', $c ) : strtok( $c, '/' );
+			if ( '' !== $slug && Attribution::plugin_data( 'plugin:' . $slug ) ) {
+				return 'plugin:' . $slug;
+			}
+		}
+		$hosts = array();
+		foreach ( array( 'package', 'url' ) as $f ) {
+			$h = isset( $item->{$f} ) && is_string( $item->{$f} ) ? Util::host_of( $item->{$f} ) : '';
+			if ( $h && ! in_array( Util::registrable( $h ), self::neutral_hosts(), true ) ) {
+				$hosts[] = Util::registrable( $h );
+			}
+		}
+		if ( $hosts ) {
+			if ( ! function_exists( 'get_plugins' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
+			foreach ( array_keys( get_plugins() ) as $pf ) {
+				$comp = 'plugin:' . ( false === strpos( $pf, '/' ) ? preg_replace( '/\.php$/', '', $pf ) : strtok( $pf, '/' ) );
+				if ( array_intersect( $hosts, Attribution::vendor_domains( $comp ) ) ) {
+					return $comp;
+				}
+			}
+		}
+		// Not installed (anymore) but named: keep the name so the finding is readable.
+		foreach ( $cands as $c ) {
+			$c = trim( $c );
+			if ( '' !== $c ) {
+				return 'plugin:' . ( false === strpos( $c, '/' ) ? preg_replace( '/\.php$/', '', $c ) : strtok( $c, '/' ) );
+			}
+		}
+		return '';
 	}
 
 	/** Non-core callbacks that can rewrite the update list. */
@@ -233,32 +292,42 @@ class Update_Channel {
 		if ( ! is_object( $t ) ) {
 			return;
 		}
-		$bad = array();
+		$bad   = array();
+		$comps = array();
 		foreach ( array( 'response', 'no_update' ) as $bucket ) {
 			if ( empty( $t->{$bucket} ) ) {
 				continue;
 			}
 			foreach ( (array) $t->{$bucket} as $file => $item ) {
 				if ( is_object( $item ) && empty( $item->plugin ) ) {
-					$bad[] = $file;
+					$comp    = self::entry_component( $file, $item );
+					$label   = '' !== (string) $file ? (string) $file : '(no file name)'; // part of the event key: not translated
+					$bad[]   = $label . ( $comp && '' === (string) $file ? ' → ' . Attribution::label( $comp ) : '' );
+					$comps[] = $comp;
 				}
 			}
 		}
+		$bad   = array_values( array_unique( $bad ) );
+		$comps = array_values( array_unique( array_filter( $comps ) ) );
+		sort( $bad );
+		$key = 'upd|malformed|' . implode( ',', $bad );
+		Events::resolve_missing( 'update_channel', array( 'malformed_update_data' ), $bad ? array( Events::fingerprint( $key ) ) : array() );
 		if ( ! $bad ) {
 			return;
 		}
 		Events::record( array(
-			'module'   => 'update_channel',
-			'type'     => 'malformed_update_data',
-			'severity' => 'medium',
+			'module'    => 'update_channel',
+			'type'      => 'malformed_update_data',
+			'severity'  => 'medium',
 			/* translators: %s: plugin files */
-			'title'    => array( __( 'Update data injected without the required "plugin" field: %s', 'nightward' ), implode( ', ', array_slice( $bad, 0, 5 ) ) ),
-			'details'  => array(
+			'title'     => array( __( 'Update data injected without the required "plugin" field: %s', 'nightward' ), implode( ', ', array_slice( $bad, 0, 5 ) ) ),
+			'details'   => array(
 				'explanation' => __( 'A custom updater wrote its own entry into the WordPress update list. WordPress.org never produces such entries; they cause the "Undefined property: stdClass::$plugin" warning on Plugins → Add New. Check the code listed below.', 'nightward' ),
 				'files'       => $bad,
 				'injectors'   => self::injectors(),
 			),
-			'key'      => 'upd|malformed|' . implode( ',', $bad ),
+			'component' => 1 === count( $comps ) ? $comps[0] : '',
+			'key'       => $key,
 		) );
 	}
 }

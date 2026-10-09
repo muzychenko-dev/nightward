@@ -331,13 +331,73 @@ class Upload_Guard {
 		return (bool) preg_match( '/^<\?php\s*(\/\*.*?\*\/\s*|\/\/[^\n]*\n\s*)*(return\s+(array\s*\(|\[)|exit|die|defined\s*\(\s*[\'"]ABSPATH)/is', $head );
 	}
 
+	/** One finding per file: a file that keeps changing (a queue, a log) stays one record. */
+	public static function event_key( $rel ) {
+		return 'uploads|' . $rel;
+	}
+
+	/**
+	 * Before 1.1.8 the key included the type and the file hash, so a changing file
+	 * produced a new record on every change. Keep the newest record per file.
+	 */
+	public static function merge_legacy() {
+		global $wpdb;
+		if ( get_option( 'nightward_uploads_merged' ) || ! \Nightward\DB::ready() ) {
+			return;
+		}
+		$t    = \Nightward\DB::events();
+		$rows = $wpdb->get_results( "SELECT id, file, fingerprint, hits, status FROM {$t} WHERE module = 'uploads' ORDER BY last_seen DESC, id DESC" ); // phpcs:ignore
+		$seen = array();
+		$drop = array();
+		foreach ( $rows as $r ) {
+			if ( '' === (string) $r->file ) {
+				continue;
+			}
+			if ( isset( $seen[ $r->file ] ) ) {
+				$drop[]                        = (int) $r->id;
+				$seen[ $r->file ]['hits']     += (int) $r->hits;
+				continue;
+			}
+			$seen[ $r->file ] = array( 'id' => (int) $r->id, 'hits' => (int) $r->hits, 'fp' => $r->fingerprint );
+		}
+		foreach ( array_chunk( $drop, 200 ) as $chunk ) {
+			$wpdb->query( "DELETE FROM {$t} WHERE id IN (" . implode( ',', $chunk ) . ')' ); // phpcs:ignore
+		}
+		foreach ( $seen as $file => $k ) {
+			$fp = Events::fingerprint( self::event_key( $file ) );
+			if ( $fp !== $k['fp'] ) {
+				$wpdb->update( $t, array( 'fingerprint' => $fp, 'hits' => $k['hits'] ), array( 'id' => $k['id'] ) );
+			}
+		}
+		update_option( 'nightward_uploads_merged', time(), false );
+	}
+
+	/**
+	 * One record per file, but "Ignore" covers only the content you looked at: an ignored
+	 * file whose content changed is reopened (and alerts like a new finding).
+	 */
+	private static function reopen_if_changed( $rel, $hash ) {
+		global $wpdb;
+		$t   = \Nightward\DB::events();
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT id, status, details FROM {$t} WHERE fingerprint = %s", Events::fingerprint( self::event_key( $rel ) ) ) ); // phpcs:ignore
+		if ( ! $row || 'ignored' !== $row->status ) {
+			return;
+		}
+		$d = json_decode( (string) $row->details, true );
+		if ( $hash && ! empty( $d['md5'] ) && $d['md5'] !== $hash ) {
+			Events::set_status( array( (int) $row->id ), 'resolved' ); // the upsert reopens resolved events as new
+		}
+	}
+
 	private static function report( $path, $type, $sev, $why, $region = null ) {
 		if ( null !== $region ) {
 			// Media: indicators around the code that was found (it may sit at the end of a
 			// 3 MB JPEG), plus the header rule on the file start.
 			$ind = array_values( array_unique( array_merge( Integrity::payload_indicators_text( $region ), Integrity::payload_indicators( $path ) ) ) );
 			// In a file that only pretends to be an image, a bare base64 blob is the payload itself.
-			if ( 'media_not_image' === $type && preg_match( '/[A-Za-z0-9+\/]{2000,}={0,2}/', $region ) && ! in_array( 'long base64 blob', $ind, true ) ) {
+			// Data URIs (an HTML page saved as .jpg embeds its images that way) are not a payload.
+			$bare = preg_replace( '#data:[\w/+.\-]+;base64,[A-Za-z0-9+/=]+#', '', $region );
+			if ( 'media_not_image' === $type && preg_match( '/[A-Za-z0-9+\/]{2000,}={0,2}/', $bare ) && ! in_array( 'long base64 blob', $ind, true ) ) {
 				$ind[] = 'long base64 blob';
 			}
 		} else {
@@ -346,8 +406,10 @@ class Upload_Guard {
 		if ( $ind ) {
 			$sev = 'critical';
 		}
-		$rel = Attribution::rel( $path );
-		$url = content_url( substr( $rel, strlen( 'wp-content/' ) ) );
+		$rel  = Attribution::rel( $path );
+		$url  = content_url( substr( $rel, strlen( 'wp-content/' ) ) );
+		$hash = (string) @md5_file( $path ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+		self::reopen_if_changed( $rel, $hash );
 		Events::record( array(
 			'module'    => 'uploads',
 			'type'      => $type,
@@ -362,9 +424,10 @@ class Upload_Guard {
 				'indicators'  => $ind,
 				'preview'     => substr( trim( preg_replace( array( '/[\x00-\x08\x0E-\x1F\x7F-\xFF]+/', '/\s+/' ), array( '·', ' ' ), substr( null !== $region ? $region : (string) @file_get_contents( $path, false, null, 0, 400 ), 0, 400 ) ) ), 0, 240 ),
 				'url'         => $url,
+				'md5'         => $hash,
 			),
 			'file'      => $rel,
-			'key'       => 'uploads|' . $type . '|' . $rel . '|' . @md5_file( $path ),
+			'key'       => self::event_key( $rel ),
 		) );
 		return 1;
 	}

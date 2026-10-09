@@ -144,14 +144,18 @@ class Options_Watch {
 		if ( $ui ) {
 			return;
 		}
+		// A PRO add-on switching on its free base while the administrator activates the add-on.
+		$dependency = self::activated_by_admin_now( $c['component'] ) && in_array( $ctx, array( 'admin', 'ajax', 'rest' ), true );
 		Events::record( array(
 			'module'    => 'options',
 			'type'      => 'plugin_activated_by_code',
-			'severity'  => 'high',
+			'severity'  => $dependency ? 'medium' : 'high',
 			/* translators: 1: plugin file(s), 2: plugin name */
 			'title'     => array( __( 'Plugin activated by code: %1$s (by %2$s)', 'nightward' ), implode( ', ', $added ), Attribution::label( $c['component'] ) ),
 			'details'   => array(
-				'explanation' => __( 'A plugin was activated without an administrator using the Plugins screen. Droppers use this to switch on a second-stage payload.', 'nightward' ),
+				'explanation' => $dependency
+					? __( 'The plugin that did it was being activated by an administrator in the same request, so this is most likely a required base plugin (a PRO add-on switching on its free version). Make sure you expected both.', 'nightward' )
+					: __( 'A plugin was activated without an administrator using the Plugins screen. Droppers use this to switch on a second-stage payload.', 'nightward' ),
 				'context'     => $ctx,
 				'request'     => Util::request_path(),
 			),
@@ -160,6 +164,27 @@ class Options_Watch {
 			'line'      => $c['line'],
 			'key'       => 'options|activate|' . implode( ',', $added ),
 		) );
+	}
+
+	/** Is this plugin itself being activated by an administrator in the current request? */
+	private static function activated_by_admin_now( $component ) {
+		if ( 0 !== strpos( (string) $component, 'plugin:' ) || ! current_user_can( 'activate_plugins' ) ) {
+			return false;
+		}
+		$slug = substr( $component, 7 );
+		// phpcs:disable WordPress.Security.NonceVerification
+		$files = array_merge(
+			isset( $_REQUEST['plugin'] ) && is_string( $_REQUEST['plugin'] ) ? array( wp_unslash( $_REQUEST['plugin'] ) ) : array(),
+			isset( $_REQUEST['checked'] ) ? array_filter( array_map( 'wp_unslash', (array) $_REQUEST['checked'] ), 'is_string' ) : array()
+		);
+		// phpcs:enable
+		foreach ( $files as $f ) {
+			$f = (string) $f;
+			if ( ( false === strpos( $f, '/' ) ? preg_replace( '/\.php$/', '', $f ) : strtok( $f, '/' ) ) === $slug ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/** A role gaining admin-grade capabilities outside the admin. */
