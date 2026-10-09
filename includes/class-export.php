@@ -72,7 +72,11 @@ class Export {
 
 	/** Mask site address, e-mail addresses and IP addresses. */
 	public static function clean( $s ) {
-		if ( ! is_string( $s ) || '' === $s || ! self::$redact ) {
+		if ( ! is_string( $s ) || '' === $s ) {
+			return $s;
+		}
+		$s = Redact::text( $s ); // credentials: always, also with --no-redact
+		if ( ! self::$redact ) {
 			return $s;
 		}
 		foreach ( self::$hosts as $h ) {

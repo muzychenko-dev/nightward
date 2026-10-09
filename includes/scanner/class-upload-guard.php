@@ -22,6 +22,9 @@ class Upload_Guard {
 
 	const PROBE_PREFIX = 'nightward-probe-';
 
+	/** cursor, full_pass_at, files_checked of the scan in progress. */
+	private static $stats = array();
+
 	public static function dropins() {
 		return array( 'advanced-cache.php', 'db.php', 'db-error.php', 'install.php', 'maintenance.php', 'object-cache.php', 'php-error.php', 'fatal-error-handler.php', 'sunrise.php', 'blog-deleted.php', 'blog-inactive.php', 'blog-suspended.php', 'index.php' );
 	}
@@ -31,9 +34,16 @@ class Upload_Guard {
 		$budget = $quick ? 8 : 60;
 		$found  = 0;
 
+		$last = get_option( 'nightward_uploads_last' );
+		$last = is_array( $last ) ? $last : array();
+		self::$stats = array(
+			'cursor'        => isset( $last['cursor'] ) ? (string) $last['cursor'] : '',
+			'full_pass_at'  => isset( $last['full_pass_at'] ) ? (int) $last['full_pass_at'] : 0,
+			'files_checked' => 0,
+		);
 		$up = wp_get_upload_dir();
 		if ( ! empty( $up['basedir'] ) && is_dir( $up['basedir'] ) ) {
-			$found += self::scan_uploads( $up['basedir'], $t0, $budget );
+			$found += self::scan_uploads( $up['basedir'], $t0, $budget, $quick, isset( $last['at'] ) ? (int) $last['at'] : 0 );
 		}
 		$found += self::scan_content_root();
 		$found += self::scan_mu();
@@ -44,7 +54,7 @@ class Upload_Guard {
 			}
 		}
 		self::resolve_removed();
-		update_option( 'nightward_uploads_last', array( 'at' => time(), 'found' => $found, 'quick' => (bool) $quick ), false );
+		update_option( 'nightward_uploads_last', array_merge( self::$stats, array( 'at' => time(), 'found' => $found, 'quick' => (bool) $quick ) ), false );
 		return $found;
 	}
 
@@ -77,56 +87,156 @@ class Upload_Guard {
 		);
 	}
 
-	private static function scan_uploads( $base, $t0, $budget ) {
-		$exec  = Util::executable_extensions();
+	/**
+	 * Uploads in a fixed order with a cursor, so that the whole media library gets
+	 * checked even when one run cannot finish it. The quick hourly scan first looks
+	 * at files changed in the current and previous month, then continues the cursor.
+	 */
+	private static function scan_uploads( $base, $t0, $budget, $quick, $last_at ) {
 		$found = 0;
+		$base  = untrailingslashit( $base );
+		$seen  = array();
 		try {
-			foreach ( self::iterator( $base ) as $f ) {
-				if ( ( microtime( true ) - $t0 ) > $budget ) {
-					break;
-				}
-				if ( ! $f->isFile() ) {
-					continue;
-				}
-				$name = $f->getFilename();
-				$path = $f->getPathname();
-				if ( 0 === strpos( $name, self::PROBE_PREFIX ) ) {
-					continue;
-				}
-				if ( '.htaccess' === $name ) {
-					$found += self::check_htaccess( $path );
-					continue;
-				}
-				if ( '.user.ini' === $name || 'php.ini' === $name ) {
-					$found += self::report( $path, 'ini_in_uploads', 'high', __( 'PHP configuration file inside uploads. It can enable auto_prepend_file to run a payload on every request.', 'nightward' ) );
-					continue;
-				}
-				$parts = explode( '.', strtolower( $name ) );
-				$ext   = end( $parts );
-				if ( in_array( $ext, $exec, true ) ) {
-					if ( Util::is_inert_php( $path ) ) {
+			if ( $quick && get_option( 'uploads_use_yearmonth_folders' ) ) {
+				// ctime changes on every write and cannot be set back from PHP (unlike mtime).
+				$since = $last_at ? $last_at - HOUR_IN_SECONDS : 0;
+				foreach ( array( gmdate( 'Y/m' ), gmdate( 'Y/m', strtotime( 'first day of last month' ) ) ) as $ym ) {
+					if ( ! is_dir( $base . '/' . $ym ) ) {
 						continue;
 					}
-					$found += self::report( $path, 'exec_in_uploads', 'high', __( 'Executable script in the uploads folder. Uploads should contain only media and documents; a script here can usually be run directly from the browser.', 'nightward' ) );
-					continue;
-				}
-				// shell.php.jpg — виконується на деяких конфігураціях Apache (AddHandler).
-				if ( count( $parts ) > 2 && array_intersect( array_slice( $parts, 1, -1 ), $exec ) ) {
-					$found += self::report( $path, 'double_ext', 'medium', __( 'Double extension (e.g. file.php.jpg). On some Apache setups such files are executed as PHP.', 'nightward' ) );
-					continue;
-				}
-				// Image that is actually PHP.
-				if ( in_array( $ext, array( 'jpg', 'jpeg', 'png', 'gif', 'ico', 'webp', 'svg', 'txt' ), true ) && $f->getSize() < 2 * MB_IN_BYTES ) {
-					$head = (string) @file_get_contents( $path, false, null, 0, 4096 );
-					if ( preg_match( '/<\?php\s|<\?=\s*\$|eval\s*\(\s*(base64_decode|gzinflate)/i', $head ) ) {
-						$found += self::report( $path, 'php_in_media', 'high', __( 'A media file contains PHP code. Used together with an include() elsewhere to hide a payload.', 'nightward' ) );
+					foreach ( self::walk( $base, $ym ) as $rel ) {
+						if ( ( microtime( true ) - $t0 ) > $budget ) {
+							break 2;
+						}
+						$abs = $base . '/' . $rel;
+						if ( $since && max( (int) @filemtime( $abs ), (int) @filectime( $abs ) ) < $since ) {
+							continue;
+						}
+						$seen[ $rel ] = true;
+						$found       += self::check_upload( $abs );
 					}
 				}
+			}
+			$cursor   = self::$stats['cursor'];
+			$finished = true;
+			foreach ( self::walk( $base, '', $cursor ) as $rel ) {
+				if ( ( microtime( true ) - $t0 ) > $budget ) {
+					$finished = false;
+					break;
+				}
+				if ( ! isset( $seen[ $rel ] ) ) {
+					$found += self::check_upload( $base . '/' . $rel );
+				}
+				self::$stats['cursor'] = $rel;
+			}
+			if ( $finished ) {
+				self::$stats['cursor']       = '';
+				self::$stats['full_pass_at'] = time();
 			}
 		} catch ( \Throwable $e ) {
 			return $found;
 		}
 		return $found;
+	}
+
+	/**
+	 * Files under $base/$sub in a stable depth-first order (sorted names). With $after,
+	 * everything up to and including that path is skipped, whole folders at once.
+	 *
+	 * @return \Generator relative paths
+	 */
+	private static function walk( $base, $sub = '', $after = '' ) {
+		$dir     = '' === $sub ? $base : $base . '/' . $sub;
+		$entries = @scandir( $dir );
+		if ( ! $entries ) {
+			return;
+		}
+		foreach ( $entries as $name ) {
+			if ( '.' === $name || '..' === $name ) {
+				continue;
+			}
+			$rel = '' === $sub ? $name : $sub . '/' . $name;
+			$abs = $dir . '/' . $name;
+			if ( is_dir( $abs ) && ! is_link( $abs ) ) {
+				if ( in_array( $name, array( 'node_modules', '.git' ), true ) ) {
+					continue;
+				}
+				// The cursor is past this folder and not inside it: skip it whole.
+				if ( '' !== $after && self::path_cmp( $rel, $after ) < 0 && 0 !== strpos( $after, $rel . '/' ) ) {
+					continue;
+				}
+				foreach ( self::walk( $base, $rel, $after ) as $r ) {
+					yield $r;
+				}
+				continue;
+			}
+			if ( '' !== $after && self::path_cmp( $rel, $after ) <= 0 ) {
+				continue;
+			}
+			yield $rel;
+		}
+	}
+
+	/** Compare paths the way walk() visits them: folder by folder, names as scandir() sorts them. */
+	private static function path_cmp( $a, $b ) {
+		$x = explode( '/', $a );
+		$y = explode( '/', $b );
+		$n = min( count( $x ), count( $y ) );
+		for ( $i = 0; $i < $n; $i++ ) {
+			$c = strcmp( $x[ $i ], $y[ $i ] );
+			if ( 0 !== $c ) {
+				return $c;
+			}
+		}
+		return count( $x ) <=> count( $y );
+	}
+
+	/** One file in uploads. @return int events recorded */
+	private static function check_upload( $path ) {
+		self::$stats['files_checked']++;
+		$name = basename( $path );
+		if ( 0 === strpos( $name, self::PROBE_PREFIX ) || ! is_file( $path ) ) {
+			return 0;
+		}
+		if ( '.htaccess' === $name ) {
+			return self::check_htaccess( $path );
+		}
+		if ( '.user.ini' === $name || 'php.ini' === $name ) {
+			return self::report( $path, 'ini_in_uploads', 'high', __( 'PHP configuration file inside uploads. It can enable auto_prepend_file to run a payload on every request.', 'nightward' ) );
+		}
+		$exec  = Util::executable_extensions();
+		$parts = explode( '.', strtolower( $name ) );
+		$ext   = end( $parts );
+		if ( in_array( $ext, $exec, true ) ) {
+			if ( Util::is_inert_php( $path ) ) {
+				return 0;
+			}
+			return self::report( $path, 'exec_in_uploads', 'high', __( 'Executable script in the uploads folder. Uploads should contain only media and documents; a script here can usually be run directly from the browser.', 'nightward' ) );
+		}
+		// shell.php.jpg - executed by some Apache setups (AddHandler).
+		if ( count( $parts ) > 2 && array_intersect( array_slice( $parts, 1, -1 ), $exec ) ) {
+			return self::report( $path, 'double_ext', 'medium', __( 'Double extension (e.g. file.php.jpg). On some Apache setups such files are executed as PHP.', 'nightward' ) );
+		}
+		if ( ! in_array( $ext, Util::media_extensions(), true ) ) {
+			return 0;
+		}
+		$size = (int) @filesize( $path );
+		if ( $size <= 0 ) {
+			return 0;
+		}
+		$is_image = in_array( $ext, Util::image_extensions(), true );
+		$scan     = Util::media_code_scan( $path, $size );
+		if ( 'php' === $scan['hit'] ) {
+			return self::report( $path, 'php_in_media', 'high', __( 'A media file contains PHP code. Used together with an include() elsewhere to hide a payload.', 'nightward' ), $scan['region'] );
+		}
+		if ( 'phar' === $scan['hit'] ) {
+			return self::report( $path, 'phar_in_media', 'high', __( 'An image contains a PHAR archive stub. Passed to any file function as phar://, it can trigger object injection.', 'nightward' ), $scan['region'] );
+		}
+		// A .jpg holding a PNG or WebP is what optimisers and CDNs write - not a security issue.
+		if ( $is_image && '' === Util::media_kind( $path ) ) {
+			return self::report( $path, 'media_not_image', 'medium', __( 'The file has an image extension but its content is not an image. Payloads are stored like this and loaded with include() or eval(file_get_contents()) from another file.', 'nightward' ), (string) @file_get_contents( $path, false, null, 0, 512 * KB_IN_BYTES ) );
+		}
+		return 0;
 	}
 
 	private static function check_htaccess( $path ) {
@@ -221,8 +331,18 @@ class Upload_Guard {
 		return (bool) preg_match( '/^<\?php\s*(\/\*.*?\*\/\s*|\/\/[^\n]*\n\s*)*(return\s+(array\s*\(|\[)|exit|die|defined\s*\(\s*[\'"]ABSPATH)/is', $head );
 	}
 
-	private static function report( $path, $type, $sev, $why ) {
-		$ind = Integrity::is_php( $path ) || preg_match( '/\.(jpe?g|png|gif|ico|txt|svg|webp)$/i', $path ) ? Integrity::payload_indicators( $path ) : array();
+	private static function report( $path, $type, $sev, $why, $region = null ) {
+		if ( null !== $region ) {
+			// Media: indicators around the code that was found (it may sit at the end of a
+			// 3 MB JPEG), plus the header rule on the file start.
+			$ind = array_values( array_unique( array_merge( Integrity::payload_indicators_text( $region ), Integrity::payload_indicators( $path ) ) ) );
+			// In a file that only pretends to be an image, a bare base64 blob is the payload itself.
+			if ( 'media_not_image' === $type && preg_match( '/[A-Za-z0-9+\/]{2000,}={0,2}/', $region ) && ! in_array( 'long base64 blob', $ind, true ) ) {
+				$ind[] = 'long base64 blob';
+			}
+		} else {
+			$ind = Integrity::is_php( $path ) ? Integrity::payload_indicators( $path ) : array();
+		}
 		if ( $ind ) {
 			$sev = 'critical';
 		}
@@ -240,7 +360,7 @@ class Upload_Guard {
 				'modified'    => wp_date( 'Y-m-d H:i', (int) @filemtime( $path ) ),
 				'owner'       => function_exists( 'posix_getpwuid' ) && @fileowner( $path ) !== false ? ( ( $o = @posix_getpwuid( fileowner( $path ) ) ) ? $o['name'] : '' ) : '',
 				'indicators'  => $ind,
-				'preview'     => mb_substr( preg_replace( '/\s+/', ' ', (string) @file_get_contents( $path, false, null, 0, 400 ) ), 0, 240 ),
+				'preview'     => substr( trim( preg_replace( array( '/[\x00-\x08\x0E-\x1F\x7F-\xFF]+/', '/\s+/' ), array( '·', ' ' ), substr( null !== $region ? $region : (string) @file_get_contents( $path, false, null, 0, 400 ), 0, 400 ) ) ), 0, 240 ),
 				'url'         => $url,
 			),
 			'file'      => $rel,

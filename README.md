@@ -2,7 +2,7 @@
 
 Runtime security monitor for WordPress. Most security plugins look at files and requests from the outside. Nightward watches what installed plugins and themes actually **do** inside the site, names the file and line that did it, and e-mails you a daily report. Critical findings are e-mailed the moment they happen.
 
-- Version: 1.1.6
+- Version: 1.1.7
 - Requires: WordPress 6.2+, PHP 7.4+
 - Languages: English, Ukrainian
 - Website: https://nightward.muzychenko.dev
@@ -18,13 +18,13 @@ Runtime security monitor for WordPress. Most security plugins look at files and 
 | **Options** | Site URL / home, admin e-mail, `default_role`, registration, role capabilities, plugin activation by code, theme switch. Options written on almost every page view (sampled). Autoload weight. |
 | **Scheduled tasks** | New cron hooks, random-looking names, PHP / base64 / URLs in arguments, tasks with no handler. |
 | **File integrity** | Core against official checksums, WordPress.org plugins against per-version checksums, premium plugins and themes against their own first snapshot (changes without a version bump are reported). Changed files are checked for malware indicators. Runs in batches through WP-Cron. |
-| **Executable files** | Scripts in uploads, PHP hidden in images, `.htaccess` / `.user.ini` tricks, unknown PHP in the wp-content root, new must-use plugins, PHP in cache / upgrade / languages. |
+| **Executable files** | Scripts in uploads; PHP or a PHAR stub anywhere in an image (whole file up to 2 MB, head and tail of larger ones); files with an image extension whose content is not an image; `.htaccess` / `.user.ini` tricks; unknown PHP in the wp-content root; new must-use plugins; PHP in cache / upgrade / languages. Uploads are walked in a fixed order with a cursor, so large media libraries are fully checked across runs. |
 | **Update channel** | Where pending and downloaded updates come from. Hijacked WordPress.org updates and known malicious hosts are blocked; packages from hosts unrelated to the vendor can be blocked optionally. |
 | **Hardening** | Checked from outside: exposed debug logs, `.env`, `.git`, wp-config backups and dumps, PHP execution in uploads (real test), directory listing, XML-RPC, user enumeration, security headers, HTTPS, wp-config permissions, file editor, PHP version, inactive plugins, WP-Cron health. |
 
 ## Reports
 
-- **Daily report** at a configurable local time (default 20:00, site timezone). "All clear" is sent too by default: if the e-mail stops arriving, the site, WP-Cron or Nightward stopped working.
+- **Daily report** at a configurable local time (default 20:00, site timezone). "All clear" is sent too by default: if the e-mail stops arriving, the site, WP-Cron or Nightward stopped working. One report per occurrence: a second run within 30 minutes (WP-Cron and the backup scheduler starting in the same visit, a manual run) is stopped and counted on the overview.
 - **Instant alerts** for critical (optionally also high) findings, at the moment of detection, rate-limited per hour; the rest is combined into one message.
 - Rendered in the recipient's language when the recipient is a user of the site. Events are stored language-independently and translated when displayed.
 
@@ -50,7 +50,7 @@ Until it is fixed, the **backup scheduler** runs Nightward's own overdue tasks (
 - optional inventory: installed plugins and themes, outbound hosts, callbacks on sensitive hooks, scheduled tasks;
 - hardening and file integrity results.
 
-Markdown (best for chat) or JSON. Filters for period, status and minimum severity. The site address, e-mail and IP addresses are masked by default. Download the file or copy it to the clipboard.
+Markdown (best for chat) or JSON. Filters for period, status and minimum severity. The site address, e-mail and IP addresses are masked by default. Credentials are never exported, see below. Download the file or copy it to the clipboard.
 
 From the command line:
 
@@ -70,6 +70,14 @@ On activation Nightward writes `wp-content/mu-plugins/0-nightward-early.php`, wh
 - Direct database edits are found by the hourly audit, not at the moment they happen.
 - Premium plugins/themes are trusted as they are at the first scan.
 - It is a detector, not a firewall.
+
+## Credentials are never stored
+
+Every URL and detail is cleaned before it is written to the database: Telegram bot tokens (`/bot<id>:…`, the bot ID stays), Discord and Slack webhook secrets, `user:pass@` in URLs and the values of secret query parameters (`token`, `key`, `api_key`, `secret`, `password`, `license_key`, `signature` and similar). Hosts, paths and IDs stay for attribution. Records written by earlier versions are cleaned once after the update. `--no-redact` and the export switch only reveal the site address, e-mail and IP addresses.
+
+## Removed plugins and themes
+
+When a plugin or theme is deleted, its findings that existed only while the code was installed (requests, interception, hooks, file changes, update channel, option writes) are deleted with its outbound statistics and file snapshot. Administrators, scheduled tasks and files it left behind keep their findings until they are gone too. Removals outside the dashboard are noticed when the Plugins or Themes screen opens, and daily.
 
 ## Learning mode
 

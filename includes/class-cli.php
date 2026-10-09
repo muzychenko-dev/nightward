@@ -38,11 +38,18 @@ class CLI {
 	 * default: low
 	 * ---
 	 *
-	 * [--no-inventory]
-	 * : Leave out plugins, outbound hosts, hooks and scheduled tasks.
+	 * [--[no-]inventory]
+	 * : Include plugins, outbound hosts, hooks and scheduled tasks. --no-inventory leaves them out.
+	 * ---
+	 * default: true
+	 * ---
 	 *
-	 * [--no-redact]
-	 * : Keep the real site address, e-mail and IP addresses.
+	 * [--[no-]redact]
+	 * : Mask the site address, e-mail and IP addresses. --no-redact keeps them.
+	 * Credentials (tokens, passwords, keys in URLs) are never shown either way.
+	 * ---
+	 * default: true
+	 * ---
 	 *
 	 * [--file=<path>]
 	 * : Write to this file instead of standard output.

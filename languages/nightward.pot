@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Nightward 1.1.6\n"
+"Project-Id-Version: Nightward 1.1.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/nightward\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-03T14:28:38+00:00\n"
+"POT-Creation-Date: 2026-10-09T17:39:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: nightward\n"
@@ -95,17 +95,17 @@ msgid "Accept the current files of this package as the new reference? Do this on
 msgstr ""
 
 #: admin/class-admin.php:89
-#: admin/class-admin.php:601
+#: admin/class-admin.php:622
 msgid "Trusted"
 msgstr ""
 
 #: admin/class-admin.php:90
-#: admin/class-admin.php:516
+#: admin/class-admin.php:537
 msgid "Details"
 msgstr ""
 
 #: admin/class-admin.php:91
-#: admin/class-admin.php:516
+#: admin/class-admin.php:537
 msgid "Hide"
 msgstr ""
 
@@ -133,17 +133,17 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: admin/class-admin.php:134
-#: admin/class-admin.php:505
+#: admin/class-admin.php:526
 msgid "Status"
 msgstr ""
 
 #: admin/class-admin.php:134
-#: admin/class-admin.php:356
+#: admin/class-admin.php:371
 msgid "not running"
 msgstr ""
 
 #: admin/class-admin.php:134
-#: admin/class-admin.php:357
+#: admin/class-admin.php:372
 #: includes/class-reports.php:419
 msgid "running"
 msgstr ""
@@ -158,11 +158,11 @@ msgstr ""
 #: admin/class-admin.php:135
 #: admin/class-admin.php:161
 #: admin/class-admin.php:184
-#: admin/class-admin.php:357
-#: admin/class-admin.php:397
-#: admin/class-admin.php:650
+#: admin/class-admin.php:372
+#: admin/class-admin.php:412
+#: admin/class-admin.php:671
 #: includes/class-reports.php:407
-#: includes/class-util.php:133
+#: includes/class-util.php:134
 msgid "%s ago"
 msgstr ""
 
@@ -272,7 +272,7 @@ msgstr ""
 #. translators: %s: time
 #: admin/class-admin.php:175
 #: admin/class-admin.php:350
-#: admin/class-admin.php:353
+#: admin/class-admin.php:368
 msgid "off"
 msgstr ""
 
@@ -306,7 +306,7 @@ msgid "Why"
 msgstr ""
 
 #: admin/class-admin.php:198
-#: includes/class-cron.php:781
+#: includes/class-cron.php:809
 msgid "Run the check: it starts WP-Cron the way WordPress does and shows where it stops."
 msgstr ""
 
@@ -360,8 +360,8 @@ msgid "Integrity"
 msgstr ""
 
 #: admin/class-admin.php:236
-#: admin/class-admin.php:423
-#: admin/class-admin.php:690
+#: admin/class-admin.php:438
+#: admin/class-admin.php:711
 #: includes/class-events.php:47
 msgid "Hardening"
 msgstr ""
@@ -456,7 +456,7 @@ msgid "E-mail reports"
 msgstr ""
 
 #: admin/class-admin.php:350
-#: admin/class-admin.php:801
+#: admin/class-admin.php:822
 msgid "Daily report"
 msgstr ""
 
@@ -470,743 +470,772 @@ msgstr ""
 msgid "Next report"
 msgstr ""
 
-#: admin/class-admin.php:352
-msgid "Last sent"
-msgstr ""
-
-#: admin/class-admin.php:352
-#: admin/class-admin.php:397
-#: admin/class-admin.php:419
-msgid "not yet"
-msgstr ""
-
-#: admin/class-admin.php:353
-#: admin/class-admin.php:810
-msgid "Instant alerts"
-msgstr ""
-
-#: admin/class-admin.php:353
-msgid "critical only"
-msgstr ""
-
-#: admin/class-admin.php:353
-msgid "critical and high"
-msgstr ""
-
-#: admin/class-admin.php:354
-msgid "Recipient"
+#: admin/class-admin.php:356
+msgid "backup scheduler"
 msgstr ""
 
 #: admin/class-admin.php:356
+msgid "manually"
+msgstr ""
+
+#: admin/class-admin.php:362
+msgid "Last sent"
+msgstr ""
+
+#: admin/class-admin.php:362
+#: admin/class-admin.php:412
+#: admin/class-admin.php:434
+msgid "not yet"
+msgstr ""
+
+#. translators: %d: number of runs
+#: admin/class-admin.php:365
+msgid "%d duplicate run stopped in the last 7 days"
+msgid_plural "%d duplicate runs stopped in the last 7 days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/class-admin.php:368
+#: admin/class-admin.php:831
+msgid "Instant alerts"
+msgstr ""
+
+#: admin/class-admin.php:368
+msgid "critical only"
+msgstr ""
+
+#: admin/class-admin.php:368
+msgid "critical and high"
+msgstr ""
+
+#: admin/class-admin.php:369
+msgid "Recipient"
+msgstr ""
+
+#: admin/class-admin.php:371
 msgid "why"
 msgstr ""
 
 #. translators: %s: time
-#: admin/class-admin.php:357
+#: admin/class-admin.php:372
 msgid "details and check"
 msgstr ""
 
-#: admin/class-admin.php:359
+#: admin/class-admin.php:374
 msgid "Last error"
 msgstr ""
 
-#: admin/class-admin.php:359
+#: admin/class-admin.php:374
 msgid "wp_mail() returned false"
 msgstr ""
 
-#: admin/class-admin.php:361
-#: admin/class-admin.php:814
+#: admin/class-admin.php:376
+#: admin/class-admin.php:835
 msgid "Send test report"
 msgstr ""
 
-#: admin/class-admin.php:362
+#: admin/class-admin.php:377
 msgid "Preview"
 msgstr ""
 
-#: admin/class-admin.php:366
-#: admin/class-admin.php:817
+#: admin/class-admin.php:381
+#: admin/class-admin.php:838
 msgid "Monitors"
 msgstr ""
 
-#: admin/class-admin.php:400
+#: admin/class-admin.php:415
 #: includes/class-events.php:38
 #: includes/class-reports.php:411
 msgid "Outbound requests"
 msgstr ""
 
-#: admin/class-admin.php:400
+#: admin/class-admin.php:415
 msgid "Every HTTP request of the site, attributed to the plugin file and line that made it. Faked responses are traced to the exact callback."
 msgstr ""
 
 #. translators: 1: hosts, 2: faked
-#: admin/class-admin.php:402
+#: admin/class-admin.php:417
 msgid "24 h: %1$d hosts · %2$d faked"
 msgstr ""
 
-#: admin/class-admin.php:403
-#: admin/class-admin.php:819
+#: admin/class-admin.php:418
+#: admin/class-admin.php:840
 #: includes/class-events.php:40
 msgid "Sensitive hooks"
 msgstr ""
 
-#: admin/class-admin.php:403
+#: admin/class-admin.php:418
 msgid "Who can influence login, permissions, the users/plugins lists and the update channel. New callbacks and eval()-made code are reported."
 msgstr ""
 
 #. translators: %d: count
-#: admin/class-admin.php:405
+#: admin/class-admin.php:420
 msgid "%d third-party callbacks watched"
 msgstr ""
 
-#: admin/class-admin.php:406
-#: admin/class-admin.php:820
+#: admin/class-admin.php:421
+#: admin/class-admin.php:841
 #: includes/class-events.php:41
 msgid "Users & privileges"
 msgstr ""
 
-#: admin/class-admin.php:406
+#: admin/class-admin.php:421
 msgid "Administrators created by code, via direct SQL or hidden from the Users list; credential changes, application passwords, logins from new networks."
 msgstr ""
 
 #. translators: %d: count
-#: admin/class-admin.php:408
+#: admin/class-admin.php:423
 msgid "%d administrator"
 msgid_plural "%d administrators"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-admin.php:409
-#: admin/class-admin.php:821
+#: admin/class-admin.php:424
+#: admin/class-admin.php:842
 #: includes/class-events.php:42
 msgid "Options"
 msgstr ""
 
-#: admin/class-admin.php:409
+#: admin/class-admin.php:424
 msgid "Site URL, admin e-mail, default role, role capabilities, plugin activation by code; options written on every page view; autoload weight."
 msgstr ""
 
 #. translators: %s: size
-#: admin/class-admin.php:411
+#: admin/class-admin.php:426
 msgid "autoload %s"
 msgstr ""
 
-#: admin/class-admin.php:412
-#: admin/class-admin.php:628
-#: admin/class-admin.php:822
+#: admin/class-admin.php:427
+#: admin/class-admin.php:649
+#: admin/class-admin.php:843
 #: includes/class-events.php:43
 #: includes/class-reports.php:418
 msgid "Scheduled tasks"
 msgstr ""
 
-#: admin/class-admin.php:412
+#: admin/class-admin.php:427
 msgid "New WP-Cron tasks, random names, code in arguments, tasks without a handler."
 msgstr ""
 
 #. translators: 1: tasks, 2: overdue
-#: admin/class-admin.php:414
+#: admin/class-admin.php:429
 msgid "%1$d tasks · %2$d overdue"
 msgstr ""
 
-#: admin/class-admin.php:415
-#: admin/class-admin.php:647
-#: admin/class-admin.php:823
+#: admin/class-admin.php:430
+#: admin/class-admin.php:668
+#: admin/class-admin.php:844
 #: includes/class-events.php:44
 #: includes/class-reports.php:404
 msgid "File integrity"
 msgstr ""
 
-#: admin/class-admin.php:415
+#: admin/class-admin.php:430
 msgid "Core and WordPress.org plugins against official checksums; premium plugins and themes against their own first snapshot."
 msgstr ""
 
 #. translators: 1: files, 2: time
-#: admin/class-admin.php:417
+#: admin/class-admin.php:432
 msgid "%1$s files · %2$s"
 msgstr ""
 
 #. translators: 1: files, 2: time
-#: admin/class-admin.php:417
+#: admin/class-admin.php:432
 #: includes/class-reports.php:408
 msgid "first scan pending"
 msgstr ""
 
-#: admin/class-admin.php:418
-#: admin/class-admin.php:824
+#: admin/class-admin.php:433
+#: admin/class-admin.php:845
 #: includes/class-events.php:45
 msgid "Executable files"
 msgstr ""
 
-#: admin/class-admin.php:418
-msgid "Scripts in uploads, PHP hidden in images, .htaccess tricks, unknown files in wp-content and mu-plugins."
+#: admin/class-admin.php:433
+msgid "Scripts in uploads, PHP hidden in images (anywhere in the file), files that only pretend to be images, .htaccess tricks, unknown files in wp-content and mu-plugins."
 msgstr ""
 
-#: admin/class-admin.php:420
-#: admin/class-admin.php:825
+#: admin/class-admin.php:435
+#: admin/class-admin.php:846
 #: includes/class-events.php:46
 msgid "Update channel"
 msgstr ""
 
-#: admin/class-admin.php:420
+#: admin/class-admin.php:435
 msgid "Where updates are downloaded from. Hijacked WordPress.org updates and packages from unrelated hosts are flagged or blocked."
 msgstr ""
 
 #. translators: %d: count
-#: admin/class-admin.php:422
+#: admin/class-admin.php:437
 msgid "%d update pending"
 msgid_plural "%d updates pending"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-admin.php:423
+#: admin/class-admin.php:438
 msgid "Verified from outside: exposed backups and logs, PHP execution in uploads, XML-RPC, user enumeration, headers."
 msgstr ""
 
 #. translators: %d: score
-#: admin/class-admin.php:425
+#: admin/class-admin.php:440
 msgid "score %d / 100"
 msgstr ""
 
-#: admin/class-admin.php:430
+#: admin/class-admin.php:445
 msgid "What Nightward cannot see"
 msgstr ""
 
-#: admin/class-admin.php:432
+#: admin/class-admin.php:447
 msgid "Requests made with raw cURL, sockets or file_get_contents() bypass the WordPress HTTP API and are not logged."
 msgstr ""
 
-#: admin/class-admin.php:433
+#: admin/class-admin.php:448
 msgid "Code that runs before Nightward starts: wp-config.php, drop-ins (db.php, advanced-cache.php, object-cache.php) and must-use plugins loaded before \"0-nightward-early.php\"."
 msgstr ""
 
-#: admin/class-admin.php:434
+#: admin/class-admin.php:449
 msgid "Direct database edits are found by the hourly audit, not at the moment they happen, and without the file that did it."
 msgstr ""
 
-#: admin/class-admin.php:435
+#: admin/class-admin.php:450
 msgid "Premium plugins and themes are trusted as they are at the first scan. If they were already modified, only later changes are detected."
 msgstr ""
 
-#: admin/class-admin.php:436
+#: admin/class-admin.php:451
 msgid "Nightward detects and reports; it is not a firewall. Someone with access to the server can disable any plugin, including this one — if the daily e-mail stops arriving, treat the silence as an alarm."
 msgstr ""
 
+#. translators: %s: time
+#: admin/class-admin.php:457
+msgid "Last full check of the media library: %s ago."
+msgstr ""
+
+#. translators: %s: time
+#: admin/class-admin.php:457
+msgid "The media library has not been fully checked yet."
+msgstr ""
+
 #. translators: %d: count
-#: admin/class-admin.php:464
+#: admin/class-admin.php:485
 msgid "%d event updated."
 msgid_plural "%d events updated."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-admin.php:476
+#: admin/class-admin.php:497
 msgid "All severities"
 msgstr ""
 
-#: admin/class-admin.php:480
+#: admin/class-admin.php:501
 msgid "All areas"
 msgstr ""
 
-#: admin/class-admin.php:484
+#: admin/class-admin.php:505
 msgid "Open & acknowledged"
 msgstr ""
 
-#: admin/class-admin.php:488
+#: admin/class-admin.php:509
 msgid "Search title, file, plugin…"
 msgstr ""
 
-#: admin/class-admin.php:488
+#: admin/class-admin.php:509
 msgid "Filter"
 msgstr ""
 
-#: admin/class-admin.php:490
+#: admin/class-admin.php:511
 msgid "Reset"
 msgstr ""
 
-#: admin/class-admin.php:492
-#: admin/class-admin.php:731
+#: admin/class-admin.php:513
+#: admin/class-admin.php:752
 msgid "Export for AI analysis"
 msgstr ""
 
-#: admin/class-admin.php:496
+#: admin/class-admin.php:517
 msgid "No events match."
 msgstr ""
 
-#: admin/class-admin.php:502
+#: admin/class-admin.php:523
 msgid "Mark as acknowledged"
 msgstr ""
 
-#: admin/class-admin.php:502
+#: admin/class-admin.php:523
 msgid "Mark as resolved"
 msgstr ""
 
-#: admin/class-admin.php:502
+#: admin/class-admin.php:523
 msgid "Ignore (never report again)"
 msgstr ""
 
-#: admin/class-admin.php:502
+#: admin/class-admin.php:523
 msgid "Reopen"
 msgstr ""
 
-#: admin/class-admin.php:502
+#: admin/class-admin.php:523
 msgid "Apply"
 msgstr ""
 
 #. translators: %d: count
-#: admin/class-admin.php:504
+#: admin/class-admin.php:525
 msgid "%d event"
 msgid_plural "%d events"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-admin.php:505
+#: admin/class-admin.php:526
 msgid "Severity"
 msgstr ""
 
-#: admin/class-admin.php:505
+#: admin/class-admin.php:526
 msgid "Event"
 msgstr ""
 
-#: admin/class-admin.php:505
+#: admin/class-admin.php:526
 #: includes/class-reports.php:226
 msgid "Area"
 msgstr ""
 
-#: admin/class-admin.php:505
+#: admin/class-admin.php:526
 msgid "Seen"
 msgstr ""
 
-#: admin/class-admin.php:525
-#: admin/class-admin.php:592
+#: admin/class-admin.php:546
+#: admin/class-admin.php:613
 msgid "First seen"
 msgstr ""
 
-#: admin/class-admin.php:526
-#: admin/class-admin.php:592
+#: admin/class-admin.php:547
+#: admin/class-admin.php:613
 msgid "Last seen"
 msgstr ""
 
 #. translators: %s: domain
-#: admin/class-admin.php:531
+#: admin/class-admin.php:552
 msgid "Trust %s"
 msgstr ""
 
-#: admin/class-admin.php:555
+#: admin/class-admin.php:576
 msgid "Every host this site contacted in the last 30 days through the WordPress HTTP API, grouped by the plugin or theme that made the request. \"Faked\" means a callback returned a response without the request ever leaving the server."
 msgstr ""
 
-#: admin/class-admin.php:575
+#: admin/class-admin.php:596
 msgid "Code that can fake HTTP responses"
 msgstr ""
 
-#: admin/class-admin.php:577
+#: admin/class-admin.php:598
 msgid "No plugin or theme is attached to pre_http_request in this request."
 msgstr ""
 
-#: admin/class-admin.php:579
-#: admin/class-admin.php:619
+#: admin/class-admin.php:600
+#: admin/class-admin.php:640
 msgid "Plugin / theme"
 msgstr ""
 
-#: admin/class-admin.php:579
-#: admin/class-admin.php:619
+#: admin/class-admin.php:600
+#: admin/class-admin.php:640
 #: includes/class-reports.php:224
 msgid "Callback"
 msgstr ""
 
-#: admin/class-admin.php:579
-#: admin/class-admin.php:619
+#: admin/class-admin.php:600
+#: admin/class-admin.php:640
 msgid "Location"
 msgstr ""
 
-#: admin/class-admin.php:579
+#: admin/class-admin.php:600
 #: includes/class-reports.php:227
 msgid "Priority"
 msgstr ""
 
-#: admin/class-admin.php:587
+#: admin/class-admin.php:608
 msgid "Destinations"
 msgstr ""
 
-#: admin/class-admin.php:589
+#: admin/class-admin.php:610
 msgid "No outbound requests recorded yet."
 msgstr ""
 
-#: admin/class-admin.php:592
+#: admin/class-admin.php:613
 msgid "Host"
 msgstr ""
 
-#: admin/class-admin.php:592
+#: admin/class-admin.php:613
 #: includes/class-reports.php:225
 msgid "Requested by"
 msgstr ""
 
-#: admin/class-admin.php:592
+#: admin/class-admin.php:613
 msgid "Requests"
 msgstr ""
 
-#: admin/class-admin.php:592
+#: admin/class-admin.php:613
 msgid "Faked"
 msgstr ""
 
-#: admin/class-admin.php:592
+#: admin/class-admin.php:613
 msgid "Errors"
 msgstr ""
 
-#: admin/class-admin.php:601
+#: admin/class-admin.php:622
 msgid "Trust"
 msgstr ""
 
-#: admin/class-admin.php:612
+#: admin/class-admin.php:633
 msgid "Third-party code attached to the hooks that decide who is logged in, what users may do, what the administrator sees and where updates and mail go. Core callbacks are not listed. A plugin here is not bad by itself — security, membership and SMTP plugins must hook in — but you should recognise every line."
 msgstr ""
 
-#: admin/class-admin.php:616
+#: admin/class-admin.php:637
 msgid "Only WordPress core."
 msgstr ""
 
-#: admin/class-admin.php:619
+#: admin/class-admin.php:640
 #: includes/class-reports.php:226
 msgid "Hook"
 msgstr ""
 
-#: admin/class-admin.php:629
+#: admin/class-admin.php:650
 msgid "Task"
 msgstr ""
 
-#: admin/class-admin.php:629
+#: admin/class-admin.php:650
 msgid "Runs"
 msgstr ""
 
-#: admin/class-admin.php:629
+#: admin/class-admin.php:650
 #: includes/class-reports.php:232
 msgid "Next run"
 msgstr ""
 
-#: admin/class-admin.php:629
+#: admin/class-admin.php:650
 #: includes/class-reports.php:233
 msgid "Handler"
 msgstr ""
 
-#: admin/class-admin.php:633
+#: admin/class-admin.php:654
 msgid "once"
 msgstr ""
 
-#: admin/class-admin.php:634
+#: admin/class-admin.php:655
 msgid "overdue"
 msgstr ""
 
-#: admin/class-admin.php:635
+#: admin/class-admin.php:656
 msgid "no handler (leftover of a removed plugin?)"
 msgstr ""
 
 #. translators: 1: files, 2: time ago, 3: problems
-#: admin/class-admin.php:650
+#: admin/class-admin.php:671
 msgid "Last scan: %1$s files, %2$s, %3$d problem found."
 msgid_plural "Last scan: %1$s files, %2$s, %3$d problems found."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-admin.php:652
+#: admin/class-admin.php:673
 msgid "No scan finished yet."
 msgstr ""
 
 #. translators: %s: time
-#: admin/class-admin.php:655
+#: admin/class-admin.php:676
 msgid "Runs automatically every day at %s in small batches."
 msgstr ""
 
-#: admin/class-admin.php:656
+#: admin/class-admin.php:677
 msgid "Scan now"
 msgstr ""
 
-#: admin/class-admin.php:659
+#: admin/class-admin.php:680
 msgid "Official checksums"
 msgstr ""
 
-#: admin/class-admin.php:660
+#: admin/class-admin.php:681
 msgid "WordPress.org checksums"
 msgstr ""
 
-#: admin/class-admin.php:661
+#: admin/class-admin.php:682
 msgid "Own snapshot"
 msgstr ""
 
-#: admin/class-admin.php:662
+#: admin/class-admin.php:683
 msgid "Snapshot taken"
 msgstr ""
 
-#: admin/class-admin.php:669
+#: admin/class-admin.php:690
 #: includes/class-reports.php:229
 msgid "Package"
 msgstr ""
 
-#: admin/class-admin.php:669
+#: admin/class-admin.php:690
 msgid "Version"
 msgstr ""
 
-#: admin/class-admin.php:669
+#: admin/class-admin.php:690
 msgid "Verified against"
 msgstr ""
 
-#: admin/class-admin.php:669
+#: admin/class-admin.php:690
 msgid "Problems"
 msgstr ""
 
-#: admin/class-admin.php:672
+#: admin/class-admin.php:693
 msgid "not scanned yet"
 msgstr ""
 
-#: admin/class-admin.php:677
+#: admin/class-admin.php:698
 msgid "Accept current files"
 msgstr ""
 
-#: admin/class-admin.php:680
+#: admin/class-admin.php:701
 msgid "\"Own snapshot\" means the package is not on WordPress.org, so Nightward compares it with the state recorded at the first scan. Changes that come with a version bump are treated as updates; changes without one are reported."
 msgstr ""
 
 #. translators: %s: time ago
-#: admin/class-admin.php:691
+#: admin/class-admin.php:712
 msgid "Checked %s ago."
 msgstr ""
 
 #. translators: %s: time ago
-#: admin/class-admin.php:691
+#: admin/class-admin.php:712
 msgid "Not checked yet."
 msgstr ""
 
 #. translators: %s: time ago
-#: admin/class-admin.php:692
+#: admin/class-admin.php:713
 msgid "Where it matters, checks are done the way an attacker would: by requesting the file from outside."
 msgstr ""
 
-#: admin/class-admin.php:693
+#: admin/class-admin.php:714
 msgid "Run checks"
 msgstr ""
 
-#: admin/class-admin.php:732
+#: admin/class-admin.php:753
 msgid "One file with everything an AI assistant needs to review this site: instructions for the assistant, site context, findings with file and line, installed plugins and themes, outbound hosts, sensitive hooks, scheduled tasks, hardening and integrity results. Download it or copy it, paste it into ChatGPT, Claude, Gemini or another assistant, and ask your question. No need to explain what the file is."
 msgstr ""
 
-#: admin/class-admin.php:737
+#: admin/class-admin.php:758
 msgid "Format"
 msgstr ""
 
-#: admin/class-admin.php:737
+#: admin/class-admin.php:758
 msgid "Markdown (.md) - best for chat"
 msgstr ""
 
-#: admin/class-admin.php:737
+#: admin/class-admin.php:758
 msgid "JSON (.json) - structured"
 msgstr ""
 
-#: admin/class-admin.php:738
+#: admin/class-admin.php:759
 msgid "Period"
 msgstr ""
 
-#: admin/class-admin.php:739
+#: admin/class-admin.php:760
 msgid "Last 7 days"
 msgstr ""
 
-#: admin/class-admin.php:739
+#: admin/class-admin.php:760
 msgid "Last 30 days"
 msgstr ""
 
-#: admin/class-admin.php:739
+#: admin/class-admin.php:760
 msgid "Last 90 days"
 msgstr ""
 
-#: admin/class-admin.php:739
+#: admin/class-admin.php:760
 msgid "All time"
 msgstr ""
 
-#: admin/class-admin.php:743
+#: admin/class-admin.php:764
 msgid "Findings"
 msgstr ""
 
-#: admin/class-admin.php:743
+#: admin/class-admin.php:764
 msgid "Open and acknowledged"
 msgstr ""
 
-#: admin/class-admin.php:743
+#: admin/class-admin.php:764
 msgid "All, including resolved and ignored"
 msgstr ""
 
-#: admin/class-admin.php:744
+#: admin/class-admin.php:765
 msgid "Minimum severity"
 msgstr ""
 
-#: admin/class-admin.php:749
+#: admin/class-admin.php:770
 msgid "Include site inventory"
 msgstr ""
 
-#: admin/class-admin.php:749
+#: admin/class-admin.php:770
 msgid "Installed plugins and themes, outbound hosts, sensitive hooks and scheduled tasks. Lets the assistant confirm or dismiss findings."
 msgstr ""
 
-#: admin/class-admin.php:750
+#: admin/class-admin.php:771
 msgid "Hide the site address, e-mail and IP addresses"
 msgstr ""
 
-#: admin/class-admin.php:750
+#: admin/class-admin.php:771
 msgid "Recommended before pasting into an online service. User logins, plugin names and file paths stay, because the analysis needs them."
 msgstr ""
 
-#: admin/class-admin.php:751
+#: admin/class-admin.php:771
+msgid "Credentials (bot tokens, webhook secrets, passwords, keys in URLs) are never stored or exported, with or without this option."
+msgstr ""
+
+#: admin/class-admin.php:772
 msgid "Download file"
 msgstr ""
 
-#: admin/class-admin.php:751
+#: admin/class-admin.php:772
 msgid "Copy to clipboard"
 msgstr ""
 
-#: admin/class-admin.php:752
+#: admin/class-admin.php:773
 msgid "Export text"
 msgstr ""
 
-#: admin/class-admin.php:754
+#: admin/class-admin.php:775
 msgid "What the assistant is told"
 msgstr ""
 
-#: admin/class-admin.php:755
+#: admin/class-admin.php:776
 msgid "The file starts with these instructions, in English, so any assistant understands them. It is asked to answer in your WordPress language."
 msgstr ""
 
-#: admin/class-admin.php:757
+#: admin/class-admin.php:778
 msgid "From the command line: wp nightward export > nightward.md"
 msgstr ""
 
-#: admin/class-admin.php:802
+#: admin/class-admin.php:823
 msgid "Send a daily security report"
 msgstr ""
 
-#: admin/class-admin.php:803
+#: admin/class-admin.php:824
 msgid "Time (site timezone)"
 msgstr ""
 
-#: admin/class-admin.php:804
+#: admin/class-admin.php:825
 msgid "Recipients"
 msgstr ""
 
-#: admin/class-admin.php:804
+#: admin/class-admin.php:825
 msgid "Comma-separated. Empty = site admin e-mail."
 msgstr ""
 
 #. translators: %s: timezone
-#: admin/class-admin.php:806
+#: admin/class-admin.php:827
 msgid "Site timezone: %s. Change it in Settings → General."
 msgstr ""
 
-#: admin/class-admin.php:807
+#: admin/class-admin.php:828
 msgid "Send the report even when nothing happened"
 msgstr ""
 
-#: admin/class-admin.php:807
+#: admin/class-admin.php:828
 msgid "Recommended. A missing \"all clear\" tells you that the site, WP-Cron or Nightward itself stopped working."
 msgstr ""
 
-#: admin/class-admin.php:811
+#: admin/class-admin.php:832
 msgid "E-mail immediately when something serious is detected"
 msgstr ""
 
-#: admin/class-admin.php:812
+#: admin/class-admin.php:833
 msgid "Alert on"
 msgstr ""
 
-#: admin/class-admin.php:812
+#: admin/class-admin.php:833
 msgid "Critical only"
 msgstr ""
 
-#: admin/class-admin.php:812
+#: admin/class-admin.php:833
 msgid "Critical and high"
 msgstr ""
 
-#: admin/class-admin.php:813
+#: admin/class-admin.php:834
 msgid "Maximum alerts per hour"
 msgstr ""
 
-#: admin/class-admin.php:813
+#: admin/class-admin.php:834
 msgid "Anything above is combined into one message."
 msgstr ""
 
-#: admin/class-admin.php:814
+#: admin/class-admin.php:835
 msgid "Preview report"
 msgstr ""
 
-#: admin/class-admin.php:818
+#: admin/class-admin.php:839
 msgid "Outbound requests & HTTP interception"
 msgstr ""
 
-#: admin/class-admin.php:826
+#: admin/class-admin.php:847
 msgid "Hardening checks"
 msgstr ""
 
-#: admin/class-admin.php:829
+#: admin/class-admin.php:850
 msgid "Advanced"
 msgstr ""
 
-#: admin/class-admin.php:830
+#: admin/class-admin.php:851
 msgid "Block updates downloaded from hosts unrelated to the plugin vendor"
 msgstr ""
 
-#: admin/class-admin.php:830
+#: admin/class-admin.php:851
 msgid "Hijacked WordPress.org updates and known malicious hosts are always blocked."
 msgstr ""
 
-#: admin/class-admin.php:831
+#: admin/class-admin.php:852
 msgid "Start before other plugins (must-use loader)"
 msgstr ""
 
-#: admin/class-admin.php:831
+#: admin/class-admin.php:852
 msgid "Lets Nightward see hooks and requests of plugins from their first line."
 msgstr ""
 
-#: admin/class-admin.php:832
+#: admin/class-admin.php:853
 msgid "Run Nightward's tasks without WP-Cron when it fails"
 msgstr ""
 
-#: admin/class-admin.php:832
+#: admin/class-admin.php:853
 msgid "If WP-Cron has not fired for 15 minutes, the daily report and checks run during an ordinary request, after the page has been sent where the server allows it."
 msgstr ""
 
-#: admin/class-admin.php:833
+#: admin/class-admin.php:854
 msgid "Trusted hosts"
 msgstr ""
 
-#: admin/class-admin.php:833
+#: admin/class-admin.php:854
 msgid "One domain per line. Requests and update downloads to these are not reported."
 msgstr ""
 
-#: admin/class-admin.php:834
+#: admin/class-admin.php:855
 msgid "Daily scan time"
 msgstr ""
 
-#: admin/class-admin.php:835
+#: admin/class-admin.php:856
 msgid "Files per batch"
 msgstr ""
 
-#: admin/class-admin.php:836
+#: admin/class-admin.php:857
 msgid "Learning period, hours"
 msgstr ""
 
-#: admin/class-admin.php:837
+#: admin/class-admin.php:858
 msgid "Keep resolved events, days"
 msgstr ""
 
-#: admin/class-admin.php:840
+#: admin/class-admin.php:861
 msgid "Save settings"
 msgstr ""
 
-#: admin/class-admin.php:878
+#: admin/class-admin.php:899
 msgid "Not allowed."
 msgstr ""
 
 #. translators: %d: number of tasks
-#: admin/class-admin.php:892
+#: admin/class-admin.php:913
 msgid "%d task done."
 msgid_plural "%d tasks done."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-admin.php:922
+#: admin/class-admin.php:943
 msgid "wp_mail() failed. Check the SMTP configuration of the site."
 msgstr ""
 
@@ -1228,140 +1257,154 @@ msgstr ""
 msgid "drop-in %s"
 msgstr ""
 
+#. translators: 1: plugin or theme slug, 2: number of findings
+#: includes/class-cleanup.php:138
+msgid "Theme %1$s was removed, findings cleared: %2$d"
+msgstr ""
+
+#. translators: 1: plugin or theme slug, 2: number of findings
+#: includes/class-cleanup.php:138
+msgid "Plugin %1$s was removed, findings cleared: %2$d"
+msgstr ""
+
+#: includes/class-cleanup.php:140
+msgid "Findings that existed only while its code was installed (requests, hooks, file changes, update channel) were deleted. Administrators, scheduled tasks and files it left behind keep their findings until they are gone too."
+msgstr ""
+
 #. translators: 1: host, 2: error message
-#: includes/class-cron.php:696
+#: includes/class-cron.php:724
 msgid "The server cannot connect to its own address %1$s (%2$s). WordPress starts WP-Cron with exactly this request, so tasks never run. Usually a firewall, DNS or hosting restriction: ask the host to allow requests from the server to its own domain, or set up a server cron job below."
 msgstr ""
 
 #. translators: %s: redirect target
-#: includes/class-cron.php:699
+#: includes/class-cron.php:727
 msgid "wp-cron.php answers with a redirect to %s. WordPress does not follow redirects when it starts WP-Cron, so tasks never run. Make the WordPress and site addresses in Settings → General match the real address (https, www) or remove the redirect for wp-cron.php."
 msgstr ""
 
-#: includes/class-cron.php:701
+#: includes/class-cron.php:729
 msgid "wp-cron.php asks for a password (HTTP 401). Password protection of the site also blocks the request that starts WP-Cron. Exclude wp-cron.php from the protection or set up a server cron job below."
 msgstr ""
 
 #. translators: 1: HTTP status, 2: page title or CDN name
-#: includes/class-cron.php:704
+#: includes/class-cron.php:732
 msgid "wp-cron.php is blocked with HTTP %1$d%2$s. A firewall, security plugin or maintenance mode rejects the request that starts WP-Cron. Allow wp-cron.php for requests from the server itself or set up a server cron job below."
 msgstr ""
 
 #. translators: %s: page title
-#: includes/class-cron.php:707
+#: includes/class-cron.php:735
 msgid "wp-cron.php returns a web page (\"%s\") instead of an empty answer. A maintenance or coming-soon mode, a firewall or a cache intercepts it. Exclude wp-cron.php or set up a server cron job below."
 msgstr ""
 
-#: includes/class-cron.php:709
+#: includes/class-cron.php:737
 msgid "wp-cron.php answers, but WordPress never started behind it: Nightward, which loads with WordPress, did not see the request within 10 seconds. Something stops it before WordPress: a firewall that runs first, a server rule or a cache."
 msgstr ""
 
 #. translators: %s: file path
-#: includes/class-cron.php:712
+#: includes/class-cron.php:740
 msgid "PHP runs %s before every request (auto_prepend_file); that is usually a security plugin's firewall, check its settings for wp-cron.php or for blocked requests from the server's own IP address."
 msgstr ""
 
-#: includes/class-cron.php:714
+#: includes/class-cron.php:742
 msgid "A server cron job that runs WP-CLI bypasses all of this."
 msgstr ""
 
-#: includes/class-cron.php:717
+#: includes/class-cron.php:745
 msgid "The request reached WordPress, but by then another request had already replaced the WP-Cron lock with a newer one, so wp-cron.php exits without running anything. WordPress normally re-locks at most once a minute; here something starts WP-Cron again and again or rewrites the lock. See \"Who changes the WP-Cron lock\" above."
 msgstr ""
 
-#: includes/class-cron.php:719
+#: includes/class-cron.php:747
 msgid "The request reached WordPress, but the lock WordPress had just saved was not there (transients do not survive between requests), so wp-cron.php exits without running anything. Usually a broken object cache: check the object-cache.php drop-in and the Redis or Memcached connection."
 msgstr ""
 
 #. translators: 1: plugin or theme, 2: error message, 3: file and line
-#: includes/class-cron.php:722
+#: includes/class-cron.php:750
 msgid "WP-Cron dies with a fatal error while WordPress loads: %1$s - \"%2$s\" (%3$s). Every WP-Cron run stops at this point, so no task ever runs. Fix or remove the code that fails."
 msgstr ""
 
 #. translators: 1: plugin or theme, 2: file or callbacks, 3: hook or loading stage
-#: includes/class-cron.php:729
+#: includes/class-cron.php:757
 msgid "%1$s stops every wp-cron.php request with exit (%2$s, %3$s), so no task runs. Usually its firewall blocks the request WordPress sends to itself."
 msgstr ""
 
-#: includes/class-cron.php:732
+#: includes/class-cron.php:760
 msgid "while plugins load"
 msgstr ""
 
 #. translators: %s: loading stage
-#: includes/class-cron.php:736
+#: includes/class-cron.php:764
 msgid "WP-Cron ends without an error while WordPress is still loading (last stage reached: %s). A plugin stops wp-cron.php requests with exit, typically a firewall or a \"cron guard\". No task runs."
 msgstr ""
 
 #. translators: %s: IP address
-#: includes/class-cron.php:740
+#: includes/class-cron.php:768
 msgid "The requests come from the server itself (%s): allow wp-cron.php or this address in that plugin's firewall."
 msgstr ""
 
-#: includes/class-cron.php:744
+#: includes/class-cron.php:772
 msgid "WordPress started loading behind wp-cron.php, then the PHP process vanished: no error, no normal end. wp-cron.php sends its answer first and works afterwards; this server stops PHP as soon as the answer has gone out."
 msgstr ""
 
-#: includes/class-cron.php:746
+#: includes/class-cron.php:774
 msgid "This is LiteSpeed's \"abort\" behaviour. Allow background work with the .htaccess lines shown below, or use the WP-CLI server cron job, which does not go through the web server."
 msgstr ""
 
-#: includes/class-cron.php:748
+#: includes/class-cron.php:776
 msgid "Ask the host whether PHP processes are terminated after the response (request_terminate_timeout, process killers), or use the WP-CLI server cron job below, which does not go through the web server."
 msgstr ""
 
-#: includes/class-cron.php:752
+#: includes/class-cron.php:780
 msgid "WordPress loaded behind wp-cron.php but did not finish and ran no task within 25 seconds. A task or plugin hangs or ends the request early (a fatal error is the usual reason); check the PHP error log for wp-cron.php."
 msgstr ""
 
 #. translators: %s: seconds
-#: includes/class-cron.php:755
+#: includes/class-cron.php:783
 msgid "WP-Cron started and is running the waiting tasks; they were not finished when the check stopped waiting after %s s. WP-Cron itself works."
 msgstr ""
 
 #. translators: 1: number of tasks, 2: seconds
-#: includes/class-cron.php:758
+#: includes/class-cron.php:786
 msgid "WP-Cron works when it is started: WordPress picked up the request and finished %1$d waiting task in %2$s s."
 msgid_plural "WP-Cron works when it is started: WordPress picked up the request and finished %1$d waiting tasks in %2$s s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-cron.php:772
+#: includes/class-cron.php:800
 msgid "DISABLE_WP_CRON is set in wp-config.php, so WordPress does not start WP-Cron by itself. That is correct only if a server cron job requests wp-cron.php; here no such job seems to run."
 msgstr ""
 
-#: includes/class-cron.php:774
+#: includes/class-cron.php:802
 msgid "WordPress's own WP-Cron start (wp_cron on init) has been removed by a plugin or theme, so page views never start it."
 msgstr ""
 
 #. translators: %s: time
-#: includes/class-cron.php:777
+#: includes/class-cron.php:805
 msgid "WordPress has been trying to start WP-Cron for %s, but none of these requests reached WordPress. WordPress sends them in the background and does not wait for the answer; behind a proxy, CDN or a slow TLS handshake such a short request is dropped. A server cron job solves it."
 msgstr ""
 
-#: includes/class-cron.php:783
+#: includes/class-cron.php:811
 msgid "WP-Cron starts only when someone opens the site or the dashboard, so on a site with few visits tasks wait. A server cron job removes the dependence on visits."
 msgstr ""
 
 #. translators: 1: plugin or theme, 2: file and line, 3: "writes" or "deletes"
-#: includes/class-cron.php:795
+#: includes/class-cron.php:823
 msgid "%1$s %3$s the WP-Cron lock (%2$s). Only WordPress itself should touch it; a plugin that does breaks WP-Cron for the whole site."
 msgstr ""
 
-#: includes/class-cron.php:798
+#: includes/class-cron.php:826
 msgid "deletes"
 msgstr ""
 
-#: includes/class-cron.php:798
+#: includes/class-cron.php:826
 msgid "writes"
 msgstr ""
 
 #. translators: %s: seconds
-#: includes/class-cron.php:804
+#: includes/class-cron.php:832
 msgid "WordPress started WP-Cron again after only %s s, although the lock should hold it back for 60 s: the lock is not visible to the next request."
 msgstr ""
 
 #. translators: %s: object cache drop-in name
-#: includes/class-cron.php:807
+#: includes/class-cron.php:835
 msgid "The site uses a persistent object cache (%s); a misconfigured or per-process cache is the usual cause."
 msgstr ""
 
@@ -2423,12 +2466,12 @@ msgid "%1$d files removed from %2$s without a version change"
 msgstr ""
 
 #. translators: 1: file, 2: package name
-#: includes/scanner/class-integrity.php:552
+#: includes/scanner/class-integrity.php:557
 msgid "Unexpected file %1$s in %2$s"
 msgstr ""
 
 #. translators: 1: file, 2: package name
-#: includes/scanner/class-integrity.php:552
+#: includes/scanner/class-integrity.php:557
 msgid "Modified file %1$s in %2$s"
 msgstr ""
 
@@ -2506,40 +2549,48 @@ msgstr ""
 msgid "A custom updater wrote its own entry into the WordPress update list. WordPress.org never produces such entries; they cause the \"Undefined property: stdClass::$plugin\" warning on Plugins → Add New. Check the code listed below."
 msgstr ""
 
-#: includes/scanner/class-upload-guard.php:101
+#: includes/scanner/class-upload-guard.php:205
 msgid "PHP configuration file inside uploads. It can enable auto_prepend_file to run a payload on every request."
 msgstr ""
 
-#: includes/scanner/class-upload-guard.php:110
+#: includes/scanner/class-upload-guard.php:214
 msgid "Executable script in the uploads folder. Uploads should contain only media and documents; a script here can usually be run directly from the browser."
 msgstr ""
 
-#: includes/scanner/class-upload-guard.php:115
+#: includes/scanner/class-upload-guard.php:218
 msgid "Double extension (e.g. file.php.jpg). On some Apache setups such files are executed as PHP."
 msgstr ""
 
-#: includes/scanner/class-upload-guard.php:122
+#: includes/scanner/class-upload-guard.php:230
 msgid "A media file contains PHP code. Used together with an include() elsewhere to hide a payload."
 msgstr ""
 
-#: includes/scanner/class-upload-guard.php:135
+#: includes/scanner/class-upload-guard.php:233
+msgid "An image contains a PHAR archive stub. Passed to any file function as phar://, it can trigger object injection."
+msgstr ""
+
+#: includes/scanner/class-upload-guard.php:237
+msgid "The file has an image extension but its content is not an image. Payloads are stored like this and loaded with include() or eval(file_get_contents()) from another file."
+msgstr ""
+
+#: includes/scanner/class-upload-guard.php:245
 msgid ".htaccess inside uploads enables script execution or PHP settings. Normal ones only deny access."
 msgstr ""
 
-#: includes/scanner/class-upload-guard.php:154
+#: includes/scanner/class-upload-guard.php:264
 msgid "PHP file in the wp-content root that is not a WordPress drop-in. Nothing loads it normally, so it is meant to be called from outside."
 msgstr ""
 
-#: includes/scanner/class-upload-guard.php:181
+#: includes/scanner/class-upload-guard.php:291
 msgid "New must-use plugin. It runs on every request, cannot be deactivated from the dashboard and is easy to overlook — a favourite place for persistence."
 msgstr ""
 
 #. translators: %s: folder name
-#: includes/scanner/class-upload-guard.php:210
+#: includes/scanner/class-upload-guard.php:320
 msgid "PHP file inside wp-content/%s. This folder should not contain runnable code."
 msgstr ""
 
 #. translators: %s: file path
-#: includes/scanner/class-upload-guard.php:236
+#: includes/scanner/class-upload-guard.php:356
 msgid "Suspicious file: %s"
 msgstr ""

@@ -365,6 +365,7 @@ class Cron {
 			update_option( 'nightward_fallback_lock', time(), false );
 		}
 		ignore_user_abort( true );
+		self::$via = 'fallback' === $how ? 'backup scheduler' : $how;
 		$n     = 0;
 		$start = microtime( true );
 		foreach ( $due as $ev ) {
@@ -432,12 +433,38 @@ class Cron {
 		}
 	}
 
+	/** How the jobs in this request run: WP-Cron, backup scheduler or manual. */
+	public static $via = '';
+
 	public static function run_daily_report() {
 		update_option( 'nightward_last_report_run', time(), false );
-		Reports::send_digest();
+		// One report per occurrence. WP-Cron started by a visit and the backup scheduler in
+		// the same visit, or a manual run during a cron run, could otherwise both send it.
+		$lock = (int) get_option( 'nightward_report_lock', 0 );
+		$last = (int) get_option( 'nightward_last_report_sent', 0 );
+		$busy = ! add_option( 'nightward_report_lock', time(), '', false ) && $lock > time() - 10 * MINUTE_IN_SECONDS;
+		if ( ! $busy && $last < time() - 30 * MINUTE_IN_SECONDS ) {
+			update_option( 'nightward_report_lock', time(), false );
+			$ok = Reports::send_digest();
+			self::log_report( $ok );
+			delete_option( 'nightward_report_lock' );
+		} else {
+			self::log_report( null );
+		}
 		if ( Settings::get( 'report_enabled', 1 ) ) {
 			wp_schedule_single_event( self::next_local( Settings::get( 'report_time', '20:00' ) ), 'nightward_daily_report' );
 		}
+	}
+
+	/** Last report runs, newest last: when, how, sent or skipped as a duplicate. */
+	private static function log_report( $ok ) {
+		$log   = (array) get_option( 'nightward_report_log', array() );
+		$log[] = array(
+			'at'  => time(),
+			'via' => self::$via ? self::$via : ( wp_doing_cron() ? 'wp-cron' : 'request' ),
+			'ok'  => null === $ok ? 'duplicate-skipped' : ( $ok ? 'sent' : 'failed' ),
+		);
+		update_option( 'nightward_report_log', array_slice( $log, -10 ), false );
 	}
 
 	public static function run_hourly() {
@@ -466,6 +493,7 @@ class Cron {
 
 	public static function run_daily_maintenance() {
 		Events::purge( Settings::get( 'retention_days', 60 ) );
+		Cleanup::sweep();
 		if ( Settings::enabled( 'integrity' ) ) {
 			Scanner\Integrity::start();
 		}

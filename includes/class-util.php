@@ -94,7 +94,8 @@ class Util {
 
 	/** URL without query values: keys stay, values (keys, tokens, domains) are dropped. */
 	public static function redact_url( $url ) {
-		$p = wp_parse_url( (string) $url );
+		$url = Redact::url( (string) $url ); // credentials in the path and user:pass@ go first
+		$p   = wp_parse_url( $url );
 		if ( ! $p || empty( $p['host'] ) ) {
 			return substr( (string) $url, 0, 200 );
 		}
@@ -192,8 +193,106 @@ class Util {
 		if ( $size < 400 && preg_match( '#^\s*(<\?php)?\s*((//|\#)[^\n]*\n|/\*.*?\*/|\s|(defined\s*\(\s*[\'"]ABSPATH[\'"]\s*\)\s*(\|\||or)\s*)?(exit|die)\s*(\(\s*\d*\s*\))?\s*;|\?>)*\s*$#si', $head ) ) {
 			return true;
 		}
-		// Sucuri, Wordfence, cache plugins: a data file whose first statement is exit.
+		// Sucuri, Wordfence, cache plugins: a data file whose first statement is exit,
+		// optionally after comments (Sucuri: "// datastore=…;" "// created_on=…;").
 		// Nothing after it can ever run - whatever the data contains, even "<?".
-		return (bool) preg_match( '#^(\xEF\xBB\xBF)?\s*<\?php\s*(/\*.*?\*/\s*)?(exit|die)\s*(\(\s*(\d+|\'[^\'()$]*\'|"[^"()$]*")?\s*\))?\s*;#is', $head );
+		return (bool) preg_match( '#^(\xEF\xBB\xBF)?\s*<\?php(\s|/\*.*?\*/|//[^\n]*\n|\#[^\n]*\n)*(exit|die)\s*(\(\s*(\d+|\'[^\'()$]*\'|"[^"()$]*")?\s*\))?\s*;#is', $head );
+	}
+
+	/* ------------------------------------------------------------------ */
+	/* Media files                                                         */
+	/* ------------------------------------------------------------------ */
+
+	/** Extensions whose content is checked for code. */
+	public static function media_extensions() {
+		return array( 'jpg', 'jpeg', 'jpe', 'png', 'gif', 'webp', 'avif', 'heic', 'heif', 'ico', 'bmp', 'tif', 'tiff', 'svg', 'txt' );
+	}
+
+	/** Media extensions that promise a binary image with a signature (not svg / txt). */
+	public static function image_extensions() {
+		return array_values( array_diff( self::media_extensions(), array( 'svg', 'txt' ) ) );
+	}
+
+	/** What the first bytes say the file is: jpeg, png, gif, webp, avif, heic, ico, bmp, tiff or ''. */
+	public static function media_kind( $path ) {
+		$h = (string) @file_get_contents( $path, false, null, 0, 32 );
+		if ( strlen( $h ) < 4 ) {
+			return '';
+		}
+		if ( 0 === strncmp( $h, "\xFF\xD8\xFF", 3 ) ) {
+			return 'jpeg';
+		}
+		if ( 0 === strncmp( $h, "\x89PNG\r\n\x1A\n", 8 ) ) {
+			return 'png';
+		}
+		if ( 0 === strncmp( $h, 'GIF87a', 6 ) || 0 === strncmp( $h, 'GIF89a', 6 ) ) {
+			return 'gif';
+		}
+		if ( 0 === strncmp( $h, 'RIFF', 4 ) && 'WEBP' === substr( $h, 8, 4 ) ) {
+			return 'webp';
+		}
+		if ( 'ftyp' === substr( $h, 4, 4 ) ) {
+			$brand = substr( $h, 8, 4 );
+			if ( in_array( $brand, array( 'avif', 'avis' ), true ) ) {
+				return 'avif';
+			}
+			if ( in_array( $brand, array( 'heic', 'heix', 'hevc', 'hevx', 'heim', 'heis', 'hevm', 'hevs', 'mif1', 'msf1' ), true ) ) {
+				return 'heic';
+			}
+			return '';
+		}
+		if ( 0 === strncmp( $h, "\x00\x00\x01\x00", 4 ) || 0 === strncmp( $h, "\x00\x00\x02\x00", 4 ) ) {
+			return 'ico';
+		}
+		if ( 0 === strncmp( $h, 'BM', 2 ) ) {
+			return 'bmp';
+		}
+		if ( 0 === strncmp( $h, "II*\x00", 4 ) || 0 === strncmp( $h, "MM\x00*", 4 ) ) {
+			return 'tiff';
+		}
+		return '';
+	}
+
+	/**
+	 * Look for code anywhere a payload can hide in a media file: the whole file up to
+	 * 2 MB, head 256 KB + tail 1 MB up to 64 MB, the last 1 MB beyond that.
+	 *
+	 * @return array hit ('php'|'phar'|''), offset, region (up to 512 KB from the hit, for indicators)
+	 */
+	public static function media_code_scan( $path, $size ) {
+		$none = array( 'hit' => '', 'offset' => 0, 'region' => '' );
+		$size = (int) $size;
+		if ( $size <= 0 ) {
+			return $none;
+		}
+		$chunks = array();
+		if ( $size <= 2 * MB_IN_BYTES ) {
+			$chunks[0] = (string) @file_get_contents( $path );
+		} else {
+			if ( $size <= 64 * MB_IN_BYTES ) {
+				$chunks[0] = (string) @file_get_contents( $path, false, null, 0, 256 * KB_IN_BYTES );
+			}
+			$tail_at            = max( 0, $size - MB_IN_BYTES );
+			$chunks[ $tail_at ] = (string) @file_get_contents( $path, false, null, $tail_at, MB_IN_BYTES );
+		}
+		$rules = array(
+			// <?=: needs a variable, a call or a backtick after it - three random bytes
+			// "<?=" in compressed image data must not raise an alarm.
+			'php'  => '/<\?php[\s\/]|<\?=\s{0,3}(\$[A-Za-z_]|@?[A-Za-z_]\w*\s*\(|`)|eval\s*\(\s*(base64_decode|gzinflate)/i',
+			'phar' => '/__HALT_COMPILER\s*\(\s*\)\s*;/i',
+		);
+		foreach ( $rules as $hit => $rx ) { // php outranks phar
+			foreach ( $chunks as $base => $data ) {
+				if ( '' !== $data && preg_match( $rx, $data, $m, PREG_OFFSET_CAPTURE ) ) {
+					$offset = $base + (int) $m[0][1];
+					return array(
+						'hit'    => $hit,
+						'offset' => $offset,
+						'region' => (string) @file_get_contents( $path, false, null, $offset, 512 * KB_IN_BYTES ),
+					);
+				}
+			}
+		}
+		return $none;
 	}
 }

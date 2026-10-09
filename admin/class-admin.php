@@ -349,7 +349,22 @@ class Admin {
 		echo '<section class="nw-card"><h2>' . esc_html__( 'E-mail reports', 'nightward' ) . '</h2><dl class="nw-dl">';
 		echo '<dt>' . esc_html__( 'Daily report', 'nightward' ) . '</dt><dd>' . ( Settings::get( 'report_enabled', 1 ) ? esc_html( sprintf( /* translators: %s: time */ __( 'every day at %s', 'nightward' ), Settings::get( 'report_time' ) ) ) : esc_html__( 'off', 'nightward' ) ) . '</dd>';
 		echo '<dt>' . esc_html__( 'Next report', 'nightward' ) . '</dt><dd>' . ( $h['next_report'] ? esc_html( wp_date( 'j M, H:i', $h['next_report'] ) ) : '—' ) . '</dd>';
-		echo '<dt>' . esc_html__( 'Last sent', 'nightward' ) . '</dt><dd>' . ( $h['last_report'] ? esc_html( wp_date( 'j M, H:i', $h['last_report'] ) ) : esc_html__( 'not yet', 'nightward' ) ) . '</dd>';
+		$via  = '';
+		$skip = 0;
+		foreach ( array_reverse( (array) get_option( 'nightward_report_log', array() ) ) as $lr ) {
+			if ( ! $via && 'sent' === $lr['ok'] ) {
+				$via = 'wp-cron' === $lr['via'] ? 'WP-Cron' : ( 'backup scheduler' === $lr['via'] ? __( 'backup scheduler', 'nightward' ) : ( 'manual' === $lr['via'] ? __( 'manually', 'nightward' ) : '' ) );
+			}
+			if ( 'duplicate-skipped' === $lr['ok'] && $lr['at'] > time() - 7 * DAY_IN_SECONDS ) {
+				$skip++;
+			}
+		}
+		echo '<dt>' . esc_html__( 'Last sent', 'nightward' ) . '</dt><dd>' . ( $h['last_report'] ? esc_html( wp_date( 'j M, H:i', $h['last_report'] ) ) . ( $via ? ' <span class="nw-muted">· ' . esc_html( $via ) . '</span>' : '' ) : esc_html__( 'not yet', 'nightward' ) );
+		if ( $skip ) {
+			/* translators: %d: number of runs */
+			echo '<br><span class="nw-muted">' . esc_html( sprintf( _n( '%d duplicate run stopped in the last 7 days', '%d duplicate runs stopped in the last 7 days', $skip, 'nightward' ), $skip ) ) . '</span>';
+		}
+		echo '</dd>';
 		echo '<dt>' . esc_html__( 'Instant alerts', 'nightward' ) . '</dt><dd>' . ( Settings::get( 'instant_enabled', 1 ) ? esc_html( 'critical' === Settings::get( 'instant_min_severity' ) ? __( 'critical only', 'nightward' ) : __( 'critical and high', 'nightward' ) ) : esc_html__( 'off', 'nightward' ) ) . '</dd>';
 		echo '<dt>' . esc_html__( 'Recipient', 'nightward' ) . '</dt><dd>' . esc_html( Settings::report_email() ) . '</dd>';
 		echo '<dt>WP-Cron</dt><dd>' . ( $h['stale']
@@ -415,7 +430,7 @@ class Admin {
 			array( 'on' => Settings::enabled( 'integrity' ), 'title' => __( 'File integrity', 'nightward' ), 'desc' => __( 'Core and WordPress.org plugins against official checksums; premium plugins and themes against their own first snapshot.', 'nightward' ),
 				/* translators: 1: files, 2: time */
 				'stat' => is_array( $int ) ? sprintf( __( '%1$s files · %2$s', 'nightward' ), number_format_i18n( $int['files'] ), $ago( $int['finished'] ) ) : __( 'first scan pending', 'nightward' ) ),
-			array( 'on' => Settings::enabled( 'uploads' ), 'title' => __( 'Executable files', 'nightward' ), 'desc' => __( 'Scripts in uploads, PHP hidden in images, .htaccess tricks, unknown files in wp-content and mu-plugins.', 'nightward' ),
+			array( 'on' => Settings::enabled( 'uploads' ), 'title' => __( 'Executable files', 'nightward' ), 'desc' => __( 'Scripts in uploads, PHP hidden in images (anywhere in the file), files that only pretend to be images, .htaccess tricks, unknown files in wp-content and mu-plugins.', 'nightward' ),
 				'stat' => is_array( $upl ) ? $ago( $upl['at'] ) : __( 'not yet', 'nightward' ) ),
 			array( 'on' => Settings::enabled( 'update_channel' ), 'title' => __( 'Update channel', 'nightward' ), 'desc' => __( 'Where updates are downloaded from. Hijacked WordPress.org updates and packages from unrelated hosts are flagged or blocked.', 'nightward' ),
 				/* translators: %d: count */
@@ -435,6 +450,12 @@ class Admin {
 			__( 'Premium plugins and themes are trusted as they are at the first scan. If they were already modified, only later changes are detected.', 'nightward' ),
 			__( 'Nightward detects and reports; it is not a firewall. Someone with access to the server can disable any plugin, including this one — if the daily e-mail stops arriving, treat the silence as an alarm.', 'nightward' ),
 		);
+		$ul = get_option( 'nightward_uploads_last' );
+		$fp = is_array( $ul ) && ! empty( $ul['full_pass_at'] ) ? (int) $ul['full_pass_at'] : 0;
+		if ( Settings::enabled( 'uploads' ) && ( ! $fp || $fp < time() - 7 * DAY_IN_SECONDS ) ) {
+			/* translators: %s: time */
+			$items[] = $fp ? sprintf( __( 'Last full check of the media library: %s ago.', 'nightward' ), human_time_diff( $fp ) ) : __( 'The media library has not been fully checked yet.', 'nightward' );
+		}
 		foreach ( $items as $i ) {
 			echo '<li>' . esc_html( $i ) . '</li>';
 		}
@@ -747,7 +768,7 @@ class Admin {
 		}
 		echo '</select></label></div>';
 		echo '<label class="nw-switch"><input type="checkbox" name="inventory" value="1" checked><span class="nw-switch-ui"></span><span class="nw-switch-text"><b>' . esc_html__( 'Include site inventory', 'nightward' ) . '</b><small>' . esc_html__( 'Installed plugins and themes, outbound hosts, sensitive hooks and scheduled tasks. Lets the assistant confirm or dismiss findings.', 'nightward' ) . '</small></span></label>';
-		echo '<label class="nw-switch"><input type="checkbox" name="redact" value="1" checked><span class="nw-switch-ui"></span><span class="nw-switch-text"><b>' . esc_html__( 'Hide the site address, e-mail and IP addresses', 'nightward' ) . '</b><small>' . esc_html__( 'Recommended before pasting into an online service. User logins, plugin names and file paths stay, because the analysis needs them.', 'nightward' ) . '</small></span></label>';
+		echo '<label class="nw-switch"><input type="checkbox" name="redact" value="1" checked><span class="nw-switch-ui"></span><span class="nw-switch-text"><b>' . esc_html__( 'Hide the site address, e-mail and IP addresses', 'nightward' ) . '</b><small>' . esc_html__( 'Recommended before pasting into an online service. User logins, plugin names and file paths stay, because the analysis needs them.', 'nightward' ) . ' ' . esc_html__( 'Credentials (bot tokens, webhook secrets, passwords, keys in URLs) are never stored or exported, with or without this option.', 'nightward' ) . '</small></span></label>';
 		echo '<p class="nw-actions"><button class="button button-primary">' . esc_html__( 'Download file', 'nightward' ) . '</button> <button type="button" class="button" data-nw-export-copy>' . esc_html__( 'Copy to clipboard', 'nightward' ) . '</button> <span class="nw-inline-status" data-nw-status></span></p>';
 		echo '</form><textarea class="nw-export-text" readonly hidden aria-label="' . esc_attr__( 'Export text', 'nightward' ) . '"></textarea></section>';
 

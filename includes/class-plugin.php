@@ -57,6 +57,9 @@ final class Plugin {
 	private function start_late() {
 		add_action( 'init', array( $this, 'load_textdomain' ), 1 );
 		add_action( 'plugins_loaded', array( $this, 'maybe_upgrade' ) );
+		add_action( 'admin_init', array( __CLASS__, 'maybe_migrate' ) );
+		Cleanup::init();
+		add_action( 'nightward_hourly', array( __CLASS__, 'maybe_migrate' ), 1 );
 		if ( is_admin() ) {
 			require_once NIGHTWARD_DIR . 'admin/class-admin.php';
 			Admin\Admin::init();
@@ -79,6 +82,13 @@ final class Plugin {
 		if ( Settings::get( 'mu_loader', 1 ) && ! Installer::loader_installed() && is_writable( dirname( WPMU_PLUGIN_DIR ) ) && get_transient( 'nightward_loader_retry' ) === false ) {
 			set_transient( 'nightward_loader_retry', 1, DAY_IN_SECONDS );
 			Installer::install_loader();
+		}
+	}
+
+	/** One-time clean-up of credentials stored before 1.1.7; continues where it stopped. */
+	public static function maybe_migrate() {
+		if ( ! Redact::migration_done() ) {
+			Redact::migrate();
 		}
 	}
 

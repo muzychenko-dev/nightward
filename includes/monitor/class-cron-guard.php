@@ -156,7 +156,7 @@ class Cron_Guard {
 				'next_run'    => wp_date( 'Y-m-d H:i', $info['next'] ),
 				'instances'   => $info['count'],
 				'handler'     => $cb['name'],
-				'args'        => mb_substr( (string) wp_json_encode( $info['args'] ), 0, 300 ),
+				'args'        => mb_substr( Redact::text( (string) wp_json_encode( $info['args'] ) ), 0, 300 ),
 			),
 			'component' => 'none' === $cb['component'] ? '' : $cb['component'],
 			'file'      => $cb['file'],

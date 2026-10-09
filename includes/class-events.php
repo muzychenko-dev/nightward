@@ -138,6 +138,10 @@ class Events {
 			'module' => 'system', 'type' => 'generic', 'severity' => 'info', 'title' => '',
 			'details' => array(), 'component' => '', 'file' => '', 'line' => 0, 'key' => '',
 		) );
+		// Credentials never reach the database (bot tokens, webhook secrets, passwords).
+		$e['details'] = Redact::deep( (array) $e['details'] );
+		$e['title']   = Redact::deep( $e['title'] );
+		$e['key']     = Redact::text( (string) $e['key'] );
 		if ( is_array( $e['title'] ) ) {
 			$t    = array_values( $e['title'] );
 			$fmt  = self::english( array_shift( $t ) );

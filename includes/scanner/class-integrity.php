@@ -518,7 +518,12 @@ class Integrity {
 
 	/** Markers that make a changed file much more likely to be malicious. */
 	public static function payload_indicators( $abs ) {
-		$code = (string) @file_get_contents( $abs, false, null, 0, 512 * 1024 );
+		return self::payload_indicators_text( (string) @file_get_contents( $abs, false, null, 0, 512 * 1024 ) );
+	}
+
+	/** Malware indicators in any piece of code (a file head, or the region around code found in a media file). */
+	public static function payload_indicators_text( $code ) {
+		$code = (string) $code;
 		$hits = array();
 		$rules = array(
 			'eval(base64/gz)'        => '/eval\s*\(\s*(base64_decode|gzinflate|gzuncompress|gzdecode|str_rot13|strrev|hex2bin)\s*\(/i',
