@@ -115,9 +115,11 @@ class Reports {
 	public static function collect( $since_ts ) {
 		$since = gmdate( 'Y-m-d H:i:s', $since_ts );
 		$new   = Events::query( array( 'since' => $since, 'order' => 'first_seen', 'limit' => 500, 'status' => array( 'open', 'acknowledged' ) ) );
-		// Тільки ті, що з'явились (або повернулись) у цьому періоді.
+		// Only what appeared or came back (reopened) in this period. A finding that simply
+		// keeps happening is not new: it is listed under "Still open".
 		$new = array_values( array_filter( $new, function ( $r ) use ( $since ) {
-			return $r->first_seen >= $since || $r->last_seen >= $since && 'open' === $r->status && $r->hits > 1 && Events::rank( $r->severity ) <= 1;
+			$opened = ! empty( $r->opened_at ) ? $r->opened_at : $r->first_seen;
+			return $opened >= $since;
 		} ) );
 		$by = array_fill_keys( Events::SEVERITIES, 0 );
 		foreach ( $new as $r ) {
@@ -126,9 +128,14 @@ class Reports {
 		usort( $new, function ( $a, $b ) {
 			return Events::rank( $a->severity ) <=> Events::rank( $b->severity ) ?: strcmp( $b->last_seen, $a->last_seen );
 		} );
+		$ids   = wp_list_pluck( $new, 'id' );
+		$still = array_values( array_filter( Events::query( array( 'min_severity' => 'high', 'status' => 'open', 'order' => 'severity', 'limit' => 50 ) ), function ( $r ) use ( $ids ) {
+			return ! in_array( $r->id, $ids, true );
+		} ) );
 		return array(
 			'since'       => $since_ts,
 			'events'      => $new,
+			'still_open'  => $still,
 			'by'          => $by,
 			'new_total'   => count( array_filter( $new, function ( $r ) {
 				return 'info' !== $r->severity;
@@ -160,6 +167,11 @@ class Reports {
 			$parts[] = sprintf( _n( '%d medium', '%d medium', $n['medium'], 'nightward' ), $n['medium'] );
 		}
 		$prefix = $test ? __( '[Nightward test]', 'nightward' ) : '[Nightward]';
+		$still = isset( $d['still_open'] ) ? count( $d['still_open'] ) : 0;
+		if ( ! $parts && $still ) {
+			/* translators: 1: prefix, 2: site, 3: number of open critical/high findings, 4: date */
+			return sprintf( _n( '%1$s %2$s: nothing new, %3$d issue still open — %4$s', '%1$s %2$s: nothing new, %3$d issues still open — %4$s', $still, 'nightward' ), $prefix, $site, $still, wp_date( 'j M' ) );
+		}
 		if ( ! $parts ) {
 			/* translators: 1: prefix, 2: site, 3: date */
 			return sprintf( __( '%1$s %2$s: all clear — %3$s', 'nightward' ), $prefix, $site, wp_date( 'j M' ) );
@@ -312,9 +324,14 @@ class Reports {
 				break;
 			}
 		}
-		list( $fg, $bg, $bd ) = self::colors( $worst );
+		$still = isset( $d['still_open'] ) ? $d['still_open'] : array();
+		// Nothing new, but issues remain: coloured by the worst one still open.
+		list( $fg, $bg, $bd ) = self::colors( 'ok' === $worst && $still ? $still[0]->severity : $worst );
 		$period = sprintf( /* translators: 1: from, 2: to */ __( '%1$s – %2$s', 'nightward' ), wp_date( 'j M, H:i', $d['since'] ), wp_date( 'j M, H:i' ) );
-		if ( 'ok' === $worst ) {
+		if ( 'ok' === $worst && $still ) {
+			$headline = __( 'Nothing new', 'nightward' );
+			$sub      = __( 'No new findings since the last report. Issues from earlier reports are still open - they are listed below until you resolve, acknowledge or ignore them.', 'nightward' );
+		} elseif ( 'ok' === $worst ) {
 			$headline = __( 'All clear', 'nightward' );
 			$sub      = __( 'No new threats were detected since the last report. Monitors and scheduled checks are running.', 'nightward' );
 		} else {
@@ -340,13 +357,6 @@ class Reports {
 				. '<div style="font-size:12px;color:#667085;">' . self::esc( Events::severity_label( $s ) ) . '</div></td>';
 		}
 		$inner .= '</tr></table></td></tr>';
-
-		$open_bad = max( 0, $d['open']['critical'] + $d['open']['high'] - $d['by']['critical'] - $d['by']['high'] );
-		if ( $open_bad ) {
-			$inner .= '<tr><td style="padding:4px 28px 0;font-size:13px;color:#b42318;">'
-				/* translators: %d: count */
-				. self::esc( sprintf( _n( '%d critical/high issue is still open from earlier.', '%d critical/high issues are still open from earlier.', $open_bad, 'nightward' ), $open_bad ) ) . '</td></tr>';
-		}
 
 		// Події
 		$important = array_filter( $d['events'], function ( $r ) {
@@ -378,6 +388,22 @@ class Reports {
 			}
 			if ( count( $other ) > 20 ) {
 				$inner .= '<tr><td></td><td style="padding:6px 0;color:#667085;">' . self::esc( sprintf( /* translators: %d: count */ __( '…and %d more in the dashboard.', 'nightward' ), count( $other ) - 20 ) ) . '</td></tr>';
+			}
+			$inner .= '</table></td></tr>';
+		}
+
+		// Still open from earlier reports: listed, not counted as new.
+		if ( $still ) {
+			$inner .= self::section( __( 'Still open from earlier reports', 'nightward' ) );
+			$inner .= '<tr><td style="padding:4px 28px 8px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;">';
+			foreach ( array_slice( $still, 0, 10 ) as $r ) {
+				$inner .= '<tr><td style="padding:6px 8px 6px 0;border-bottom:1px solid #f2f4f7;width:1%;white-space:nowrap;vertical-align:top;">' . self::pill( $r->severity ) . '</td>'
+					. '<td style="padding:6px 0;border-bottom:1px solid #f2f4f7;"><a href="' . esc_url( admin_url( 'admin.php?page=nightward&tab=events&event=' . (int) $r->id ) ) . '" style="color:#101828;text-decoration:none;">' . self::esc( Events::title( $r ) ) . '</a>'
+					/* translators: %s: date */
+					. '<span style="color:#98a2b3;"> · ' . self::esc( sprintf( __( 'since %s', 'nightward' ), wp_date( 'j M', strtotime( ( ! empty( $r->opened_at ) ? $r->opened_at : $r->first_seen ) . ' UTC' ) ) ) ) . '</span></td></tr>';
+			}
+			if ( count( $still ) > 10 ) {
+				$inner .= '<tr><td></td><td style="padding:6px 0;color:#667085;">' . self::esc( sprintf( /* translators: %d: count */ __( '…and %d more in the dashboard.', 'nightward' ), count( $still ) - 10 ) ) . '</td></tr>';
 			}
 			$inner .= '</table></td></tr>';
 		}

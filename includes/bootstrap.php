@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( ! defined( 'NIGHTWARD_VERSION' ) ) {
-	define( 'NIGHTWARD_VERSION', '1.1.8' );
+	define( 'NIGHTWARD_VERSION', '1.1.9' );
 }
 if ( ! defined( 'NIGHTWARD_FILE' ) ) {
 	define( 'NIGHTWARD_FILE', dirname( __DIR__ ) . '/nightward.php' );
@@ -15,7 +15,7 @@ if ( ! defined( 'NIGHTWARD_DIR' ) ) {
 	define( 'NIGHTWARD_DIR', trailingslashit( dirname( __DIR__ ) ) );
 }
 if ( ! defined( 'NIGHTWARD_DB_VERSION' ) ) {
-	define( 'NIGHTWARD_DB_VERSION', '1' );
+	define( 'NIGHTWARD_DB_VERSION', '2' );
 }
 
 $nightward_files = array(

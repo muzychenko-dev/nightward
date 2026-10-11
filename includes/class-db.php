@@ -46,6 +46,7 @@ class DB {
 			alerted tinyint(1) NOT NULL DEFAULT 0,
 			first_seen datetime NOT NULL,
 			last_seen datetime NOT NULL,
+			opened_at datetime NULL,
 			PRIMARY KEY  (id),
 			UNIQUE KEY fingerprint (fingerprint),
 			KEY sev_seen (severity,last_seen),

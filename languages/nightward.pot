@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-09T18:53:16+00:00\n"
+"POT-Creation-Date: 2026-10-11T09:44:37+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: nightward\n"
@@ -144,7 +144,7 @@ msgstr ""
 
 #: admin/class-admin.php:134
 #: admin/class-admin.php:373
-#: includes/class-reports.php:419
+#: includes/class-reports.php:445
 msgid "running"
 msgstr ""
 
@@ -161,8 +161,8 @@ msgstr ""
 #: admin/class-admin.php:373
 #: admin/class-admin.php:413
 #: admin/class-admin.php:712
-#: includes/class-reports.php:407
-#: includes/class-util.php:134
+#: includes/class-reports.php:433
+#: includes/class-util.php:178
 msgid "%s ago"
 msgstr ""
 
@@ -351,7 +351,7 @@ msgid "Log"
 msgstr ""
 
 #: admin/class-admin.php:234
-#: includes/class-reports.php:235
+#: includes/class-reports.php:247
 msgid "Network"
 msgstr ""
 
@@ -395,12 +395,12 @@ msgid "Ignored"
 msgstr ""
 
 #: admin/class-admin.php:304
-#: includes/class-reports.php:321
+#: includes/class-reports.php:338
 msgid "Action required"
 msgstr ""
 
 #: admin/class-admin.php:305
-#: includes/class-reports.php:321
+#: includes/class-reports.php:338
 msgid "Needs your attention"
 msgstr ""
 
@@ -409,7 +409,7 @@ msgid "A few things are worth a look"
 msgstr ""
 
 #: admin/class-admin.php:307
-#: includes/class-reports.php:318
+#: includes/class-reports.php:335
 msgid "All clear"
 msgstr ""
 
@@ -439,7 +439,7 @@ msgid "Learning mode: for the next %s Nightward records the normal behaviour of 
 msgstr ""
 
 #: admin/class-admin.php:335
-#: includes/class-reports.php:359
+#: includes/class-reports.php:369
 msgid "Needs attention"
 msgstr ""
 
@@ -549,7 +549,7 @@ msgstr ""
 
 #: admin/class-admin.php:416
 #: includes/class-events.php:38
-#: includes/class-reports.php:411
+#: includes/class-reports.php:437
 msgid "Outbound requests"
 msgstr ""
 
@@ -613,7 +613,7 @@ msgstr ""
 #: admin/class-admin.php:683
 #: admin/class-admin.php:884
 #: includes/class-events.php:43
-#: includes/class-reports.php:418
+#: includes/class-reports.php:444
 msgid "Scheduled tasks"
 msgstr ""
 
@@ -630,7 +630,7 @@ msgstr ""
 #: admin/class-admin.php:709
 #: admin/class-admin.php:885
 #: includes/class-events.php:44
-#: includes/class-reports.php:404
+#: includes/class-reports.php:430
 msgid "File integrity"
 msgstr ""
 
@@ -645,7 +645,7 @@ msgstr ""
 
 #. translators: 1: files, 2: time
 #: admin/class-admin.php:433
-#: includes/class-reports.php:408
+#: includes/class-reports.php:434
 msgid "first scan pending"
 msgstr ""
 
@@ -815,7 +815,7 @@ msgid "Event"
 msgstr ""
 
 #: admin/class-admin.php:553
-#: includes/class-reports.php:226
+#: includes/class-reports.php:238
 msgid "Area"
 msgstr ""
 
@@ -857,7 +857,7 @@ msgstr ""
 
 #: admin/class-admin.php:634
 #: admin/class-admin.php:674
-#: includes/class-reports.php:224
+#: includes/class-reports.php:236
 msgid "Callback"
 msgstr ""
 
@@ -867,7 +867,7 @@ msgid "Location"
 msgstr ""
 
 #: admin/class-admin.php:634
-#: includes/class-reports.php:227
+#: includes/class-reports.php:239
 msgid "Priority"
 msgstr ""
 
@@ -884,7 +884,7 @@ msgid "Host"
 msgstr ""
 
 #: admin/class-admin.php:647
-#: includes/class-reports.php:225
+#: includes/class-reports.php:237
 msgid "Requested by"
 msgstr ""
 
@@ -913,7 +913,7 @@ msgid "Only WordPress core."
 msgstr ""
 
 #: admin/class-admin.php:674
-#: includes/class-reports.php:226
+#: includes/class-reports.php:238
 msgid "Hook"
 msgstr ""
 
@@ -926,12 +926,12 @@ msgid "Runs"
 msgstr ""
 
 #: admin/class-admin.php:684
-#: includes/class-reports.php:232
+#: includes/class-reports.php:244
 msgid "Next run"
 msgstr ""
 
 #: admin/class-admin.php:684
-#: includes/class-reports.php:233
+#: includes/class-reports.php:245
 msgid "Handler"
 msgstr ""
 
@@ -989,7 +989,7 @@ msgid "Snapshot taken"
 msgstr ""
 
 #: admin/class-admin.php:731
-#: includes/class-reports.php:229
+#: includes/class-reports.php:241
 msgid "Package"
 msgstr ""
 
@@ -1482,316 +1482,334 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d: number of critical findings
-#: includes/class-reports.php:152
+#: includes/class-reports.php:159
 msgid "%d critical"
 msgid_plural "%d critical"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d: number of high-severity findings
-#: includes/class-reports.php:156
+#: includes/class-reports.php:163
 msgid "%d high"
 msgid_plural "%d high"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d: number of medium-severity findings
-#: includes/class-reports.php:160
+#: includes/class-reports.php:167
 msgid "%d medium"
 msgid_plural "%d medium"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-reports.php:162
+#: includes/class-reports.php:169
 msgid "[Nightward test]"
 msgstr ""
 
+#. translators: 1: prefix, 2: site, 3: number of open critical/high findings, 4: date
+#: includes/class-reports.php:173
+msgid "%1$s %2$s: nothing new, %3$d issue still open — %4$s"
+msgid_plural "%1$s %2$s: nothing new, %3$d issues still open — %4$s"
+msgstr[0] ""
+msgstr[1] ""
+
 #. translators: 1: prefix, 2: site, 3: date
-#: includes/class-reports.php:165
+#: includes/class-reports.php:177
 msgid "%1$s %2$s: all clear — %3$s"
 msgstr ""
 
 #. translators: 1: prefix, 2: site, 3: counts, 4: date
-#: includes/class-reports.php:168
+#: includes/class-reports.php:180
 msgid "%1$s %2$s: %3$s — %4$s"
 msgstr ""
 
 #. translators: %s: site URL
-#: includes/class-reports.php:205
+#: includes/class-reports.php:217
 msgid "Sent by Nightward from %s. Report time, recipients and alert level can be changed in Nightward → Settings."
 msgstr ""
 
-#: includes/class-reports.php:223
+#: includes/class-reports.php:235
 msgid "URL"
 msgstr ""
 
-#: includes/class-reports.php:223
-#: includes/class-reports.php:238
+#: includes/class-reports.php:235
+#: includes/class-reports.php:250
 msgid "Method"
 msgstr ""
 
-#: includes/class-reports.php:223
+#: includes/class-reports.php:235
 msgid "Reason"
 msgstr ""
 
-#: includes/class-reports.php:224
+#: includes/class-reports.php:236
 msgid "Request type"
 msgstr ""
 
-#: includes/class-reports.php:224
+#: includes/class-reports.php:236
 msgid "Fake HTTP status"
 msgstr ""
 
-#: includes/class-reports.php:225
+#: includes/class-reports.php:237
 msgid "Fake response"
 msgstr ""
 
-#: includes/class-reports.php:225
+#: includes/class-reports.php:237
 msgid "Returned"
 msgstr ""
 
-#: includes/class-reports.php:226
+#: includes/class-reports.php:238
 msgid "Domains faked"
 msgstr ""
 
-#: includes/class-reports.php:227
+#: includes/class-reports.php:239
 msgid "User"
 msgstr ""
 
-#: includes/class-reports.php:227
+#: includes/class-reports.php:239
 msgid "E-mail"
 msgstr ""
 
-#: includes/class-reports.php:228
+#: includes/class-reports.php:240
 msgid "Done by"
 msgstr ""
 
-#: includes/class-reports.php:228
+#: includes/class-reports.php:240
 msgid "Request"
 msgstr ""
 
-#: includes/class-reports.php:228
+#: includes/class-reports.php:240
 msgid "IP address"
 msgstr ""
 
-#: includes/class-reports.php:229
+#: includes/class-reports.php:241
 msgid "Old value"
 msgstr ""
 
-#: includes/class-reports.php:229
+#: includes/class-reports.php:241
 msgid "New value"
 msgstr ""
 
-#: includes/class-reports.php:230
+#: includes/class-reports.php:242
 msgid "Size"
 msgstr ""
 
-#: includes/class-reports.php:230
+#: includes/class-reports.php:242
 msgid "Modified"
 msgstr ""
 
-#: includes/class-reports.php:230
+#: includes/class-reports.php:242
 msgid "Malware indicators"
 msgstr ""
 
-#: includes/class-reports.php:231
+#: includes/class-reports.php:243
 msgid "Beginning of file"
 msgstr ""
 
-#: includes/class-reports.php:231
+#: includes/class-reports.php:243
 msgid "How to fix"
 msgstr ""
 
-#: includes/class-reports.php:231
+#: includes/class-reports.php:243
 msgid "What to do"
 msgstr ""
 
-#: includes/class-reports.php:232
+#: includes/class-reports.php:244
 msgid "Code that can alter updates"
 msgstr ""
 
-#: includes/class-reports.php:232
+#: includes/class-reports.php:244
 msgid "Recurrence"
 msgstr ""
 
-#: includes/class-reports.php:233
+#: includes/class-reports.php:245
 msgid "Arguments"
 msgstr ""
 
-#: includes/class-reports.php:233
+#: includes/class-reports.php:245
 msgid "Vendor domains"
 msgstr ""
 
-#: includes/class-reports.php:234
+#: includes/class-reports.php:246
 msgid "Note"
 msgstr ""
 
-#: includes/class-reports.php:234
+#: includes/class-reports.php:246
 msgid "Largest"
 msgstr ""
 
-#: includes/class-reports.php:234
+#: includes/class-reports.php:246
 msgid "Files"
 msgstr ""
 
-#: includes/class-reports.php:235
+#: includes/class-reports.php:247
 msgid "Old e-mail"
 msgstr ""
 
-#: includes/class-reports.php:235
+#: includes/class-reports.php:247
 msgid "New e-mail"
 msgstr ""
 
-#: includes/class-reports.php:236
+#: includes/class-reports.php:248
 msgid "Browser"
 msgstr ""
 
-#: includes/class-reports.php:236
+#: includes/class-reports.php:248
 msgid "Blocked"
 msgstr ""
 
-#: includes/class-reports.php:236
+#: includes/class-reports.php:248
 msgid "Hint"
 msgstr ""
 
-#: includes/class-reports.php:237
+#: includes/class-reports.php:249
 msgid "Registered"
 msgstr ""
 
-#: includes/class-reports.php:237
+#: includes/class-reports.php:249
 msgid "File owner"
 msgstr ""
 
-#: includes/class-reports.php:237
+#: includes/class-reports.php:249
 msgid "Created by"
 msgstr ""
 
-#: includes/class-reports.php:238
+#: includes/class-reports.php:250
 msgid "Changed by"
 msgstr ""
 
-#: includes/class-reports.php:238
+#: includes/class-reports.php:250
 msgid "eval() called in"
 msgstr ""
 
-#: includes/class-reports.php:239
+#: includes/class-reports.php:251
 msgid "Sampled page views"
 msgstr ""
 
-#: includes/class-reports.php:239
+#: includes/class-reports.php:251
 msgid "Instances"
 msgstr ""
 
-#: includes/class-reports.php:239
+#: includes/class-reports.php:251
 msgid "TLS verification"
 msgstr ""
 
-#: includes/class-reports.php:253
+#: includes/class-reports.php:265
 msgid "yes"
 msgstr ""
 
-#: includes/class-reports.php:253
+#: includes/class-reports.php:265
 msgid "no"
 msgstr ""
 
-#: includes/class-reports.php:280
+#: includes/class-reports.php:292
 msgid "Security alert"
 msgstr ""
 
 #. translators: %d: count
-#: includes/class-reports.php:280
+#: includes/class-reports.php:292
 msgid "%d security alert"
 msgid_plural "%d security alerts"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d: count
-#: includes/class-reports.php:281
+#: includes/class-reports.php:293
 msgid "Detected just now. This message is sent at the moment of detection, not in the daily report."
 msgstr ""
 
-#: includes/class-reports.php:294
+#: includes/class-reports.php:306
 msgid "Source"
 msgstr ""
 
-#: includes/class-reports.php:303
+#: includes/class-reports.php:315
 msgid "Open in Nightward"
 msgstr ""
 
 #. translators: 1: from, 2: to
-#: includes/class-reports.php:316
+#: includes/class-reports.php:330
 msgid "%1$s – %2$s"
 msgstr ""
 
-#: includes/class-reports.php:319
+#: includes/class-reports.php:332
+msgid "Nothing new"
+msgstr ""
+
+#: includes/class-reports.php:333
+msgid "No new findings since the last report. Issues from earlier reports are still open - they are listed below until you resolve, acknowledge or ignore them."
+msgstr ""
+
+#: includes/class-reports.php:336
 msgid "No new threats were detected since the last report. Monitors and scheduled checks are running."
 msgstr ""
 
-#: includes/class-reports.php:321
+#: includes/class-reports.php:338
 msgid "Worth a look"
 msgstr ""
 
-#: includes/class-reports.php:322
+#: includes/class-reports.php:339
 msgid "New findings since the last report are listed below, most serious first."
 msgstr ""
 
-#: includes/class-reports.php:326
+#: includes/class-reports.php:343
 msgid "Test message — the real report is sent automatically at the configured time."
 msgstr ""
 
-#: includes/class-reports.php:329
+#: includes/class-reports.php:346
 msgid "Daily security report"
 msgstr ""
 
-#. translators: %d: count
-#: includes/class-reports.php:348
-msgid "%d critical/high issue is still open from earlier."
-msgid_plural "%d critical/high issues are still open from earlier."
-msgstr[0] ""
-msgstr[1] ""
-
-#: includes/class-reports.php:371
+#: includes/class-reports.php:381
 msgid "Other findings"
 msgstr ""
 
 #. translators: %d: count
-#: includes/class-reports.php:380
+#: includes/class-reports.php:390
+#: includes/class-reports.php:406
 msgid "…and %d more in the dashboard."
 msgstr ""
 
-#: includes/class-reports.php:390
+#: includes/class-reports.php:397
+msgid "Still open from earlier reports"
+msgstr ""
+
+#. translators: %s: date
+#: includes/class-reports.php:403
+msgid "since %s"
+msgstr ""
+
+#: includes/class-reports.php:416
 msgid "New outbound destinations"
 msgstr ""
 
-#: includes/class-reports.php:400
+#: includes/class-reports.php:426
 msgid "Checks"
 msgstr ""
 
 #. translators: 1: files, 2: time ago, 3: problems
-#: includes/class-reports.php:407
+#: includes/class-reports.php:433
 msgid "%1$s files checked %2$s, %3$d problem"
 msgid_plural "%1$s files checked %2$s, %3$d problems"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: 1: hosts, 2: intercepted
-#: includes/class-reports.php:413
+#: includes/class-reports.php:439
 msgid "%1$d hosts contacted, %2$d responses faked"
 msgstr ""
 
-#: includes/class-reports.php:415
+#: includes/class-reports.php:441
 msgid "Hardening score"
 msgstr ""
 
-#: includes/class-reports.php:419
+#: includes/class-reports.php:445
 msgid "NOT RUNNING - this report was sent by Nightward's backup scheduler"
 msgstr ""
 
-#: includes/class-reports.php:419
+#: includes/class-reports.php:445
 msgid "NOT RUNNING — scans and reports may be delayed"
 msgstr ""
 
-#: includes/class-reports.php:426
+#: includes/class-reports.php:452
 msgid "Open Nightward"
 msgstr ""
 
@@ -2645,6 +2663,6 @@ msgid "PHP file inside wp-content/%s. This folder should not contain runnable co
 msgstr ""
 
 #. translators: %s: file path
-#: includes/scanner/class-upload-guard.php:399
+#: includes/scanner/class-upload-guard.php:418
 msgid "Suspicious file: %s"
 msgstr ""

@@ -215,6 +215,9 @@ class Export {
 			'wp_cron_waiting'    => $h['overdue']['count'] ? $h['overdue']['count'] . ' task(s), oldest due ' . human_time_diff( $h['overdue']['oldest'] ) . ' ago: ' . implode( ', ', $h['overdue']['hooks'] ) : 'none',
 			'disable_wp_cron'    => $h['disabled'],
 			'last_report_email'  => is_array( $mail ) ? ( $mail['ok'] ? 'sent' : 'failed' ) : 'none yet',
+			'report_runs'        => array_map( function ( $l ) {
+				return wp_date( 'Y-m-d H:i:s', (int) $l['at'] ) . ' · ' . $l['via'] . ' · ' . $l['ok'];
+			}, array_reverse( (array) get_option( 'nightward_report_log', array() ) ) ),
 			'early_loader'       => Installer::loader_installed(),
 			'modules_disabled'   => array_values( array_filter( array( 'outbound', 'hooks', 'privilege', 'options', 'cron', 'integrity', 'uploads', 'update_channel', 'hardening' ), function ( $m ) {
 				return ! Settings::enabled( $m );

@@ -357,12 +357,8 @@ class Cron {
 	 * @return int number of events run
 	 */
 	public static function run_due( array $due, $heavy_ok = true, $how = 'fallback' ) {
-		if ( ! add_option( 'nightward_fallback_lock', time(), '', false ) ) {
-			$lock = (int) get_option( 'nightward_fallback_lock', 0 );
-			if ( $lock > time() - 5 * MINUTE_IN_SECONDS ) {
-				return 0;
-			}
-			update_option( 'nightward_fallback_lock', time(), false );
+		if ( ! Util::lock( 'nightward_fallback_lock', 5 * MINUTE_IN_SECONDS ) ) {
+			return 0; // another request is running them right now
 		}
 		ignore_user_abort( true );
 		self::$via = 'fallback' === $how ? 'backup scheduler' : $how;
@@ -382,7 +378,7 @@ class Cron {
 			do_action_ref_array( $ev['hook'], $ev['args'] );
 			$n++;
 		}
-		delete_option( 'nightward_fallback_lock' );
+		Util::unlock( 'nightward_fallback_lock' );
 		if ( $n && doing_action( 'shutdown' ) && Settings::enabled( 'outbound' ) ) {
 			Monitor\Outbound::flush(); // its own shutdown pass has already run
 		}
@@ -440,14 +436,18 @@ class Cron {
 		update_option( 'nightward_last_report_run', time(), false );
 		// One report per occurrence. WP-Cron started by a visit and the backup scheduler in
 		// the same visit, or a manual run during a cron run, could otherwise both send it.
-		$lock = (int) get_option( 'nightward_report_lock', 0 );
-		$last = (int) get_option( 'nightward_last_report_sent', 0 );
-		$busy = ! add_option( 'nightward_report_lock', time(), '', false ) && $lock > time() - 10 * MINUTE_IN_SECONDS;
-		if ( ! $busy && $last < time() - 30 * MINUTE_IN_SECONDS ) {
-			update_option( 'nightward_report_lock', time(), false );
-			$ok = Reports::send_digest();
-			self::log_report( $ok );
-			delete_option( 'nightward_report_lock' );
+		// Parallel requests (two visits at the same second, WP-Cron and the backup
+		// scheduler) are stopped by a database lock, a later run by the time of the last send.
+		if ( Util::lock( 'nightward_report_lock', 10 * MINUTE_IN_SECONDS ) ) {
+			$last = (int) Util::fresh_option( 'nightward_last_report_sent', 0 );
+			if ( $last < time() - 30 * MINUTE_IN_SECONDS ) {
+				wp_cache_delete( 'nightward_last_report_sent', 'options' );
+				$ok = Reports::send_digest();
+				self::log_report( $ok );
+			} else {
+				self::log_report( null );
+			}
+			Util::unlock( 'nightward_report_lock' );
 		} else {
 			self::log_report( null );
 		}

@@ -110,6 +110,50 @@ class Util {
 		return substr( $out, 0, 300 );
 	}
 
+	/**
+	 * A lock that holds across parallel requests. add_option() is not one: it upserts
+	 * (INSERT ... ON DUPLICATE KEY UPDATE) and trusts the per-request "notoptions"
+	 * cache, so two requests could both "add" it and both send the daily report.
+	 * Here the database decides: INSERT IGNORE succeeds for exactly one request; a lock
+	 * older than $ttl is taken over with a compare-and-swap UPDATE.
+	 */
+	public static function lock( $name, $ttl ) {
+		global $wpdb;
+		$now = time();
+		$got = (int) $wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, %s, 'no')", $name, (string) $now ) ); // phpcs:ignore
+		if ( ! $got ) {
+			$old = $wpdb->get_var( $wpdb->prepare( "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s", $name ) ); // phpcs:ignore
+			if ( null === $old || (int) $old > $now - $ttl ) {
+				return false;
+			}
+			$got = (int) $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->options} SET option_value = %s WHERE option_name = %s AND option_value = %s", (string) $now, $name, $old ) ); // phpcs:ignore
+		}
+		self::forget_option_cache( $name );
+		return $got > 0;
+	}
+
+	public static function unlock( $name ) {
+		global $wpdb;
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name = %s", $name ) ); // phpcs:ignore
+		self::forget_option_cache( $name );
+	}
+
+	/** Read an option straight from the database (another request may have just changed it). */
+	public static function fresh_option( $name, $default = false ) {
+		global $wpdb;
+		$v = $wpdb->get_var( $wpdb->prepare( "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s", $name ) ); // phpcs:ignore
+		return null === $v ? $default : maybe_unserialize( $v );
+	}
+
+	private static function forget_option_cache( $name ) {
+		wp_cache_delete( $name, 'options' );
+		$no = wp_cache_get( 'notoptions', 'options' );
+		if ( is_array( $no ) && isset( $no[ $name ] ) ) {
+			unset( $no[ $name ] );
+			wp_cache_set( 'notoptions', $no, 'options' );
+		}
+	}
+
 	public static function now() {
 		return current_time( 'mysql', true );
 	}

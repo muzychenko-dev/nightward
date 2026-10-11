@@ -2,7 +2,7 @@
 
 Runtime security monitor for WordPress. Most security plugins look at files and requests from the outside. Nightward watches what installed plugins and themes actually **do** inside the site, names the file and line that did it, and e-mails you a daily report. Critical findings are e-mailed the moment they happen.
 
-- Version: 1.1.8
+- Version: 1.1.9
 - Requires: WordPress 6.2+, PHP 7.4+
 - Languages: English, Ukrainian
 - Website: https://nightward.muzychenko.dev
@@ -29,7 +29,7 @@ Runtime security monitor for WordPress. Most security plugins look at files and 
 
 ## Reports
 
-- **Daily report** at a configurable local time (default 20:00, site timezone). "All clear" is sent too by default: if the e-mail stops arriving, the site, WP-Cron or Nightward stopped working. One report per occurrence: a second run within 30 minutes (WP-Cron and the backup scheduler starting in the same visit, a manual run) is stopped and counted on the overview.
+- **Daily report** at a configurable local time (default 20:00, site timezone). "All clear" is sent too by default: if the e-mail stops arriving, the site, WP-Cron or Nightward stopped working. Counters and the detailed list cover only new findings (appeared or reopened since the last report); critical and high findings that are still open are listed separately as "Still open from earlier reports" instead of being counted again every day. One report per occurrence: parallel runs are stopped by a database lock, a second run within 30 minutes by the time of the last send; both are counted on the overview.
 - **Instant alerts** for critical (optionally also high) findings, at the moment of detection, rate-limited per hour; the rest is combined into one message.
 - Rendered in the recipient's language when the recipient is a user of the site. Events are stored language-independently and translated when displayed.
 

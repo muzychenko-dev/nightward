@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nightward 1.1.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/nightward\n"
-"POT-Creation-Date: 2026-10-09T18:53:16+00:00\n"
-"PO-Revision-Date: 2026-10-09 18:53+0000\n"
+"POT-Creation-Date: 2026-10-11T09:44:37+00:00\n"
+"PO-Revision-Date: 2026-10-11 09:44+0000\n"
 "Last-Translator: Ihor Muzychenko\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -162,7 +162,7 @@ msgid "not running"
 msgstr "не запускається"
 
 #: admin/class-admin.php:134 admin/class-admin.php:373
-#: includes/class-reports.php:419
+#: includes/class-reports.php:445
 msgid "running"
 msgstr "працюють"
 
@@ -176,7 +176,7 @@ msgstr "Останній запуск WP-Cron"
 #: admin/class-admin.php:135 admin/class-admin.php:161
 #: admin/class-admin.php:184 admin/class-admin.php:373
 #: admin/class-admin.php:413 admin/class-admin.php:712
-#: includes/class-reports.php:407 includes/class-util.php:134
+#: includes/class-reports.php:433 includes/class-util.php:178
 msgid "%s ago"
 msgstr "%s тому"
 
@@ -385,7 +385,7 @@ msgstr "Події"
 msgid "Log"
 msgstr "Журнал"
 
-#: admin/class-admin.php:234 includes/class-reports.php:235
+#: admin/class-admin.php:234 includes/class-reports.php:247
 msgid "Network"
 msgstr "Мережа"
 
@@ -426,11 +426,11 @@ msgstr "Вирішена"
 msgid "Ignored"
 msgstr "Ігнорується"
 
-#: admin/class-admin.php:304 includes/class-reports.php:321
+#: admin/class-admin.php:304 includes/class-reports.php:338
 msgid "Action required"
 msgstr "Потрібна дія"
 
-#: admin/class-admin.php:305 includes/class-reports.php:321
+#: admin/class-admin.php:305 includes/class-reports.php:338
 msgid "Needs your attention"
 msgstr "Потребує вашої уваги"
 
@@ -438,7 +438,7 @@ msgstr "Потребує вашої уваги"
 msgid "A few things are worth a look"
 msgstr "Є кілька речей, на які варто глянути"
 
-#: admin/class-admin.php:307 includes/class-reports.php:318
+#: admin/class-admin.php:307 includes/class-reports.php:335
 msgid "All clear"
 msgstr "Усе чисто"
 
@@ -484,7 +484,7 @@ msgstr ""
 "поведінку сайту (хости, хуки, заплановані завдання) і не повідомляє про неї."
 " Критичні знахідки все одно надходять."
 
-#: admin/class-admin.php:335 includes/class-reports.php:359
+#: admin/class-admin.php:335 includes/class-reports.php:369
 msgid "Needs attention"
 msgstr "Потребує уваги"
 
@@ -589,7 +589,7 @@ msgid "Monitors"
 msgstr "Монітори"
 
 #: admin/class-admin.php:416 includes/class-events.php:38
-#: includes/class-reports.php:411
+#: includes/class-reports.php:437
 msgid "Outbound requests"
 msgstr "Вихідні запити"
 
@@ -667,7 +667,7 @@ msgstr "autoload %s"
 
 #: admin/class-admin.php:428 admin/class-admin.php:683
 #: admin/class-admin.php:884 includes/class-events.php:43
-#: includes/class-reports.php:418
+#: includes/class-reports.php:444
 msgid "Scheduled tasks"
 msgstr "Заплановані завдання"
 
@@ -685,7 +685,7 @@ msgstr "%1$d завдань · %2$d прострочено"
 
 #: admin/class-admin.php:431 admin/class-admin.php:709
 #: admin/class-admin.php:885 includes/class-events.php:44
-#: includes/class-reports.php:404
+#: includes/class-reports.php:430
 msgid "File integrity"
 msgstr "Цілісність файлів"
 
@@ -703,7 +703,7 @@ msgid "%1$s files · %2$s"
 msgstr "%1$s файлів · %2$s"
 
 #. translators: 1: files, 2: time
-#: admin/class-admin.php:433 includes/class-reports.php:408
+#: admin/class-admin.php:433 includes/class-reports.php:434
 msgid "first scan pending"
 msgstr "очікує першого сканування"
 
@@ -917,7 +917,7 @@ msgstr "Рівень"
 msgid "Event"
 msgstr "Подія"
 
-#: admin/class-admin.php:553 includes/class-reports.php:226
+#: admin/class-admin.php:553 includes/class-reports.php:238
 msgid "Area"
 msgstr "Розділ"
 
@@ -964,7 +964,7 @@ msgid "Plugin / theme"
 msgstr "Плагін / тема"
 
 #: admin/class-admin.php:634 admin/class-admin.php:674
-#: includes/class-reports.php:224
+#: includes/class-reports.php:236
 msgid "Callback"
 msgstr "Callback"
 
@@ -972,7 +972,7 @@ msgstr "Callback"
 msgid "Location"
 msgstr "Розташування"
 
-#: admin/class-admin.php:634 includes/class-reports.php:227
+#: admin/class-admin.php:634 includes/class-reports.php:239
 msgid "Priority"
 msgstr "Пріоритет"
 
@@ -988,7 +988,7 @@ msgstr "Вихідних запитів ще не зафіксовано."
 msgid "Host"
 msgstr "Хост"
 
-#: admin/class-admin.php:647 includes/class-reports.php:225
+#: admin/class-admin.php:647 includes/class-reports.php:237
 msgid "Requested by"
 msgstr "Хто запитав"
 
@@ -1026,7 +1026,7 @@ msgstr ""
 msgid "Only WordPress core."
 msgstr "Лише ядро WordPress."
 
-#: admin/class-admin.php:674 includes/class-reports.php:226
+#: admin/class-admin.php:674 includes/class-reports.php:238
 msgid "Hook"
 msgstr "Хук"
 
@@ -1038,11 +1038,11 @@ msgstr "Завдання"
 msgid "Runs"
 msgstr "Запуск"
 
-#: admin/class-admin.php:684 includes/class-reports.php:232
+#: admin/class-admin.php:684 includes/class-reports.php:244
 msgid "Next run"
 msgstr "Наступний запуск"
 
-#: admin/class-admin.php:684 includes/class-reports.php:233
+#: admin/class-admin.php:684 includes/class-reports.php:245
 msgid "Handler"
 msgstr "Обробник"
 
@@ -1099,7 +1099,7 @@ msgstr "Власний знімок"
 msgid "Snapshot taken"
 msgstr "Знімок зроблено"
 
-#: admin/class-admin.php:731 includes/class-reports.php:229
+#: admin/class-admin.php:731 includes/class-reports.php:241
 msgid "Package"
 msgstr "Пакет"
 
@@ -1834,7 +1834,7 @@ msgstr[1] "[Nightward] %1$d сповіщення безпеки на %2$s"
 msgstr[2] "[Nightward] %1$d сповіщень безпеки на %2$s"
 
 #. translators: %d: number of critical findings
-#: includes/class-reports.php:152
+#: includes/class-reports.php:159
 msgid "%d critical"
 msgid_plural "%d critical"
 msgstr[0] "%d критична"
@@ -1842,7 +1842,7 @@ msgstr[1] "%d критичні"
 msgstr[2] "%d критичних"
 
 #. translators: %d: number of high-severity findings
-#: includes/class-reports.php:156
+#: includes/class-reports.php:163
 msgid "%d high"
 msgid_plural "%d high"
 msgstr[0] "%d висока"
@@ -1850,29 +1850,38 @@ msgstr[1] "%d високі"
 msgstr[2] "%d високих"
 
 #. translators: %d: number of medium-severity findings
-#: includes/class-reports.php:160
+#: includes/class-reports.php:167
 msgid "%d medium"
 msgid_plural "%d medium"
 msgstr[0] "%d середня"
 msgstr[1] "%d середні"
 msgstr[2] "%d середніх"
 
-#: includes/class-reports.php:162
+#: includes/class-reports.php:169
 msgid "[Nightward test]"
 msgstr "[Nightward тест]"
 
+#. translators: 1: prefix, 2: site, 3: number of open critical/high findings,
+#. 4: date
+#: includes/class-reports.php:173
+msgid "%1$s %2$s: nothing new, %3$d issue still open — %4$s"
+msgid_plural "%1$s %2$s: nothing new, %3$d issues still open — %4$s"
+msgstr[0] "%1$s %2$s: нічого нового, відкрита %3$d проблема - %4$s"
+msgstr[1] "%1$s %2$s: нічого нового, відкриті %3$d проблеми - %4$s"
+msgstr[2] "%1$s %2$s: нічого нового, відкрито %3$d проблем - %4$s"
+
 #. translators: 1: prefix, 2: site, 3: date
-#: includes/class-reports.php:165
+#: includes/class-reports.php:177
 msgid "%1$s %2$s: all clear — %3$s"
 msgstr "%1$s %2$s: усе чисто - %3$s"
 
 #. translators: 1: prefix, 2: site, 3: counts, 4: date
-#: includes/class-reports.php:168
+#: includes/class-reports.php:180
 msgid "%1$s %2$s: %3$s — %4$s"
 msgstr "%1$s %2$s: %3$s - %4$s"
 
 #. translators: %s: site URL
-#: includes/class-reports.php:205
+#: includes/class-reports.php:217
 msgid ""
 "Sent by Nightward from %s. Report time, recipients and alert level can be "
 "changed in Nightward → Settings."
@@ -1880,184 +1889,184 @@ msgstr ""
 "Надіслано Nightward із %s. Час звіту, отримувачів і рівень сповіщень можна "
 "змінити в Nightward → Налаштування."
 
-#: includes/class-reports.php:223
+#: includes/class-reports.php:235
 msgid "URL"
 msgstr "URL"
 
-#: includes/class-reports.php:223 includes/class-reports.php:238
+#: includes/class-reports.php:235 includes/class-reports.php:250
 msgid "Method"
 msgstr "Метод"
 
-#: includes/class-reports.php:223
+#: includes/class-reports.php:235
 msgid "Reason"
 msgstr "Причина"
 
-#: includes/class-reports.php:224
+#: includes/class-reports.php:236
 msgid "Request type"
 msgstr "Тип запиту"
 
-#: includes/class-reports.php:224
+#: includes/class-reports.php:236
 msgid "Fake HTTP status"
 msgstr "Підроблений HTTP-статус"
 
-#: includes/class-reports.php:225
+#: includes/class-reports.php:237
 msgid "Fake response"
 msgstr "Підроблена відповідь"
 
-#: includes/class-reports.php:225
+#: includes/class-reports.php:237
 msgid "Returned"
 msgstr "Повернуто"
 
-#: includes/class-reports.php:226
+#: includes/class-reports.php:238
 msgid "Domains faked"
 msgstr "Підроблені домени"
 
-#: includes/class-reports.php:227
+#: includes/class-reports.php:239
 msgid "User"
 msgstr "Користувач"
 
-#: includes/class-reports.php:227
+#: includes/class-reports.php:239
 msgid "E-mail"
 msgstr "E-mail"
 
-#: includes/class-reports.php:228
+#: includes/class-reports.php:240
 msgid "Done by"
 msgstr "Хто зробив"
 
-#: includes/class-reports.php:228
+#: includes/class-reports.php:240
 msgid "Request"
 msgstr "Запит"
 
-#: includes/class-reports.php:228
+#: includes/class-reports.php:240
 msgid "IP address"
 msgstr "IP-адреса"
 
-#: includes/class-reports.php:229
+#: includes/class-reports.php:241
 msgid "Old value"
 msgstr "Старе значення"
 
-#: includes/class-reports.php:229
+#: includes/class-reports.php:241
 msgid "New value"
 msgstr "Нове значення"
 
-#: includes/class-reports.php:230
+#: includes/class-reports.php:242
 msgid "Size"
 msgstr "Розмір"
 
-#: includes/class-reports.php:230
+#: includes/class-reports.php:242
 msgid "Modified"
 msgstr "Змінено"
 
-#: includes/class-reports.php:230
+#: includes/class-reports.php:242
 msgid "Malware indicators"
 msgstr "Ознаки шкідливого коду"
 
-#: includes/class-reports.php:231
+#: includes/class-reports.php:243
 msgid "Beginning of file"
 msgstr "Початок файлу"
 
-#: includes/class-reports.php:231
+#: includes/class-reports.php:243
 msgid "How to fix"
 msgstr "Як виправити"
 
-#: includes/class-reports.php:231
+#: includes/class-reports.php:243
 msgid "What to do"
 msgstr "Що робити"
 
-#: includes/class-reports.php:232
+#: includes/class-reports.php:244
 msgid "Code that can alter updates"
 msgstr "Код, що може змінювати оновлення"
 
-#: includes/class-reports.php:232
+#: includes/class-reports.php:244
 msgid "Recurrence"
 msgstr "Повторення"
 
-#: includes/class-reports.php:233
+#: includes/class-reports.php:245
 msgid "Arguments"
 msgstr "Аргументи"
 
-#: includes/class-reports.php:233
+#: includes/class-reports.php:245
 msgid "Vendor domains"
 msgstr "Домени розробника"
 
-#: includes/class-reports.php:234
+#: includes/class-reports.php:246
 msgid "Note"
 msgstr "Примітка"
 
-#: includes/class-reports.php:234
+#: includes/class-reports.php:246
 msgid "Largest"
 msgstr "Найбільші"
 
-#: includes/class-reports.php:234
+#: includes/class-reports.php:246
 msgid "Files"
 msgstr "Файли"
 
-#: includes/class-reports.php:235
+#: includes/class-reports.php:247
 msgid "Old e-mail"
 msgstr "Старий e-mail"
 
-#: includes/class-reports.php:235
+#: includes/class-reports.php:247
 msgid "New e-mail"
 msgstr "Новий e-mail"
 
-#: includes/class-reports.php:236
+#: includes/class-reports.php:248
 msgid "Browser"
 msgstr "Браузер"
 
-#: includes/class-reports.php:236
+#: includes/class-reports.php:248
 msgid "Blocked"
 msgstr "Заблоковано"
 
-#: includes/class-reports.php:236
+#: includes/class-reports.php:248
 msgid "Hint"
 msgstr "Підказка"
 
-#: includes/class-reports.php:237
+#: includes/class-reports.php:249
 msgid "Registered"
 msgstr "Зареєстрований"
 
-#: includes/class-reports.php:237
+#: includes/class-reports.php:249
 msgid "File owner"
 msgstr "Власник файлу"
 
-#: includes/class-reports.php:237
+#: includes/class-reports.php:249
 msgid "Created by"
 msgstr "Хто створив"
 
-#: includes/class-reports.php:238
+#: includes/class-reports.php:250
 msgid "Changed by"
 msgstr "Хто змінив"
 
-#: includes/class-reports.php:238
+#: includes/class-reports.php:250
 msgid "eval() called in"
 msgstr "eval() викликано в"
 
-#: includes/class-reports.php:239
+#: includes/class-reports.php:251
 msgid "Sampled page views"
 msgstr "Переглядів у вибірці"
 
-#: includes/class-reports.php:239
+#: includes/class-reports.php:251
 msgid "Instances"
 msgstr "Екземплярів"
 
-#: includes/class-reports.php:239
+#: includes/class-reports.php:251
 msgid "TLS verification"
 msgstr "Перевірка TLS"
 
-#: includes/class-reports.php:253
+#: includes/class-reports.php:265
 msgid "yes"
 msgstr "так"
 
-#: includes/class-reports.php:253
+#: includes/class-reports.php:265
 msgid "no"
 msgstr "ні"
 
-#: includes/class-reports.php:280
+#: includes/class-reports.php:292
 msgid "Security alert"
 msgstr "Сповіщення безпеки"
 
 #. translators: %d: count
-#: includes/class-reports.php:280
+#: includes/class-reports.php:292
 msgid "%d security alert"
 msgid_plural "%d security alerts"
 msgstr[0] "%d сповіщення безпеки"
@@ -2065,7 +2074,7 @@ msgstr[1] "%d сповіщення безпеки"
 msgstr[2] "%d сповіщень безпеки"
 
 #. translators: %d: count
-#: includes/class-reports.php:281
+#: includes/class-reports.php:293
 msgid ""
 "Detected just now. This message is sent at the moment of detection, not in "
 "the daily report."
@@ -2073,20 +2082,33 @@ msgstr ""
 "Виявлено щойно. Цей лист надсилається в момент виявлення, а не в щоденному "
 "звіті."
 
-#: includes/class-reports.php:294
+#: includes/class-reports.php:306
 msgid "Source"
 msgstr "Джерело"
 
-#: includes/class-reports.php:303
+#: includes/class-reports.php:315
 msgid "Open in Nightward"
 msgstr "Відкрити в Nightward"
 
 #. translators: 1: from, 2: to
-#: includes/class-reports.php:316
+#: includes/class-reports.php:330
 msgid "%1$s – %2$s"
 msgstr "%1$s - %2$s"
 
-#: includes/class-reports.php:319
+#: includes/class-reports.php:332
+msgid "Nothing new"
+msgstr "Нічого нового"
+
+#: includes/class-reports.php:333
+msgid ""
+"No new findings since the last report. Issues from earlier reports are still"
+" open - they are listed below until you resolve, acknowledge or ignore them."
+msgstr ""
+"Від попереднього звіту нових знахідок немає. Проблеми з попередніх звітів "
+"досі відкриті - вони показуються нижче, доки ви не позначите їх "
+"виправленими, переглянутими або «Ігнорувати»."
+
+#: includes/class-reports.php:336
 msgid ""
 "No new threats were detected since the last report. Monitors and scheduled "
 "checks are running."
@@ -2094,52 +2116,53 @@ msgstr ""
 "Від останнього звіту нових загроз не виявлено. Монітори й планові перевірки "
 "працюють."
 
-#: includes/class-reports.php:321
+#: includes/class-reports.php:338
 msgid "Worth a look"
 msgstr "Варто глянути"
 
-#: includes/class-reports.php:322
+#: includes/class-reports.php:339
 msgid ""
 "New findings since the last report are listed below, most serious first."
 msgstr "Нові знахідки від останнього звіту - нижче, найсерйозніші першими."
 
-#: includes/class-reports.php:326
+#: includes/class-reports.php:343
 msgid ""
 "Test message — the real report is sent automatically at the configured time."
 msgstr ""
 "Тестовий лист - справжній звіт надсилається автоматично в заданий час."
 
-#: includes/class-reports.php:329
+#: includes/class-reports.php:346
 msgid "Daily security report"
 msgstr "Щоденний звіт безпеки"
 
-#. translators: %d: count
-#: includes/class-reports.php:348
-msgid "%d critical/high issue is still open from earlier."
-msgid_plural "%d critical/high issues are still open from earlier."
-msgstr[0] "%d критична/висока проблема досі відкрита з минулих звітів."
-msgstr[1] "%d критичні/високі проблеми досі відкриті з минулих звітів."
-msgstr[2] "%d критичних/високих проблем досі відкриті з минулих звітів."
-
-#: includes/class-reports.php:371
+#: includes/class-reports.php:381
 msgid "Other findings"
 msgstr "Інші знахідки"
 
 #. translators: %d: count
-#: includes/class-reports.php:380
+#: includes/class-reports.php:390 includes/class-reports.php:406
 msgid "…and %d more in the dashboard."
 msgstr "…і ще %d в адмінці."
 
-#: includes/class-reports.php:390
+#: includes/class-reports.php:397
+msgid "Still open from earlier reports"
+msgstr "Досі відкрите з попередніх звітів"
+
+#. translators: %s: date
+#: includes/class-reports.php:403
+msgid "since %s"
+msgstr "з %s"
+
+#: includes/class-reports.php:416
 msgid "New outbound destinations"
 msgstr "Нові вихідні адреси"
 
-#: includes/class-reports.php:400
+#: includes/class-reports.php:426
 msgid "Checks"
 msgstr "Перевірки"
 
 #. translators: 1: files, 2: time ago, 3: problems
-#: includes/class-reports.php:407
+#: includes/class-reports.php:433
 msgid "%1$s files checked %2$s, %3$d problem"
 msgid_plural "%1$s files checked %2$s, %3$d problems"
 msgstr[0] "%1$s файлів перевірено %2$s, %3$d проблема"
@@ -2147,23 +2170,23 @@ msgstr[1] "%1$s файлів перевірено %2$s, %3$d проблеми"
 msgstr[2] "%1$s файлів перевірено %2$s, %3$d проблем"
 
 #. translators: 1: hosts, 2: intercepted
-#: includes/class-reports.php:413
+#: includes/class-reports.php:439
 msgid "%1$d hosts contacted, %2$d responses faked"
 msgstr "%1$d хостів, %2$d відповідей підроблено"
 
-#: includes/class-reports.php:415
+#: includes/class-reports.php:441
 msgid "Hardening score"
 msgstr "Оцінка захищеності"
 
-#: includes/class-reports.php:419
+#: includes/class-reports.php:445
 msgid "NOT RUNNING - this report was sent by Nightward's backup scheduler"
 msgstr "НЕ ЗАПУСКАЄТЬСЯ - цей звіт надіслав резервний планувальник Nightward"
 
-#: includes/class-reports.php:419
+#: includes/class-reports.php:445
 msgid "NOT RUNNING — scans and reports may be delayed"
 msgstr "НЕ ПРАЦЮЮТЬ - перевірки та звіти можуть запізнюватися"
 
-#: includes/class-reports.php:426
+#: includes/class-reports.php:452
 msgid "Open Nightward"
 msgstr "Відкрити Nightward"
 
@@ -3262,6 +3285,6 @@ msgid ""
 msgstr "PHP-файл у wp-content/%s. У цій теці не має бути виконуваного коду."
 
 #. translators: %s: file path
-#: includes/scanner/class-upload-guard.php:399
+#: includes/scanner/class-upload-guard.php:418
 msgid "Suspicious file: %s"
 msgstr "Підозрілий файл: %s"

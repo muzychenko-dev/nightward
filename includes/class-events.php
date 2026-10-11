@@ -203,8 +203,8 @@ class Events {
 				$worse  = self::rank( $e['severity'] ) < self::rank( $row->severity );
 				$reopen = 'resolved' === $row->status || ( $worse && 'ignored' !== $row->status );
 				$wpdb->query( $wpdb->prepare( // phpcs:ignore
-					"UPDATE {$t} SET hits = hits + 1, last_seen = %s, details = %s, title = %s, severity = %s" . ( $reopen ? ", status = 'open', alerted = 0" : '' ) . ' WHERE id = %d',
-					$now, $details, $e['title'], $e['severity'], $row->id
+					"UPDATE {$t} SET hits = hits + 1, last_seen = %s, details = %s, title = %s, severity = %s" . ( $reopen ? ", status = 'open', alerted = 0, opened_at = %s" : '' ) . ' WHERE id = %d',
+					array_merge( array( $now, $details, $e['title'], $e['severity'] ), $reopen ? array( $now ) : array(), array( $row->id ) )
 				) );
 				$is_new = $reopen;
 				$id     = (int) $row->id;
@@ -224,6 +224,7 @@ class Events {
 					'alerted'     => 0,
 					'first_seen'  => $now,
 					'last_seen'   => $now,
+					'opened_at'   => $now,
 				) );
 				$is_new = true;
 				$id     = (int) $wpdb->insert_id;
