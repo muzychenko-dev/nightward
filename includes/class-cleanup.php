@@ -102,7 +102,7 @@ class Cleanup {
 			} elseif ( 'privilege' === $r->module ) {
 				// An administrator it created or changed is still there: keep.
 				$uid = isset( $d['user_id'] ) ? (int) $d['user_id'] : 0;
-				if ( ! $uid || ! user_can( $uid, 'manage_options' ) ) {
+				if ( ! $uid || ! Util::user_can( $uid, 'manage_options' ) ) {
 					$ids[] = (int) $r->id;
 				}
 			}

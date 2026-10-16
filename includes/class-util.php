@@ -154,6 +154,65 @@ class Util {
 		}
 	}
 
+	/*
+	 * User helpers that are safe before pluggable.php is loaded. Hooks such as
+	 * updated_option, user_register or set_user_role can fire while plugins are still
+	 * being included (a plugin writing an option or creating a user at load time).
+	 * get_userdata(), get_user_by(), wp_get_current_user() and wp_rand() do not exist
+	 * yet then, and calling them is a fatal error that takes the whole site down.
+	 */
+
+	public static function user( $user ) {
+		if ( $user instanceof \WP_User ) {
+			return $user;
+		}
+		$id = (int) $user;
+		if ( ! $id ) {
+			return false;
+		}
+		if ( function_exists( 'get_userdata' ) ) {
+			return get_userdata( $id );
+		}
+		$u = new \WP_User( $id );
+		return $u->exists() ? $u : false;
+	}
+
+	public static function user_by( $field, $value ) {
+		if ( function_exists( 'get_user_by' ) ) {
+			return get_user_by( $field, $value );
+		}
+		$data = \WP_User::get_data_by( $field, $value );
+		if ( ! $data ) {
+			return false;
+		}
+		$u = new \WP_User();
+		$u->init( $data );
+		return $u;
+	}
+
+	/** 0 before WordPress has determined the current user. */
+	public static function current_user_id() {
+		return function_exists( 'wp_get_current_user' ) ? get_current_user_id() : 0;
+	}
+
+	public static function current_can( $cap ) {
+		return function_exists( 'wp_get_current_user' ) && current_user_can( $cap );
+	}
+
+	public static function user_can( $user, $cap ) {
+		$u = self::user( $user );
+		return $u && $u->has_cap( $cap );
+	}
+
+	public static function is_super_admin( $user_id ) {
+		return is_multisite() && function_exists( 'get_userdata' ) && is_super_admin( $user_id );
+	}
+
+	/** Random integer without wp_rand() (pluggable). */
+	public static function rand( $min, $max ) {
+		return mt_rand( $min, $max ); // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_mt_rand
+	}
+
 	public static function now() {
 		return current_time( 'mysql', true );
 	}

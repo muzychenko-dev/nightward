@@ -45,7 +45,7 @@ class Options_Watch {
 
 	private static function sampled() {
 		if ( null === self::$sampled ) {
-			self::$sampled = ! is_admin() && ! wp_doing_cron() && ! ( defined( 'WP_CLI' ) && WP_CLI ) && 0 === wp_rand( 0, self::SAMPLE_ONE - 1 );
+			self::$sampled = ! is_admin() && ! wp_doing_cron() && ! ( defined( 'WP_CLI' ) && WP_CLI ) && 0 === Util::rand( 0, self::SAMPLE_ONE - 1 );
 		}
 		return self::$sampled;
 	}
@@ -66,7 +66,7 @@ class Options_Watch {
 		}
 		$c        = Attribution::caller();
 		$ctx      = Util::request_context();
-		$by_admin = 'core' === $c['component'] && current_user_can( 'manage_options' ) && in_array( $ctx, array( 'admin', 'rest', 'ajax' ), true );
+		$by_admin = 'core' === $c['component'] && Util::current_can( 'manage_options' ) && in_array( $ctx, array( 'admin', 'rest', 'ajax' ), true );
 		$cli      = 'cli' === $ctx;
 
 		switch ( true ) {
@@ -130,7 +130,7 @@ class Options_Watch {
 		if ( ! $added ) {
 			return;
 		}
-		$ui = 'cli' === $ctx || ( 'core' === $c['component'] && current_user_can( 'activate_plugins' ) && in_array( $ctx, array( 'admin', 'ajax', 'rest' ), true ) );
+		$ui = 'cli' === $ctx || ( 'core' === $c['component'] && Util::current_can( 'activate_plugins' ) && in_array( $ctx, array( 'admin', 'ajax', 'rest' ), true ) );
 		// Nightward itself; the SQLite drop-in re-registers its own plugin.
 		$added = array_filter( $added, function ( $p ) use ( $c ) {
 			return 0 !== strpos( $p, 'nightward/' ) && ! ( 'dropin:db.php' === $c['component'] && 0 === strpos( $p, 'sqlite-database-integration/' ) );
@@ -168,7 +168,7 @@ class Options_Watch {
 
 	/** Is this plugin itself being activated by an administrator in the current request? */
 	private static function activated_by_admin_now( $component ) {
-		if ( 0 !== strpos( (string) $component, 'plugin:' ) || ! current_user_can( 'activate_plugins' ) ) {
+		if ( 0 !== strpos( (string) $component, 'plugin:' ) || ! Util::current_can( 'activate_plugins' ) ) {
 			return false;
 		}
 		$slug = substr( $component, 7 );

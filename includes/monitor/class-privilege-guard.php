@@ -42,8 +42,8 @@ class Privilege_Guard {
 	}
 
 	private static function is_admin_user( $user_id ) {
-		$u = get_userdata( $user_id );
-		return $u && ( in_array( 'administrator', (array) $u->roles, true ) || ( is_multisite() && is_super_admin( $user_id ) ) );
+		$u = Util::user( $user_id );
+		return $u && ( in_array( 'administrator', (array) $u->roles, true ) || ( is_multisite() && Util::is_super_admin( $user_id ) ) );
 	}
 
 	/**
@@ -53,9 +53,9 @@ class Privilege_Guard {
 	private static function assess( $new_user_id ) {
 		$c   = Attribution::caller();
 		$ctx = Util::request_context();
-		$cur = get_current_user_id();
-		$by  = $cur ? get_userdata( $cur ) : null;
-		$can = $cur && $cur !== (int) $new_user_id && user_can( $cur, 'promote_users' );
+		$cur = Util::current_user_id();
+		$by  = $cur ? Util::user( $cur ) : null;
+		$can = $cur && $cur !== (int) $new_user_id && Util::user_can( $cur, 'promote_users' );
 
 		if ( 'cli' === $ctx ) {
 			return array( 'medium', $c, __( 'Done from WP-CLI (server shell access).', 'nightward' ) );
@@ -103,7 +103,7 @@ class Privilege_Guard {
 			if ( isset( $snap[ $user_id ] ) || ! self::is_admin_user( $user_id ) ) {
 				continue;
 			}
-			$u = get_userdata( $user_id );
+			$u = Util::user( $user_id );
 			list( $sev, $c, $why ) = $p['assess'];
 			$order = array( 'created', 'role', 'added', 'super', 'meta' );
 			$how   = 'meta';
@@ -180,7 +180,7 @@ class Privilege_Guard {
 
 	public static function remember( $user_id ) {
 		$snap = (array) get_option( self::SNAPSHOT, array() );
-		$u    = get_userdata( $user_id );
+		$u    = Util::user( $user_id );
 		$snap[ (int) $user_id ] = $u ? $u->user_login : '?';
 		update_option( self::SNAPSHOT, $snap, false );
 	}
@@ -190,7 +190,7 @@ class Privilege_Guard {
 		if ( ! self::is_admin_user( $user_id ) || ! $old instanceof \WP_User ) {
 			return;
 		}
-		$u       = get_userdata( $user_id );
+		$u       = Util::user( $user_id );
 		$changed = array();
 		if ( $u->user_pass !== $old->user_pass ) {
 			$changed[] = __( 'password', 'nightward' );
@@ -214,12 +214,12 @@ class Privilege_Guard {
 		if ( 'core' === $c['component'] ) {
 			return; // профіль, скидання пароля, Users screen
 		}
-		$cur = get_current_user_id();
+		$cur = Util::current_user_id();
 		$sev = 'medium';
-		if ( 'eval' === $c['component'] || $c['via_eval'] || ( $cur !== (int) $user_id && ! user_can( $cur, 'edit_users' ) ) ) {
+		if ( 'eval' === $c['component'] || $c['via_eval'] || ( $cur !== (int) $user_id && ! Util::user_can( $cur, 'edit_users' ) ) ) {
 			$sev = 'critical';
 		}
-		$u = get_userdata( $user_id );
+		$u = Util::user( $user_id );
 		Events::record( array(
 			'module'    => 'privilege',
 			'type'      => 'admin_credentials',
@@ -246,8 +246,8 @@ class Privilege_Guard {
 			return;
 		}
 		$c   = Attribution::caller();
-		$u   = get_userdata( $user_id );
-		$sev = 'core' === $c['component'] && get_current_user_id() ? 'medium' : 'high';
+		$u   = Util::user( $user_id );
+		$sev = 'core' === $c['component'] && Util::current_user_id() ? 'medium' : 'high';
 		Events::record( array(
 			'module'    => 'privilege',
 			'type'      => 'app_password',
@@ -327,7 +327,7 @@ class Privilege_Guard {
 		}
 		if ( is_multisite() ) {
 			foreach ( (array) get_site_option( 'site_admins', array() ) as $login ) {
-				$u = get_user_by( 'login', $login );
+				$u = Util::user_by( 'login', $login );
 				if ( $u && ! isset( $out[ $u->ID ] ) ) {
 					$out[ $u->ID ] = (object) array( 'ID' => $u->ID, 'user_login' => $u->user_login, 'user_email' => $u->user_email, 'user_registered' => $u->user_registered );
 				}
@@ -383,7 +383,7 @@ class Privilege_Guard {
 		$visible = get_users( array( 'role' => 'administrator', 'fields' => 'ID', 'number' => 500 ) );
 		if ( is_multisite() ) {
 			foreach ( (array) get_site_option( 'site_admins', array() ) as $login ) {
-				$u = get_user_by( 'login', $login );
+				$u = Util::user_by( 'login', $login );
 				if ( $u ) {
 					$visible[] = $u->ID;
 				}

@@ -113,7 +113,7 @@ class Hooks_Watch {
 		$sigs = get_option( 'nightward_hooks_sigs', array() );
 		$sigs = is_array( $sigs ) ? $sigs : array();
 		if ( in_array( $sig, $sigs, true ) ) {
-			if ( 0 === wp_rand( 0, 39 ) || ( is_admin() && isset( $_GET['page'] ) && 'nightward' === $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			if ( 0 === Util::rand( 0, 39 ) || ( is_admin() && isset( $_GET['page'] ) && 'nightward' === $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 				self::eval_sweep();
 			}
 			return;
@@ -159,7 +159,7 @@ class Hooks_Watch {
 			update_option( self::BASELINE, array_slice( $base, -1500, null, true ), false );
 		}
 		// 1 з 40 запитів — повний прохід на callbacks з eval()/create_function().
-		if ( $eval_seen || 0 === wp_rand( 0, 39 ) || ( is_admin() && isset( $_GET['page'] ) && 'nightward' === $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( $eval_seen || 0 === Util::rand( 0, 39 ) || ( is_admin() && isset( $_GET['page'] ) && 'nightward' === $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			self::eval_sweep();
 		}
 	}

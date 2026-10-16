@@ -364,7 +364,17 @@ class Cron {
 		self::$via = 'fallback' === $how ? 'backup scheduler' : $how;
 		$n     = 0;
 		$start = microtime( true );
+		// The report first: it is what the site owner waits for.
+		usort( $due, function ( $a, $b ) {
+			return (int) ( 'nightward_daily_report' !== $a['hook'] ) - (int) ( 'nightward_daily_report' !== $b['hook'] );
+		} );
 		foreach ( $due as $ev ) {
+			if ( $n && 'nightward_daily_report' === $due[0]['hook'] && doing_action( 'shutdown' ) ) {
+				// Inside a visitor's request the report goes alone. Other plugins finish their
+				// own work after us on shutdown (a mail-to-Telegram bridge sends its copy there);
+				// a long scan here could get the process stopped before they do.
+				break;
+			}
 			if ( ! $heavy_ok && in_array( $ev['hook'], self::HEAVY, true ) ) {
 				continue;
 			}
